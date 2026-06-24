@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>WanderBudget — Small Trip Expense Book & Padi Debt Khata</title>
+  <title>WanderBudget — Minimalist Trip Expense Diary & Udhaar Khata</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -111,28 +111,26 @@
   <!-- FULL SCREEN OVERLAY 1: Google Cloud Pull & Handshake Screen -->
   <div id="cloudHandshakeScreen" class="fixed inset-0 flex flex-col items-center justify-center bg-[#090f1d] text-white transition-opacity duration-500" style="z-index: 10000;">
     <div class="relative flex items-center justify-center w-36 h-36 mb-8">
-      <!-- Rotating outer track circular indicator -->
       <div class="absolute inset-0 rounded-full border-4 border-neutralSlate-800"></div>
       <div class="absolute inset-0 rounded-full border-4 border-t-blue-500 border-r-emerald-500 animate-spin"></div>
-      <!-- Center cloud icon element -->
       <div class="absolute w-20 h-20 rounded-full bg-slate-900/80 flex items-center justify-center shadow-lg animate-pulse">
         <i data-lucide="cloud-lightning" class="w-10 h-10 text-blue-400"></i>
       </div>
     </div>
 
-    <h2 class="text-xl sm:text-2xl font-black tracking-tight mb-2">Dey sync to Cloud...</h2>
+    <h2 class="text-xl sm:text-2xl font-black tracking-tight mb-2">Syncing with Cloud...</h2>
     <p class="text-xs sm:text-sm text-neutralSlate-400 max-w-sm text-center px-6 leading-relaxed mb-10">
-      Make you wait small, we dey open di database
+      Please wait while we secure your latest database terminal
     </p>
 
     <!-- Tech Handshake Status Bar -->
     <div class="border-t border-neutralSlate-800 pt-6 w-72 flex flex-col items-center">
       <div class="flex items-center gap-2 text-[10px] tracking-widest font-black uppercase text-blue-400">
         <span class="w-2 h-2 rounded-full bg-blue-500 animate-ping"></span>
-        <span id="handshakeStatusText">DEY CONNECT WELL WELL</span>
+        <span id="handshakeStatusText">ESTABLISHING SECURE HANDSHAKE</span>
       </div>
       <button id="handshakeSkipBtn" onclick="bypassSyncFlow()" class="hidden mt-6 px-4 py-2 bg-neutralSlate-800 hover:bg-neutralSlate-700 text-neutralSlate-300 text-[10px] font-bold uppercase tracking-widest rounded-lg transition">
-        Go ahead offline
+        Continue Offline Mode
       </button>
     </div>
   </div>
@@ -142,11 +140,9 @@
     <div class="w-full max-w-md px-6">
       <div class="bg-[#121b2e] border border-neutralSlate-800/80 rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center">
         
-        <!-- Premium Tech Avatar Holder -->
         <div class="relative w-24 h-24 mb-6">
           <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-emerald-500 to-blue-500 animate-pulse-ring"></div>
           <div class="absolute inset-1 rounded-full bg-slate-900 overflow-hidden border-2 border-emerald-400/30 flex items-center justify-center">
-            <!-- Modern Tech SVG Avatar instead of unstable external URLs -->
             <svg class="w-16 h-16 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
@@ -155,24 +151,24 @@
         </div>
 
         <h3 class="text-xl font-extrabold tracking-widest text-white uppercase">SACHINDHISLE04</h3>
-        <p class="text-[10px] text-neutralSlate-505 tracking-wider uppercase mt-1 mb-6">Secure Admin Book Terminal</p>
+        <p class="text-[10px] text-neutralSlate-505 tracking-wider uppercase mt-1 mb-6">Secure Admin Dashboard Terminal</p>
 
         <!-- PIN Login form block -->
         <div class="w-full space-y-4">
           <div class="relative">
             <i data-lucide="lock" class="w-4 h-4 absolute left-4 top-3.5 text-neutralSlate-550"></i>
-            <input type="password" id="loginPinInput" maxlength="4" placeholder="Enter PIN" class="w-full bg-[#1b253b] text-white placeholder-neutralSlate-550 px-12 py-3 rounded-xl border border-neutralSlate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center font-black tracking-[1em] text-lg">
+            <input type="password" id="loginPinInput" maxlength="4" placeholder="Enter Login PIN" class="w-full bg-[#1b253b] text-white placeholder-neutralSlate-550 px-12 py-3 rounded-xl border border-neutralSlate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center font-black tracking-[1em] text-lg">
           </div>
-          <div id="pinErrorMessage" class="hidden text-rose-500 font-bold text-[11px]">Incorrect Security PIN. Try again.</div>
+          <div id="pinErrorMessage" class="hidden text-rose-500 font-bold text-[11px]">Incorrect Security PIN. Please try again.</div>
           
           <button onclick="verifySecurityPin()" class="w-full bg-[#0fa968] hover:bg-[#0c8a54] text-white py-3.5 rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/50">
-            <span>Enter System</span>
+            <span>Access System</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
 
         <div class="mt-6 text-[10px] text-neutralSlate-400">
-          Tip: Di main PIN na <span class="text-emerald-400 font-black">0000</span>.
+          Tip: Default PIN code is <span class="text-emerald-400 font-black">0000</span>.
         </div>
 
       </div>
@@ -195,10 +191,10 @@
             </h1>
             <div id="syncStatusIndicator" class="flex items-center gap-1 bg-neutralSlate-100 text-neutralSlate-600 dark:bg-neutralSlate-800 dark:text-neutralSlate-400 px-2 py-0.5 rounded-full">
               <i data-lucide="cloud" class="w-3 h-3"></i>
-              <span class="text-[9px] uppercase font-bold tracking-wide">DONE SYNC</span>
+              <span class="text-[9px] uppercase font-bold tracking-wide">SYNCED</span>
             </div>
           </div>
-          <p class="text-[9px] text-neutralSlate-500 dark:text-neutralSlate-400">Small Trip Book & Padi Debt Khata</p>
+          <p class="text-[9px] text-neutralSlate-500 dark:text-neutralSlate-404">Simple Trip Diary & Friends Udhaar Khata</p>
         </div>
       </div>
 
@@ -216,7 +212,7 @@
 
         <!-- Quick Config Menu Trigger -->
         <div class="relative">
-          <button id="configBtn" onclick="toggleDropdown('configDropdown')" class="p-2 text-neutralSlate-555 hover:text-neutralSlate-800 dark:hover:text-white hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-900 rounded-xl transition">
+          <button id="configBtn" onclick="toggleDropdown('configDropdown')" class="p-2 text-neutralSlate-505 hover:text-neutralSlate-800 dark:hover:text-white hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-900 rounded-xl transition">
             <i data-lucide="settings" class="w-4 sm:w-5 h-4 sm:h-5"></i>
           </button>
           
@@ -289,13 +285,13 @@
       </div>
       <h2 class="text-2xl font-black text-neutralSlate-900 dark:text-white mb-2">Welcome to WanderBudget!</h2>
       <p class="text-sm text-neutralSlate-500 dark:text-neutralSlate-404 mb-8 leading-relaxed">
-        Abhi aapke system me koi active trip register nahi hai. Mek you start new trip or pull data from Cloud Sheet!
+        Abhi aapke system me koi active trip register nahi hai. Apni budget logs, spends, aur companion udhaar khata manage karne ke liye ek new trip start karein ya Cloud Sheet se data pull karein!
       </p>
       
       <div class="space-y-3">
         <button onclick="openTripModal()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3.5 px-6 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-brand-500/10">
           <i data-lucide="plus" class="w-5 h-5"></i>
-          <span>Mek you start new trip</span>
+          <span>Create Your First Trip</span>
         </button>
         <button onclick="pullStateFromCloud()" class="w-full bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white font-bold py-3 px-6 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-750 transition flex items-center justify-center gap-2">
           <i data-lucide="cloud-download" class="w-4 h-4 text-emerald-500"></i>
@@ -309,6 +305,7 @@
       <!-- Hero Header Travel Section -->
       <div class="relative w-full rounded-2xl overflow-hidden mb-6 bg-white dark:bg-neutralSlate-900 border border-neutralSlate-200 dark:border-neutralSlate-900 p-5 sm:p-8 shadow-sm">
         
+        <!-- Subtle top visual layer indicators -->
         <div id="tripCoverBg" class="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-500"></div>
 
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mt-2">
@@ -331,6 +328,7 @@
             </div>
           </div>
           
+          <!-- Theme Colors Selection Accordion -->
           <div id="coverDropdown" class="hidden absolute top-12 right-6 bg-white dark:bg-neutralSlate-900 p-3 rounded-xl shadow-xl border border-neutralSlate-200 dark:border-neutralSlate-800 z-50 grid grid-cols-3 gap-2">
             <button onclick="updateCover('sunset')" class="w-8 h-8 rounded-lg bg-gradient-to-r from-orange-500 to-rose-600 border border-neutralSlate-200"></button>
             <button onclick="updateCover('indigo')" class="w-8 h-8 rounded-lg bg-gradient-to-r from-brand-600 to-indigo-800 border border-neutralSlate-200"></button>
@@ -347,19 +345,20 @@
             <button onclick="openTripModal()" class="bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-md shadow-brand-500/10 flex items-center gap-1 transition">
               <i data-lucide="plus" class="w-4 h-4"></i> New Trip
             </button>
-            <button onclick="triggerDeleteTrip()" class="bg-rose-50 hover:bg-rose-100 dark:bg-rose-955/20 dark:hover:bg-rose-955/40 text-rose-600 dark:text-rose-400 p-2 rounded-xl text-xs font-semibold transition flex items-center justify-center border border-rose-100 dark:border-rose-900">
+            <button onclick="triggerDeleteTrip()" class="bg-rose-50 hover:bg-rose-100 dark:bg-rose-955/20 dark:hover:bg-rose-955/40 text-rose-600 dark:text-rose-404 p-2 rounded-xl text-xs font-semibold transition flex items-center justify-center border border-rose-100 dark:border-rose-900">
               <i data-lucide="trash-2" class="w-4 h-4"></i>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Scoreboard metrics -->
+      <!-- Clean Responsive Dashboard KPI Scoreboard -->
       <section class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
         
+        <!-- KPI: Total Trip Expense -->
         <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between">
           <div class="flex items-center justify-between text-neutralSlate-505 dark:text-neutralSlate-400 mb-1">
-            <span class="text-[9px] font-bold uppercase tracking-wider">All di money wey spend pan di trip</span>
+            <span class="text-[9px] font-bold uppercase tracking-wider">TOTAL TRIP EXPENSE</span>
             <div class="p-1 rounded-lg bg-brand-500/10 text-brand-500">
               <i data-lucide="compass" class="w-3.5 h-3.5"></i>
             </div>
@@ -370,9 +369,10 @@
           </div>
         </div>
 
+        <!-- KPI: Personal Expense -->
         <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between">
           <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-400 mb-1">
-            <span class="text-[9px] font-bold uppercase tracking-wider">Me own spending</span>
+            <span class="text-[9px] font-bold uppercase tracking-wider">PERSONAL EXPENSE</span>
             <div class="p-1 rounded-lg bg-amber-500/10 text-amber-500">
               <i data-lucide="user" class="w-3.5 h-3.5"></i>
             </div>
@@ -383,9 +383,10 @@
           </div>
         </div>
 
+        <!-- KPI: Friends Owe You -->
         <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between">
           <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-400 mb-1">
-            <span class="text-[9px] font-bold uppercase tracking-wider">Padi dem owe you</span>
+            <span class="text-[9px] font-bold uppercase tracking-wider">FRIENDS OWE YOU</span>
             <div class="p-1 rounded-lg bg-emerald-500/10 text-emerald-500">
               <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
             </div>
@@ -396,9 +397,10 @@
           </div>
         </div>
 
+        <!-- KPI: You Owe Friends -->
         <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between">
           <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-400 mb-1">
-            <span class="text-[9px] font-bold uppercase tracking-wider">You owe padi dem</span>
+            <span class="text-[9px] font-bold uppercase tracking-wider">YOU OWE FRIENDS</span>
             <div class="p-1 rounded-lg bg-rose-500/10 text-rose-500">
               <i data-lucide="arrow-down-left" class="w-3.5 h-3.5"></i>
             </div>
@@ -409,9 +411,10 @@
           </div>
         </div>
 
+        <!-- KPI: Settled Amount -->
         <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between col-span-2 sm:col-span-1">
           <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-400 mb-1">
-            <span class="text-[9px] font-bold uppercase tracking-wider">Settle money</span>
+            <span class="text-[9px] font-bold uppercase tracking-wider">SETTLED AMOUNT</span>
             <div class="p-1 rounded-lg bg-indigo-500/10 text-indigo-500">
               <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
             </div>
@@ -433,26 +436,30 @@
           <span id="splitBadgeCount" class="bg-neutralSlate-200 dark:bg-neutralSlate-800 text-neutralSlate-700 dark:text-neutralSlate-300 text-[10px] px-2 py-0.5 rounded-full font-black">0</span>
         </button>
         <button onclick="switchTab('tabAnalytics')" id="btnTabAnalytics" class="tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-505 dark:text-neutralSlate-400 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2">
-          <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Category Stat dem
+          <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Category Statistics
         </button>
         <button onclick="switchTab('tabNotes')" id="btnTabNotes" class="tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-505 dark:text-neutralSlate-400 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2">
           <i data-lucide="cloud-lightning" class="w-4 h-4"></i> Journal & Cloud Sync
         </button>
       </div>
 
-      <!-- TAB 1: Spends Ledger -->
+      <!-- TAB 1: Spends Ledger & Dynamic Stream -->
       <div id="tabSpends" class="tab-content block">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
+          <!-- Spends controls filter and rows list -->
           <div class="lg:col-span-2 space-y-4">
-            <!-- Filters -->
+            
+            <!-- Filters Row Panel -->
             <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <!-- Search Box -->
                 <div class="relative">
                   <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-neutralSlate-400"></i>
-                  <input id="searchQuery" oninput="handleSearchInput()" type="text" placeholder="Find spending..." class="w-full bg-neutralSlate-100/60 dark:bg-neutralSlate-900/60 pl-9 pr-3 py-2 rounded-xl text-xs sm:text-sm text-neutralSlate-900 dark:text-white placeholder-neutralSlate-550 focus:outline-none focus:ring-1 focus:ring-brand-500 transition">
+                  <input id="searchQuery" oninput="handleSearchInput()" type="text" placeholder="Search description, tags..." class="w-full bg-neutralSlate-100/60 dark:bg-neutralSlate-900/60 pl-9 pr-3 py-2 rounded-xl text-xs sm:text-sm text-neutralSlate-900 dark:text-white placeholder-neutralSlate-550 focus:outline-none focus:ring-1 focus:ring-brand-500 transition">
                 </div>
                 
+                <!-- Category select dropdown -->
                 <div class="relative">
                   <select id="filterCategory" onchange="debouncedRenderApp()" class="w-full bg-neutralSlate-100/60 dark:bg-neutralSlate-900/60 pl-3 pr-8 py-2 rounded-xl text-xs sm:text-sm text-neutralSlate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold">
                     <option value="ALL">All Categories</option>
@@ -462,12 +469,13 @@
                   </div>
                 </div>
 
+                <!-- Sorting dynamic dropdown -->
                 <div class="relative">
                   <select id="sortBy" onchange="debouncedRenderApp()" class="w-full bg-neutralSlate-100/60 dark:bg-neutralSlate-900/60 pl-3 pr-8 py-2 rounded-xl text-xs sm:text-sm text-neutralSlate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold">
-                    <option value="date-desc">New wan dem first</option>
-                    <option value="date-asc">Old wan dem first</option>
-                    <option value="amount-desc">Big spending first</option>
-                    <option value="amount-asc">Small spending first</option>
+                    <option value="date-desc">Newest First</option>
+                    <option value="date-asc">Oldest First</option>
+                    <option value="amount-desc">High to Low</option>
+                    <option value="amount-asc">Low to High</option>
                   </select>
                   <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
                     <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
@@ -476,11 +484,11 @@
               </div>
             </div>
 
-            <!-- Ledger Table -->
+            <!-- Ledger Table Sheet -->
             <div class="bg-white dark:bg-neutralSlate-900 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm overflow-hidden">
               <div class="px-4 py-3 border-b border-neutralSlate-200 dark:border-neutralSlate-800 flex justify-between items-center bg-neutralSlate-50/50 dark:bg-neutralSlate-955/30">
                 <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 flex items-center gap-1.5">
-                  <i data-lucide="layers" class="w-5 h-5 text-brand-500"></i> All di trip spending history
+                  <i data-lucide="layers" class="w-5 h-5 text-brand-500"></i> Trip Expenses History Register
                 </h3>
                 <div class="flex items-center gap-1">
                   <button onclick="exportCSV()" class="p-1.5 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-lg text-neutralSlate-555 hover:text-neutralSlate-800 dark:hover:text-white transition text-[11px] font-bold flex items-center gap-1">
@@ -492,51 +500,63 @@
                 </div>
               </div>
 
+              <!-- Dynamic transaction lists -->
               <div id="expensesContainer" class="divide-y divide-neutralSlate-100 dark:divide-neutralSlate-800/85"></div>
             </div>
           </div>
 
+          <!-- Right Side: Action Add and Stream list -->
           <div class="space-y-4">
+            <!-- FAB/Action Add Trigger Card -->
             <button onclick="openExpenseModal()" class="w-full bg-brand-500 hover:bg-brand-600 text-white p-4 rounded-xl shadow-md shadow-brand-500/10 flex items-center justify-center gap-2 transition font-bold text-xs sm:text-sm">
-              <i data-lucide="plus-circle" class="w-4 h-4"></i> Add spending / Settle up
+              <i data-lucide="plus-circle" class="w-4 h-4"></i> Add Spend / Settlement
             </button>
 
-            <!-- Timeline -->
+            <!-- Daily Spent Stream chronological -->
             <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
               <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 mb-4 flex items-center gap-1.5">
-                <i data-lucide="trending-up" class="w-4 h-4 text-brand-500"></i> Day-by-day spending timeline
+                <i data-lucide="trending-up" class="w-4 h-4 text-brand-500"></i> Daily Spend Flow Timeline
               </h3>
-              <div id="timelineContainer" class="relative border-l border-neutralSlate-200 dark:border-neutralSlate-800 ml-2.5 pl-4 space-y-4 text-xs"></div>
+              
+              <div id="timelineContainer" class="relative border-l border-neutralSlate-200 dark:border-neutralSlate-800 ml-2.5 pl-4 space-y-4 text-xs">
+                <!-- Chronological Timeline Data -->
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- TAB 2: Companions & splits -->
+      <!-- TAB 2: Friends & Splits Ledger -->
       <div id="tabSplits" class="tab-content hidden space-y-4">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Left Side: Travel Members Grid & Balance table -->
           <div class="lg:col-span-2 space-y-4">
             
+            <!-- Friends companion section lists -->
             <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
               <div class="flex justify-between items-center mb-4">
                 <div>
                   <h3 class="font-bold text-sm text-neutralSlate-955 dark:text-white flex items-center gap-1.5">
-                    <i data-lucide="users" class="w-4 h-4 text-brand-500"></i> List of travel padi dem
+                    <i data-lucide="users" class="w-4 h-4 text-brand-500"></i> Travel Companions List
                   </h3>
                   <p class="text-[10px] text-neutralSlate-500">Add friends and manage personal peer-to-peer udhaar diaries.</p>
                 </div>
                 <button onclick="openFriendModal()" class="bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white border border-neutralSlate-200 dark:border-neutralSlate-800 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition flex items-center gap-1">
-                  <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Add Padi
+                  <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Add Friend
                 </button>
               </div>
 
-              <div id="friendsListContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+              <div id="friendsListContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <!-- Dynamically populated friend boxes -->
+              </div>
             </div>
 
+            <!-- Split ledger detailed balance mapping table matrix -->
             <div class="bg-white dark:bg-neutralSlate-900 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm overflow-hidden">
               <div class="px-4 py-3.5 border-b border-neutralSlate-200 dark:border-neutralSlate-800 flex justify-between items-center bg-neutralSlate-50/50 dark:bg-neutralSlate-955/30">
                 <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 flex items-center gap-1.5">
-                  <i data-lucide="table" class="w-4 h-4 text-brand-500"></i> Padi Debt Balance Sheet
+                  <i data-lucide="table" class="w-4 h-4 text-brand-500"></i> Udhaar Khata Balance Sheet
                 </h3>
                 <button onclick="shareSplitSummaryWhatsApp()" class="text-emerald-500 hover:text-emerald-600 dark:text-emerald-400 dark:hover:text-emerald-355 font-bold text-xs flex items-center gap-1.5 transition">
                   <i data-lucide="send" class="w-3.5 h-3.5"></i> WhatsApp Summary
@@ -547,48 +567,56 @@
                 <table class="w-full text-left border-collapse min-w-[450px]">
                   <thead>
                     <tr class="border-b border-neutralSlate-200 dark:border-neutralSlate-800 text-[10px] text-neutralSlate-500 dark:text-neutralSlate-400 uppercase font-bold tracking-wider bg-neutralSlate-50/40 dark:bg-neutralSlate-955/40">
-                      <th class="py-2.5 px-4">Padi Name</th>
-                      <th class="py-2.5 px-4 text-right">You pay for dem</th>
-                      <th class="py-2.5 px-4 text-right">Dem pay for you</th>
-                      <th class="py-2.5 px-4 text-right">Debt Balance Status</th>
+                      <th class="py-2.5 px-4">Companion Name</th>
+                      <th class="py-2.5 px-4 text-right">You Paid For Them</th>
+                      <th class="py-2.5 px-4 text-right">They Paid For You</th>
+                      <th class="py-2.5 px-4 text-right">Net Udhaar Status</th>
                     </tr>
                   </thead>
-                  <tbody id="splitBalanceTableBody" class="divide-y divide-neutralSlate-100 dark:divide-neutralSlate-800 text-xs"></tbody>
+                  <tbody id="splitBalanceTableBody" class="divide-y divide-neutralSlate-100 dark:divide-neutralSlate-800 text-xs">
+                    <!-- Dynamic matrix mappings -->
+                  </tbody>
                 </table>
               </div>
             </div>
           </div>
 
+          <!-- Right Side: Clean Active Debt Actions -->
           <div class="space-y-4">
             <div class="bg-white dark:bg-neutralSlate-900 border border-neutralSlate-200 dark:border-neutralSlate-900 p-5 rounded-xl shadow-sm">
               <h4 class="font-bold text-xs text-brand-600 dark:text-brand-400 flex items-center gap-1.5 mb-2 uppercase tracking-wide">
                 <i data-lucide="calculator" class="w-4 h-4"></i> Quick Settle Up Actions
               </h4>
-              <p class="text-[11px] text-neutralSlate-500 leading-relaxed mb-4">
+              <p class="text-[11px] text-neutralSlate-505 leading-relaxed mb-4">
                 Directly record a cash settlement with your companions here to clear their ledger balance.
               </p>
-              <div id="settleSuggestionsContainer" class="space-y-2"></div>
+              
+              <div id="settleSuggestionsContainer" class="space-y-2">
+                <!-- Suggestions generated dynamically -->
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- TAB 3: Statistics -->
+      <!-- TAB 3: Visual Analytics Statistics & Cost break downs -->
       <div id="tabAnalytics" class="tab-content hidden space-y-4">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
           
+          <!-- Pie Category distribution chart panel -->
           <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col">
             <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 mb-4 flex items-center gap-1.5">
-              <i data-lucide="pie-chart" class="w-4 h-4 text-brand-500"></i> How spending share by category
+              <i data-lucide="pie-chart" class="w-4 h-4 text-brand-500"></i> Spends Category Distribution
             </h3>
             <div class="flex-1 flex items-center justify-center min-h-[220px] sm:min-h-[260px] relative">
               <canvas id="categoryPieChart" class="max-w-[220px] sm:max-w-[260px]"></canvas>
             </div>
           </div>
 
+          <!-- Cost flow timeline dynamic bar chart -->
           <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col">
             <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 mb-4 flex items-center gap-1.5">
-              <i data-lucide="bar-chart" class="w-4 h-4 text-brand-500"></i> Day-by-day spending chart
+              <i data-lucide="bar-chart" class="w-4 h-4 text-brand-500"></i> Daily Cost Flow Index
             </h3>
             <div class="flex-1 flex items-center justify-center min-h-[220px] sm:min-h-[260px]">
               <canvas id="dailySpendsChart"></canvas>
@@ -596,22 +624,25 @@
           </div>
         </div>
 
+        <!-- Financial analytical statistics list cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          <!-- Card: Spends extremes -->
           <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
             <h4 class="font-bold text-xs text-neutralSlate-900 dark:text-white mb-3 flex items-center gap-1.5">
-              <i data-lucide="sparkles" class="w-4 h-4 text-brand-500"></i> Big and small spending dem
+              <i data-lucide="sparkles" class="w-4 h-4 text-brand-500"></i> Spends Extremes
             </h4>
             <div class="space-y-2 text-xs">
               <div class="flex items-center justify-between p-2 bg-neutralSlate-50 dark:bg-neutralSlate-955 rounded-lg">
                 <div>
-                  <p class="text-[9px] text-neutralSlate-500">Big pass spending</p>
+                  <p class="text-[9px] text-neutralSlate-500">Highest Spend</p>
                   <p id="extremeBiggestDesc" class="font-bold text-neutralSlate-800 dark:text-slate-200 truncate max-w-[130px]">---</p>
                 </div>
                 <p id="extremeBiggestVal" class="font-bold text-rose-500">0.00</p>
               </div>
               <div class="flex items-center justify-between p-2 bg-neutralSlate-50 dark:bg-neutralSlate-955 rounded-lg">
                 <div>
-                  <p class="text-[9px] text-neutralSlate-500">Small pass spending</p>
+                  <p class="text-[9px] text-neutralSlate-500">Lowest Spend</p>
                   <p id="extremeCheapestDesc" class="font-bold text-neutralSlate-800 dark:text-slate-200 truncate max-w-[130px]">---</p>
                 </div>
                 <p id="extremeCheapestVal" class="font-bold text-emerald-500">0.00</p>
@@ -619,9 +650,10 @@
             </div>
           </div>
 
+          <!-- Card: Channel payments breakdown -->
           <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
             <h4 class="font-bold text-xs text-neutralSlate-900 dark:text-white mb-3 flex items-center gap-1.5">
-              <i data-lucide="credit-card" class="w-4 h-4 text-brand-500"></i> How you pay di money
+              <i data-lucide="credit-card" class="w-4 h-4 text-brand-500"></i> Payment Channels Cost
             </h4>
             <div class="space-y-2.5 text-xs pt-1">
               <div class="flex items-center justify-between">
@@ -632,27 +664,28 @@
               </div>
               <div class="flex items-center justify-between">
                 <span class="text-neutralSlate-555 flex items-center gap-1.5 font-semibold">
-                  <i data-lucide="credit-card" class="w-4 h-4 text-neutralSlate-400"></i> Card dem
+                  <i data-lucide="credit-card" class="w-4 h-4 text-neutralSlate-400"></i> Cards
                 </span>
                 <span id="paymentCardVal" class="font-bold text-neutralSlate-800 dark:text-white">0.00</span>
               </div>
               <div class="flex items-center justify-between">
                 <span class="text-neutralSlate-555 flex items-center gap-1.5 font-semibold">
-                  <i data-lucide="coins" class="w-4 h-4 text-neutralSlate-400"></i> Cash money
+                  <i data-lucide="coins" class="w-4 h-4 text-neutralSlate-400"></i> Hard Cash
                 </span>
                 <span id="paymentCashVal" class="font-bold text-neutralSlate-800 dark:text-white">0.00</span>
               </div>
             </div>
           </div>
 
+          <!-- Card: Frequency metrics insights -->
           <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-950 shadow-sm">
             <h4 class="font-bold text-xs text-neutralSlate-900 dark:text-white mb-3 flex items-center gap-1.5">
-              <i data-lucide="flame" class="w-4 h-4 text-brand-500"></i> Area wey you spend pass
+              <i data-lucide="flame" class="w-4 h-4 text-brand-500"></i> Most Active Spends Area
             </h4>
             <div class="space-y-3 text-xs pt-1">
               <div class="p-2.5 bg-neutralSlate-50 dark:bg-neutralSlate-955 rounded-lg flex items-center justify-between">
                 <div>
-                  <p class="text-[9px] text-neutralSlate-500">Category wey you use pass</p>
+                  <p class="text-[9px] text-neutralSlate-500">Most Visited Category</p>
                   <p id="extremeMostCategory" class="font-bold mt-0.5 text-neutralSlate-800 dark:text-white">---</p>
                 </div>
                 <span id="extremeMostCategoryCount" class="bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 font-bold text-[10px] px-2 py-0.5 rounded-full">0 times</span>
@@ -662,21 +695,27 @@
         </div>
       </div>
 
-      <!-- TAB 4: Journal & Sync Configuration -->
+      <!-- TAB 4: Journal details & Google Sheets Sync configuration -->
       <div id="tabNotes" class="tab-content hidden">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Left Side: Journal checklists and Sheets Deployment steps -->
           <div class="lg:col-span-2 space-y-4">
             
+            <!-- Journal notepad check lists -->
             <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
               <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 mb-1 flex items-center gap-1.5">
-                <i data-lucide="book-open" class="w-5 h-5 text-brand-500"></i> Travel book & Checklists
+                <i data-lucide="book-open" class="w-5 h-5 text-brand-500"></i> Travel Diary Journal & Checklists
               </h3>
               <p class="text-[10px] text-neutralSlate-500 mb-3">Keep hotel details, routes, flight PNR references, checklists and quick memories safe here.</p>
+              
               <textarea id="tripJournal" oninput="saveTripJournal()" placeholder="Enter hotel directions, bus seat details, tickets, itinerary and quick travel logs..." class="w-full min-h-[140px] bg-neutralSlate-50 dark:bg-neutralSlate-955 p-3 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-800 dark:text-white placeholder-neutralSlate-500 focus:outline-none focus:ring-1 focus:ring-brand-500 transition font-mono leading-relaxed text-xs"></textarea>
-              <div class="text-right text-[9px] text-neutralSlate-400 italic mt-1 font-semibold">Saves automatically to active trip diary.</div>
+              <div class="text-right text-[9px] text-neutralSlate-404 italic mt-1 font-semibold">Saves automatically to active trip diary.</div>
             </div>
 
+            <!-- GOOGLE CLOUD DEVICE SYNC -->
             <div class="bg-white dark:bg-neutralSlate-900 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 p-5 relative overflow-hidden shadow-sm">
+              
               <div class="flex items-center justify-between border-b border-neutralSlate-100 dark:border-neutralSlate-800 pb-3 mb-4">
                 <div class="flex items-center gap-2">
                   <div class="p-1.5 rounded-lg bg-brand-500/10 text-brand-500">
@@ -687,15 +726,18 @@
                     <p class="text-[9px] text-neutralSlate-500">Realtime cross-device spreadsheet database backup</p>
                   </div>
                 </div>
-                <span id="cloudSyncStatusBadge" class="bg-neutralSlate-100 text-neutralSlate-600 dark:bg-neutralSlate-800 dark:text-neutralSlate-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-neutralSlate-200 dark:border-neutralSlate-700">
+                <span id="cloudSyncStatusBadge" class="bg-neutralSlate-100 text-neutralSlate-600 dark:bg-neutralSlate-800 dark:text-neutralSlate-404 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-neutralSlate-200 dark:border-neutralSlate-700">
                   LOCAL ONLY
                 </span>
               </div>
 
+              <!-- Auto Sync switch controller row -->
               <div class="bg-neutralSlate-50 dark:bg-neutralSlate-950 border border-neutralSlate-200 dark:border-neutralSlate-800 p-3.5 rounded-xl mb-4 flex items-center justify-between">
                 <div>
                   <h4 class="font-bold text-xs text-neutralSlate-800 dark:text-slate-200">Cloud Auto-Sync</h4>
-                  <p class="text-[10px] text-neutralSlate-500 mt-0.5">Dey backup automatic in background</p>
+                  <p class="text-[10px] text-neutralSlate-500 mt-0.5">
+                    Automatic background backup when adding/modifying logs.
+                  </p>
                 </div>
                 <label class="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" id="autoSyncToggle" onchange="toggleAutoSync(this.checked)" class="sr-only peer">
@@ -703,6 +745,7 @@
                 </label>
               </div>
 
+              <!-- Web App Deploy URL Field and Tools -->
               <div class="space-y-1.5 mb-4">
                 <div class="flex justify-between items-center">
                   <label class="block text-[9px] font-bold tracking-wider text-brand-500 uppercase font-black">GOOGLE APPS SCRIPT WEB APP URL</label>
@@ -716,6 +759,7 @@
                 </div>
               </div>
 
+              <!-- Sync pull push trigger actions buttons -->
               <div class="grid grid-cols-2 gap-3 mb-4">
                 <button onclick="pushStateToCloud()" class="bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white border border-neutralSlate-200 dark:border-neutralSlate-800 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
                   <i data-lucide="cloud-lightning" class="w-4 h-4 text-brand-500"></i> Push to Cloud
@@ -724,25 +768,74 @@
                   <i data-lucide="cloud-download" class="w-4 h-4"></i> Pull from Cloud
                 </button>
               </div>
+
+              <!-- COLLAPSIBLE PREVENT FAILURE SETUP GUIDE BOX -->
+              <div class="mt-4 border border-dashed border-neutralSlate-300 dark:border-neutralSlate-800 rounded-xl p-4 bg-amber-50/50 dark:bg-amber-950/10">
+                <button onclick="toggleDropdown('gasCodeCollapsible')" class="w-full flex items-center justify-between text-left text-xs font-bold text-neutralSlate-850 dark:text-slate-200">
+                  <span class="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i> Setup Code & Google App Script Instructions
+                  </span>
+                  <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </button>
+                
+                <div id="gasCodeCollapsible" class="hidden mt-3 space-y-2 text-[11px] text-neutralSlate-600 dark:text-neutralSlate-300 leading-relaxed border-t border-neutralSlate-200 dark:border-neutralSlate-800/80 pt-3">
+                  <p class="font-semibold text-rose-500 dark:text-rose-400">🚨 IMPORTANT RULE FOR CORRECT SETUP (Pull/Push failures stop karne ke liye):</p>
+                  <p>Jab aap Apps Script deploy karein, toh yeh do options bilkul sahi select hone chahiye:</p>
+                  <ul class="list-disc list-inside space-y-1 pl-1 font-semibold text-neutralSlate-805 dark:text-white">
+                    <li>Execute as: <span class="text-brand-500">Me (your-email@gmail.com)</span></li>
+                    <li>Who has access: <span class="text-emerald-500">Anyone</span> (Agur aapne "Anyone with Google Account" select kiya, toh browser request fail ho jayegi).</li>
+                  </ul>
+                  
+                  <p class="font-bold mt-2 text-neutralSlate-800 dark:text-white">Code for your Apps Script:</p>
+                  <div class="relative bg-neutralSlate-900 text-slate-100 p-2.5 rounded-lg text-[10px] font-mono overflow-x-auto max-h-40">
+                    <pre id="appsScriptCodeText">function doGet(e) {
+  var scriptProp = PropertiesService.getScriptProperties();
+  var data = scriptProp.getProperty("wanderbudget_db");
+  return ContentService.createTextOutput(JSON.stringify({
+    status: "success",
+    data: data ? JSON.parse(data) : null
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  try {
+    var requestData = JSON.parse(e.postData.contents);
+    if (requestData.action === "sync") {
+      var scriptProp = PropertiesService.getScriptProperties();
+      scriptProp.setProperty("wanderbudget_db", JSON.stringify(requestData.data));
+      return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}</pre>
+                  </div>
+                  <button onclick="copyAppsScriptCode()" class="mt-1 px-3 py-1 bg-brand-500 text-white rounded text-[10px] font-bold hover:bg-brand-600 transition">Copy Script Code</button>
+                </div>
+              </div>
+
             </div>
           </div>
 
+          <!-- Right Side: Destination stats overview card -->
           <div class="space-y-4">
             <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
               <h4 class="font-bold text-xs text-neutralSlate-800 dark:text-white mb-3 flex items-center gap-1.5">
-                <i data-lucide="info" class="w-4 h-4 text-brand-500"></i> Trip details summary
+                <i data-lucide="info" class="w-4 h-4 text-brand-500"></i> Trip Details Overview
               </h4>
               <div class="divide-y divide-neutralSlate-100 dark:divide-neutralSlate-800 text-xs">
                 <div class="py-2.5 flex justify-between">
-                  <span class="text-neutralSlate-555 font-medium">Trip budget limit</span>
+                  <span class="text-neutralSlate-555 font-medium">Allotted Budget Cap</span>
                   <span id="notesPlannedBudget" class="font-bold text-neutralSlate-800 dark:text-white">0.00</span>
                 </div>
                 <div class="py-2.5 flex justify-between">
-                  <span class="text-neutralSlate-555 font-medium">Day wey we go start</span>
+                  <span class="text-neutralSlate-555 font-medium">Departure Date</span>
                   <span id="notesStartDate" class="font-medium text-neutralSlate-800 dark:text-white">---</span>
                 </div>
                 <div class="py-2.5 flex justify-between">
-                  <span class="text-neutralSlate-555 font-medium">Day wey we go kam back</span>
+                  <span class="text-neutralSlate-555 font-medium">Return Date</span>
                   <span id="notesEndDate" class="font-medium text-neutralSlate-800 dark:text-white">---</span>
                 </div>
               </div>
@@ -753,17 +846,19 @@
     </div>
   </main>
 
-  <!-- MODAL 1: Add Companion -->
+  <!-- MODAL 1: Add Friend companion Modal -->
   <div id="friendModal" class="hidden fixed inset-0 z-50 overflow-y-auto no-print">
     <div class="flex items-center justify-center min-h-screen p-4 text-center">
+      <!-- Backdrop -->
       <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeFriendModal()">
         <div class="absolute inset-0 bg-neutralSlate-900/60 dark:bg-neutralSlate-955/70 backdrop-blur-sm"></div>
       </div>
       
+      <!-- Modal Content -->
       <div class="relative bg-white dark:bg-neutralSlate-900 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all max-w-md w-full border border-neutralSlate-200 dark:border-neutralSlate-800 z-10">
         <div class="px-5 py-4 border-b border-neutralSlate-100 dark:border-neutralSlate-800 flex items-center justify-between">
           <h3 class="text-sm font-bold text-neutralSlate-955 dark:text-white flex items-center gap-1.5">
-            <i data-lucide="user-plus" class="text-brand-500"></i> Add travel padi
+            <i data-lucide="user-plus" class="text-brand-500"></i> Add Travel Companion Friend
           </h3>
           <button onclick="closeFriendModal()" class="p-1 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-lg text-neutralSlate-555 transition">
             <i data-lucide="x" class="w-4 h-4"></i>
@@ -771,7 +866,7 @@
         </div>
         <form id="friendForm" onsubmit="saveFriend(event)" class="p-5 space-y-4 text-xs">
           <div>
-            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Padi Name</label>
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Companion Name</label>
             <input type="text" id="friendModalName" required placeholder="e.g. Abhijeet, Sarthak, Rohan" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 transition">
           </div>
           <div>
@@ -789,21 +884,23 @@
             <input type="hidden" id="friendModalColor" value="bg-indigo-500 text-white">
           </div>
           <div class="pt-4 border-t border-neutralSlate-100 dark:border-neutralSlate-800 flex justify-end gap-2">
-            <button type="button" onclick="closeFriendModal()" class="px-4 py-2 text-neutralSlate-555 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-xl font-bold transition">Comot</button>
-            <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white px-5 py-2 rounded-xl font-bold shadow-md transition">Save Padi</button>
+            <button type="button" onclick="closeFriendModal()" class="px-4 py-2 text-neutralSlate-555 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-xl font-bold transition">Cancel</button>
+            <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white px-5 py-2 rounded-xl font-bold shadow-md transition">Save Companion</button>
           </div>
         </form>
       </div>
     </div>
   </div>
 
-  <!-- MODAL 2: Create Trip -->
+  <!-- MODAL 2: Edit/Create Trip details layout modal -->
   <div id="tripModal" class="hidden fixed inset-0 z-50 overflow-y-auto no-print">
     <div class="flex items-center justify-center min-h-screen p-4 text-center">
+      <!-- Backdrop -->
       <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeTripModal()">
         <div class="absolute inset-0 bg-neutralSlate-900/60 dark:bg-neutralSlate-955/70 backdrop-blur-sm"></div>
       </div>
 
+      <!-- Modal Content -->
       <div class="relative bg-white dark:bg-neutralSlate-900 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all max-w-md w-full border border-neutralSlate-200 dark:border-neutralSlate-800 z-10">
         <div class="px-5 py-4 border-b border-neutralSlate-100 dark:border-neutralSlate-800 flex items-center justify-between">
           <h3 id="tripModalTitle" class="text-sm font-bold text-neutralSlate-955 dark:text-white flex items-center gap-1.5">
@@ -825,23 +922,23 @@
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Day wey we go start</label>
+              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Departure Date</label>
               <input type="date" id="tripModalStartDate" required class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white">
             </div>
             <div>
-              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Day wey we go kam back</label>
+              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Return Date</label>
               <input type="date" id="tripModalEndDate" required class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white">
             </div>
           </div>
           <div>
-            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Trip Budget Limit</label>
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Trip Budget Limit (Reference)</label>
             <div class="relative">
               <span class="absolute left-3.5 top-2.5 font-bold text-neutralSlate-555 active-currency">₹</span>
               <input type="number" id="tripModalBudget" required placeholder="5000" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 pl-8 pr-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white font-bold focus:outline-none">
             </div>
           </div>
           <div class="pt-4 border-t border-neutralSlate-100 dark:border-neutralSlate-800 flex justify-end gap-2">
-            <button type="button" onclick="closeTripModal()" class="px-4 py-2 text-neutralSlate-555 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-xl font-bold transition">Comot</button>
+            <button type="button" onclick="closeTripModal()" class="px-4 py-2 text-neutralSlate-555 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-xl font-bold transition">Cancel</button>
             <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white px-5 py-2 rounded-xl font-bold shadow transition">Save Destination</button>
           </div>
         </form>
@@ -849,17 +946,19 @@
     </div>
   </div>
 
-  <!-- MODAL 3: Expense Logs -->
+  <!-- MODAL 3: Redesigned Simple Expense Form supporting the 4 Custom Types -->
   <div id="expenseModal" class="hidden fixed inset-0 z-50 overflow-y-auto no-print">
     <div class="flex items-center justify-center min-h-screen p-4 text-center">
+      <!-- Backdrop -->
       <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeExpenseModal()">
         <div class="absolute inset-0 bg-neutralSlate-900/60 dark:bg-neutralSlate-955/70 backdrop-blur-sm"></div>
       </div>
 
+      <!-- Modal Content -->
       <div class="relative bg-white dark:bg-neutralSlate-900 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all max-w-md w-full border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs text-neutralSlate-900 dark:text-white z-10">
         <div class="px-5 py-4 border-b border-neutralSlate-100 dark:border-neutralSlate-800 flex items-center justify-between">
           <h3 id="expenseModalTitle" class="text-sm sm:text-base font-bold text-neutralSlate-955 dark:text-white flex items-center gap-1.5">
-            <i data-lucide="plus-circle" class="text-brand-500"></i> Write down new spending
+            <i data-lucide="plus-circle" class="text-brand-500"></i> Log Spend Transaction
           </h3>
           <button onclick="closeExpenseModal()" class="p-1 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-lg text-neutralSlate-555 transition">
             <i data-lucide="x" class="w-4 h-4"></i>
@@ -869,14 +968,15 @@
         <form id="expenseForm" onsubmit="saveExpense(event)" class="p-5 space-y-4">
           <input type="hidden" id="expenseModalId">
 
+          <!-- Transaction Type Selector -->
           <div>
             <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Transaction Type</label>
             <div class="relative">
               <select id="expenseModalType" onchange="handleTypeChange(this.value)" required class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold text-xs sm:text-sm">
-                <option value="personal">Me one spending 👤</option>
-                <option value="i_paid_friend">I pay for padi 📤</option>
-                <option value="friend_paid_me">Padi pay for me 📥</option>
-                <option value="settlement">Settle up (Return money) 🤝</option>
+                <option value="personal">Personal Expense (Self Spent) 👤</option>
+                <option value="i_paid_friend">I Paid For Friend 📤</option>
+                <option value="friend_paid_me">Friend Paid For Me 📥</option>
+                <option value="settlement">Settlement (Paise wapas diye) 🤝</option>
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
                 <i data-lucide="chevron-down" class="w-4 h-4"></i>
@@ -884,10 +984,12 @@
             </div>
           </div>
 
+          <!-- Friend Involved Dropdown (conditionally shown in js) -->
           <div id="friendInvolvedRow" class="hidden">
-            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Padi wey join</label>
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Friend Involved</label>
             <div class="relative">
               <select id="expenseModalFriend" class="w-full bg-neutralSlate-100 dark:bg-neutralSlate-905 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold text-xs">
+                <!-- dynamically loaded -->
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
                 <i data-lucide="chevron-down" class="w-4 h-4"></i>
@@ -895,12 +997,13 @@
             </div>
           </div>
 
+          <!-- Settlement Direction Row (Shown only for settlement type) -->
           <div id="settlementDirectionRow" class="hidden">
-            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Who pay who?</label>
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Who paid whom?</label>
             <div class="relative">
               <select id="expenseModalSettleDirection" class="w-full bg-neutralSlate-100 dark:bg-neutralSlate-905 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold text-xs">
-                <option value="you_to_friend">You pay padi</option>
-                <option value="friend_to_you">Padi pay you</option>
+                <option value="you_to_friend">You Paid Friend (Abhijeet ko diye)</option>
+                <option value="friend_to_you">Friend Paid You (Abhijeet ne mujhe diye)</option>
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
                 <i data-lucide="chevron-down" class="w-4 h-4"></i>
@@ -917,6 +1020,7 @@
               <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Category</label>
               <div class="relative">
                 <select id="expenseModalCategory" required class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold">
+                  <!-- dynamically loaded -->
                 </select>
                 <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
                   <i data-lucide="chevron-down" class="w-4 h-4"></i>
@@ -932,14 +1036,14 @@
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Money wey you spend</label>
+              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Amount Spent</label>
               <div class="relative">
                 <span class="absolute left-3 top-2.5 font-bold text-neutralSlate-555 active-currency">₹</span>
                 <input type="number" step="any" id="expenseModalAmount" required placeholder="190" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 pl-7 pr-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 font-black text-sm">
               </div>
             </div>
             <div>
-              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">How you pay</label>
+              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Payment Channel</label>
               <div class="relative">
                 <select id="expenseModalPaymentMethod" required class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold">
                   <option value="UPI">UPI / Digital App</option>
@@ -955,7 +1059,7 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             <div>
-              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Receipt paper (Optional)</label>
+              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Receipt Attachment (Optional)</label>
               <div class="flex items-center gap-2">
                 <input type="file" id="expenseModalBillInput" onchange="processBillImage(event)" class="hidden" accept="image/*">
                 <button type="button" onclick="document.getElementById('expenseModalBillInput').click()" class="bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white text-[10px] font-bold px-3 py-1.5 rounded-xl border border-dashed border-neutralSlate-300 dark:border-neutralSlate-700 flex items-center gap-1 transition">
@@ -966,14 +1070,14 @@
               <input type="hidden" id="expenseModalBillBase64">
             </div>
             <div>
-              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Small notes (Optional)</label>
+              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Optional Memo Tags</label>
               <input type="text" id="expenseModalNotes" placeholder="e.g. ticket booking, taxi ride..." class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-1.5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs text-neutralSlate-955 dark:text-white">
             </div>
           </div>
 
           <div class="pt-4 border-t border-neutralSlate-100 dark:border-neutralSlate-800 flex justify-end gap-2">
-            <button type="button" onclick="closeExpenseModal()" class="px-4 py-2 text-neutralSlate-555 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-xl font-bold transition">Comot</button>
-            <button id="expenseSubmitBtn" type="submit" class="bg-brand-500 hover:bg-brand-600 text-white px-6 py-2 rounded-xl font-bold shadow transition">Save spending</button>
+            <button type="button" onclick="closeExpenseModal()" class="px-4 py-2 text-neutralSlate-555 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-xl font-bold transition">Cancel</button>
+            <button id="expenseSubmitBtn" type="submit" class="bg-brand-500 hover:bg-brand-600 text-white px-6 py-2 rounded-xl font-bold shadow transition">Save Transaction</button>
           </div>
         </form>
       </div>
@@ -983,17 +1087,19 @@
   <!-- MODAL 4: Global Customized Confirmation Dialog -->
   <div id="alertDialog" class="hidden fixed inset-0 z-[100] overflow-y-auto no-print">
     <div class="flex items-center justify-center min-h-screen p-4 text-center">
+      <!-- Backdrop -->
       <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeAlertDialog()">
         <div class="absolute inset-0 bg-neutralSlate-900/60 dark:bg-neutralSlate-955/70 backdrop-blur-sm"></div>
       </div>
       
+      <!-- Modal Content -->
       <div class="relative bg-white dark:bg-neutralSlate-900 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all max-w-sm w-full border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs text-neutralSlate-900 dark:text-white z-10">
         <div class="p-5">
           <div class="flex items-center gap-2 text-orange-500 mb-2">
             <i data-lucide="alert-triangle" class="w-5 h-5"></i>
-            <h3 id="alertTitle" class="text-sm font-bold">You sure say you wan do dis?</h3>
+            <h3 id="alertTitle" class="text-sm font-bold">Are you sure?</h3>
           </div>
-          <p id="alertMessage" class="text-neutralSlate-505 dark:text-neutralSlate-404 text-xs mt-2 leading-relaxed">Dis one you no go fit change back.</p>
+          <p id="alertMessage" class="text-neutralSlate-505 dark:text-neutralSlate-404 text-xs mt-2 leading-relaxed">This action cannot be reverted.</p>
           <div class="mt-5 flex justify-end gap-2">
             <button id="alertCancelBtn" onclick="closeAlertDialog()" class="px-4 py-2 bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-700 dark:text-slate-355 border border-neutralSlate-200 dark:border-neutralSlate-700 rounded-xl font-bold hover:bg-neutralSlate-200 transition">Cancel</button>
             <button id="alertConfirmBtn" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold transition">Confirm</button>
@@ -1003,8 +1109,9 @@
     </div>
   </div>
 
+  <!-- Javascript State Logic Core Code -->
   <script>
-    // Di standard categories dem
+    // Standard System Categories
     const CATEGORIES = [
       { id: "Food", name: "Food 🍽️", bgClass: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20" },
       { id: "Train", name: "Train 🚆", bgClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20" },
@@ -1018,10 +1125,10 @@
       { id: "Snacks", name: "Snacks ☕", bgClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20" },
       { id: "Water", name: "Water 💧", bgClass: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20" },
       { id: "Medical", name: "Medical 💊", bgClass: "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20" },
-      { id: "Misc", name: "Misc 📌", bgClass: "bg-neutralSlate-500/10 text-neutralSlate-600 dark:text-neutralSlate-400 border border-neutralSlate-500/20" }
+      { id: "Misc", name: "Misc 📌", bgClass: "bg-neutralSlate-500/10 text-neutralSlate-600 dark:text-neutralSlate-404 border border-neutralSlate-500/20" }
     ];
 
-    // Di main state of di app
+    // Master App State (Clean blank state, PIN changed to 0000, lastUpdated set to 0 for cloud override)
     let appState = {
       trips: [],
       activeTripId: "",
@@ -1029,31 +1136,31 @@
       theme: "light",
       appName: "WanderBudget",
       appLogo: "✈️",
-      gasUrl: "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec", // Newly integrated user Script URL
+      gasUrl: "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec",
       autoSync: true,
       securityPin: "0000", // PIN Defaulted to 0000
       lastUpdated: 0       // Keep 0 initially so cloud pulling will safely overwrite clean state
     };
 
-    // Chart JS instance dem
+    // Chart JS instances
     let pieChartInstance = null;
     let barChartInstance = null;
     let syncStatusState = "local"; 
     let backgroundPollInterval = null;
 
-    // Helper to make unique ID dem
+    // Helper to generate unique IDs
     function generateUniqueId(prefix) {
       const randomStr = Math.random().toString(36).substring(2, 9);
       return `${prefix}-${Date.now()}-${randomStr}`;
     }
 
-    // For change UI text safe safe
+    // Safely edit UI texts
     function safeSetText(elementId, value) {
       const element = document.getElementById(elementId);
       if (element) element.textContent = value;
     }
 
-    // Fetch with retry time by time
+    // Fetch with Exponential Backoff
     async function fetchWithRetry(url, options = {}, retries = 5, delay = 1000) {
       try {
         const response = await fetch(url, options);
@@ -1069,10 +1176,13 @@
     }
 
     window.onload = async function() {
+      // 1. Initial Load of Cache Storage 
       loadDataFromStorage();
       populateCategorySelectors();
       applyBrandSettings();
       applyThemeFromState();
+      
+      // 2. Start Automatic Pull Handshake directly on load
       await executeStartupHandshake();
     }
 
@@ -1089,6 +1199,7 @@
         seedInitialSampleData();
       }
 
+      // Safe bounds checks
       if (!appState || !appState.trips) {
         seedInitialSampleData();
       }
@@ -1101,10 +1212,10 @@
       if (appState.lastUpdated === undefined) appState.lastUpdated = 0;
     }
 
-    // Blank state for let person start fresh
+    // Seeding completely empty structure to let user start fresh
     function seedInitialSampleData() {
       appState = {
-        trips: [], 
+        trips: [], // Clear out default trips
         activeTripId: "",
         currency: "₹",
         theme: "light",
@@ -1123,7 +1234,7 @@
     }
 
     function saveStateToLocalStorage() {
-      appState.lastUpdated = Date.now(); 
+      appState.lastUpdated = Date.now(); // Mark as updated locally
       saveStateToLocalStorageDirectly();
       if (appState.autoSync && appState.gasUrl) {
         triggerSilentCloudSync();
@@ -1158,8 +1269,9 @@
           const cloudTime = cloudState.lastUpdated || 0;
           const localTime = appState.lastUpdated || 0;
           
+          // Pull cloud immediately if local timestamp is newer or equal but local has no trips
           if (cloudTime > localTime || localTime === 0 || !appState.trips || appState.trips.length === 0) {
-            const currentGasUrl = appState.gasUrl; 
+            const currentGasUrl = appState.gasUrl; // Protect local config
             appState = cloudState;
             
             if (currentGasUrl) {
@@ -1184,12 +1296,14 @@
     }
 
     function transitionToPinScreen() {
+      // Close Handshake Splash Screen
       const splash = document.getElementById('cloudHandshakeScreen');
       if (splash) {
         splash.classList.add('opacity-0');
         setTimeout(() => splash.classList.add('hidden'), 500);
       }
 
+      // Open Admin PIN Login screen
       const pinScreen = document.getElementById('adminPinScreen');
       if (pinScreen) {
         pinScreen.classList.remove('hidden');
@@ -1202,7 +1316,7 @@
       transitionToPinScreen();
     }
 
-    // Check if di PIN correct
+    // Verify system login PIN (Default 0000)
     function verifySecurityPin() {
       const entered = document.getElementById('loginPinInput').value;
       const targetPin = appState.securityPin || "0000";
@@ -1259,7 +1373,7 @@
       }, 1200);
     }
 
-    // Automatic check in background
+    // Automatic polling engine for cross-device updates
     function startBackgroundPolling() {
       if (backgroundPollInterval) clearInterval(backgroundPollInterval);
       if (appState.autoSync && appState.gasUrl) {
@@ -1280,6 +1394,7 @@
       }
     });
 
+    // Background pull task to fetch cross-device modifications
     async function silentBackgroundPull() {
       if (!appState.gasUrl || !appState.autoSync) return;
       try {
@@ -1322,14 +1437,14 @@
 
       if (syncHeader) {
         if (!appState.gasUrl) {
-          syncHeader.innerHTML = `<i data-lucide="cloud" class="w-3 h-3 text-neutralSlate-400"></i> <span class="text-[9px] text-neutralSlate-500 uppercase font-bold tracking-wider">Local Only</span>`;
+          syncHeader.innerHTML = `<i data-lucide="cloud" class="w-3 h-3 text-neutralSlate-404"></i> <span class="text-[9px] text-neutralSlate-500 uppercase font-bold tracking-wider">Local Only</span>`;
         } else {
           switch (status) {
             case 'syncing':
               syncHeader.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3 animate-spin text-brand-500"></i> <span class="text-[9px] text-brand-600 dark:text-brand-400 uppercase font-bold tracking-wider">Syncing...</span>`;
               break;
             case 'synced':
-              syncHeader.innerHTML = `<i data-lucide="cloud" class="w-3 h-3 text-emerald-600 dark:text-emerald-400"></i> <span class="text-[9px] text-emerald-600 dark:text-emerald-400 uppercase font-bold tracking-wider">DONE SYNC</span>`;
+              syncHeader.innerHTML = `<i data-lucide="cloud" class="w-3 h-3 text-emerald-600 dark:text-emerald-400"></i> <span class="text-[9px] text-emerald-600 dark:text-emerald-400 uppercase font-bold tracking-wider">Synced</span>`;
               break;
             case 'pulling':
               syncHeader.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3 animate-spin text-brand-500"></i> <span class="text-[9px] text-brand-600 dark:text-brand-400 uppercase font-bold tracking-wider">Pulling...</span>`;
@@ -1350,7 +1465,7 @@
       if (cloudBadge) {
         if (!appState.gasUrl) {
           cloudBadge.textContent = "LOCAL ONLY";
-          cloudBadge.className = "bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-600 dark:text-neutralSlate-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-neutralSlate-200 dark:border-neutralSlate-700";
+          cloudBadge.className = "bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-600 dark:text-neutralSlate-404 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-neutralSlate-200 dark:border-neutralSlate-700";
         } else {
           switch (status) {
             case 'syncing':
@@ -1358,7 +1473,7 @@
               cloudBadge.className = "bg-brand-500/10 text-brand-600 dark:text-brand-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-brand-500/20";
               break;
             case 'synced':
-              cloudBadge.textContent = "DONE SYNC";
+              cloudBadge.textContent = "SYNCED";
               cloudBadge.className = "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/20";
               break;
             case 'pulling':
@@ -1398,13 +1513,13 @@
     }
 
     function restoreDefaultCloudUrl() {
-      appState.gasUrl = "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec";
+      appState.gasUrl = "https://script.google.com/macros/s/AKfycbyNDK0Gy_uDnrgFbbXTovyxqiF5oE1_b7Ob85bjVrj-kQ_EhojmtA1gMIutfMQhB3Nb/exec";
       const gasInp = document.getElementById('gasUrlInput');
-      if (gasInp) gasInp.value = "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec";
+      if (gasInp) gasInp.value = "https://script.google.com/macros/s/AKfycbyNDK0Gy_uDnrgFbbXTovyxqiF5oE1_b7Ob85bjVrj-kQ_EhojmtA1gMIutfMQhB3Nb/exec";
       saveStateToLocalStorage();
       updateSyncStatusUI("local");
       startBackgroundPolling();
-      openToastAlert("Di default Cloud URL don change back!");
+      openToastAlert("Default Google Apps Script Web App URL restore ho gaya hai!");
     }
 
     function copyAppsScriptCode() {
@@ -1415,12 +1530,12 @@
       el.select();
       document.execCommand('copy');
       document.body.removeChild(el);
-      openToastAlert("Google Script code copy ho gaya! Ab isey apne extensions App script window me paste karein.");
+      openToastAlert("Google Apps Script code copy ho gaya! Ab isey apne extensions App script window me paste karein.");
     }
 
     function pushStateToCloud() {
       if (!appState.gasUrl) {
-        openToastAlert("Mek you paste di correct Cloud URL first!");
+        openToastAlert("Pehle valid Google Apps Script Web App URL paste karein!");
         return;
       }
       triggerSilentCloudSync();
@@ -1428,7 +1543,7 @@
 
     function pullStateFromCloud() {
       if (!appState.gasUrl) {
-        openToastAlert("Mek you paste di correct Cloud URL first!");
+        openToastAlert("Pehle Google Apps Script Web App URL paste karein!");
         return;
       }
 
@@ -1454,10 +1569,10 @@
           applyBrandSettings();
           renderApp();
           updateSyncStatusUI("synced");
-          openToastAlert("We don pull data from Cloud Sheet successfully!");
+          openToastAlert("Google Cloud Sheet se data pull complete ho gaya hai!");
         } else {
           updateSyncStatusUI("error");
-          openToastAlert("Cloud database dey empty or e no get correct response.");
+          openToastAlert("Spreadsheet database blank hai ya response sahi nahi hai.");
         }
       })
       .catch(err => {
@@ -1465,8 +1580,8 @@
         updateSyncStatusUI("error");
         
         showAlertDialog(
-          "Pull System No Work 🚨",
-          "Two reason dem fit make dis fail:<br><br>1. Permissions no set to 'Anyone'.<br><br>2. Sahi Web App URL no paste (URL for end with /exec).<br><br>Mek you check instruction box inside Tab 4 (Journal & Cloud Sync).",
+          "Pull System Failed 🚨",
+          "Iske 2 main reasons ho sakte hain:\n\n1. Web App deploy karte waqt aapne 'Who has access' ko 'Anyone' set nahi kiya.\n\n2. Aapne sahi Web App executable URL paste nahi kiya (URL ke end me /exec hona chahiye).\n\nDetails check karne ke liye Tab 4 (Journal & Cloud Sync) me di gayi instructions guide ko follow karein.",
           () => {},
           false
         );
@@ -1503,7 +1618,7 @@
       if (syncToggle) syncToggle.checked = appState.autoSync;
       if (pinInp) pinInp.value = appState.securityPin || "0000";
 
-      document.title = `${appState.appName} — Small Trip Book & Padi Debt Khata`;
+      document.title = `${appState.appName} — Trip Diary & Friends Udhaar Khata`;
     }
 
     function calculateBalances(trip) {
@@ -1587,7 +1702,6 @@
       });
     }
 
-    // Change currency symbol
     function changeCurrency(symbol) {
       appState.currency = symbol;
       saveStateToLocalStorage();
@@ -1678,6 +1792,7 @@
     }
 
     function renderApp() {
+      // If there are no trips at all, show empty onboarding screen
       if (!appState.trips || appState.trips.length === 0) {
         document.getElementById('dashboardMainContent').classList.add('hidden');
         document.getElementById('emptyStateOnboarding').classList.remove('hidden');
@@ -1701,6 +1816,7 @@
       const members = activeTrip.members || [];
       safeSetText('splitBadgeCount', members.length);
 
+      // Populate Trip Selector
       const switcher = document.getElementById('headerTripSelector');
       if (switcher) {
         switcher.innerHTML = '';
@@ -1765,6 +1881,7 @@
           settledAmount += amt;
         }
 
+        // Analytical indicators
         if (exp.paymentMethod === 'UPI') upiTotal += amt;
         if (exp.paymentMethod === 'Card') cardTotal += amt;
         if (exp.paymentMethod === 'Cash') cashTotal += amt;
@@ -1784,6 +1901,7 @@
 
       if (cheapestAmt === Infinity) cheapestAmt = 0;
 
+      // Calculate aggregated friend udhaar KPIs
       Object.keys(calc.balances).forEach(fId => {
         const bal = calc.balances[fId];
         if (bal > 0.01) {
@@ -1793,6 +1911,7 @@
         }
       });
 
+      // Update KPIs on Dashboard
       safeSetText('statTotalTripExpense', formatCurrency(totalTripExpense));
       safeSetText('statPersonalExpense', formatCurrency(personalExpense));
       safeSetText('statFriendsOweYou', formatCurrency(friendsOweYou));
@@ -1936,7 +2055,7 @@
         }
 
         row.innerHTML = `
-          <div class="flex items-center gap-3 overflow-hidden ${borderOverride}">
+          <div class="flex items-center gap-3 overflow-hidden ${borderOverride} flex-1">
             <div class="flex-shrink-0 text-center w-10 h-10 bg-neutralSlate-100 dark:bg-neutralSlate-955 rounded-lg flex flex-col justify-center border border-neutralSlate-200/50 dark:border-neutralSlate-800/80">
               <span class="text-[8px] font-semibold uppercase tracking-wider text-neutralSlate-555">${dateStr.split(' ')[0]}</span>
               <span class="text-xs font-bold text-neutralSlate-800 dark:text-neutralSlate-200 leading-none">${dateStr.split(' ')[1]}</span>
@@ -1953,7 +2072,23 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-2 flex-shrink-0">
+          <!-- Settle Up option right in the middle-right area as circled in edited-image.png -->
+          ${(type === 'i_paid_friend' || type === 'friend_paid_me') ? `
+            <div class="hidden sm:block flex-shrink-0 no-print">
+              <button onclick="triggerQuickSettle('${exp.friendId}', ${exp.amount}, '${type === 'i_paid_friend' ? 'friend_to_you' : 'you_to_friend'}', '${exp.description.replace(/'/g, "\\'")}')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[10px] px-3 py-1.5 rounded-lg transition shadow-sm flex items-center gap-1">
+                <i data-lucide="handshake" class="w-3.5 h-3.5"></i>
+                <span>Settle</span>
+              </button>
+            </div>
+          ` : ''}
+
+          <div class="flex items-center gap-2 flex-shrink-0 justify-end">
+            <!-- Mobile Compact Settle Action -->
+            ${(type === 'i_paid_friend' || type === 'friend_paid_me') ? `
+              <button onclick="triggerQuickSettle('${exp.friendId}', ${exp.amount}, '${type === 'i_paid_friend' ? 'friend_to_you' : 'you_to_friend'}', '${exp.description.replace(/'/g, "\\'")}')" class="sm:hidden bg-emerald-500 hover:bg-emerald-600 text-white p-1 rounded-lg transition flex items-center justify-center">
+                <i data-lucide="handshake" class="w-3.5 h-3.5"></i>
+              </button>
+            ` : ''}
             <span class="font-bold text-xs sm:text-sm text-neutralSlate-900 dark:text-white">${formatCurrency(exp.amount)}</span>
             <div class="flex items-center gap-1">
               <button onclick="openExpenseEditModal('${exp.id}')" class="p-1 text-neutralSlate-400 hover:text-brand-500 rounded-lg transition">
@@ -2017,7 +2152,7 @@
 
       if (members.length === 0) {
         companionListDiv.innerHTML = `
-          <div class="col-span-full py-6 text-center text-neutralSlate-400">
+          <div class="col-span-full py-6 text-center text-neutralSlate-404 bg-neutralSlate-50 dark:bg-neutralSlate-955 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-850">
             <p class="font-semibold text-xs">No companion friends logged yet.</p>
             <p class="text-[10px] mt-0.5">Click "Add Friend" to open an Udhaar Diary.</p>
           </div>
@@ -2037,7 +2172,7 @@
           const card = document.createElement('div');
           card.className = "p-3 bg-neutralSlate-50 dark:bg-neutralSlate-955 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 relative flex flex-col justify-between min-h-[85px] shadow-sm";
           card.innerHTML = `
-            <button onclick="deleteFriend('${m.id}')" class="absolute top-2.5 right-2.5 text-neutralSlate-400 hover:text-rose-500 transition">
+            <button onclick="deleteFriend('${m.id}')" class="absolute top-2.5 right-2.5 text-neutralSlate-404 hover:text-rose-500 transition">
               <i data-lucide="trash" class="w-3.5 h-3.5"></i>
             </button>
             <div class="flex items-center gap-2 mb-2">
@@ -2061,7 +2196,7 @@
       tableBody.innerHTML = '';
       
       if (members.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-neutralSlate-400">Add companion friends to map udhaar.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-neutralSlate-404">Add companion friends to map udhaar.</td></tr>`;
       } else {
         members.forEach(m => {
           const youPaid = calc.paidForThem[m.id] || 0;
@@ -2241,7 +2376,8 @@
       );
     }
 
-    function triggerQuickSettle(friendId, amount, direction) {
+    // Quick Settle up redirector with original description integration
+    function triggerQuickSettle(friendId, amount, direction, originalDesc = "") {
       openExpenseModal();
       document.getElementById('expenseModalType').value = 'settlement';
       handleTypeChange('settlement');
@@ -2249,7 +2385,7 @@
       document.getElementById('expenseModalFriend').value = friendId;
       document.getElementById('expenseModalSettleDirection').value = direction;
       document.getElementById('expenseModalAmount').value = amount.toFixed(2);
-      document.getElementById('expenseModalDescription').value = "Settle Balance";
+      document.getElementById('expenseModalDescription').value = originalDesc ? `Settle: ${originalDesc}` : "Settle Balance";
     }
 
     function openTripModal() {
@@ -2399,7 +2535,7 @@
 
     function openExpenseModal() {
       closeExpenseModal();
-      document.getElementById('expenseModalTitle').innerHTML = '<i data-lucide="plus-circle" class="text-brand-500"></i> Write down new spending';
+      document.getElementById('expenseModalTitle').innerHTML = '<i data-lucide="plus-circle" class="text-brand-500"></i> Log Spend Transaction';
       document.getElementById('expenseModalId').value = '';
       
       const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
@@ -2478,7 +2614,6 @@
       }
     }
 
-    // Comot modal panel
     function closeExpenseModal() {
       document.getElementById('expenseModal').classList.add('hidden');
       document.getElementById('expenseForm').reset();
@@ -2492,7 +2627,7 @@
       if (!file) return;
 
       if (file.size > 2 * 1024 * 1024) {
-        openToastAlert("Image size for small pass 2MB!");
+        openToastAlert("Image limit 2MB se kam honi chahiye!");
         return;
       }
 
@@ -2527,12 +2662,12 @@
       const settlementDirection = document.getElementById('expenseModalSettleDirection').value;
 
       if (amount <= 0) {
-        openToastAlert("Check di money! E for big pass zero.");
+        openToastAlert("Check amount! Cost must be greater than zero.");
         return;
       }
 
       if (type !== 'personal' && !friendId) {
-        openToastAlert("Mek you select one padi first!");
+        openToastAlert("Pehle companion select karein!");
         return;
       }
 
@@ -2573,7 +2708,7 @@
 
       showAlertDialog(
         "Delete Transaction Record?",
-        `You sure say you wan delete di spending record for "${exp.description}"?`,
+        `Kya aap spend diary entry "${exp.description}" ko remove karna chahte hain?`,
         () => {
           activeTrip.expenses = activeTrip.expenses.filter(e => e.id !== expenseId);
           saveStateToLocalStorage();
@@ -2847,12 +2982,12 @@
             loadDataFromStorage();
             applyBrandSettings();
             renderApp();
-            openToastAlert("Backup don restore well well!");
+            openToastAlert("Backup successfully restore ho gaya!");
           } else {
-            openToastAlert("Mek you upload di right JSON backup file.");
+            openToastAlert("Sahi backup JSON file upload karein.");
           }
         } catch (error) {
-          openToastAlert("Upload validation no work!");
+          openToastAlert("Upload validation failed!");
         }
       };
       fileReader.readAsText(file);
@@ -2860,8 +2995,8 @@
 
     function resetAllData() {
       showAlertDialog(
-        "Reset di whole app?",
-        "You sure say you wan clear all your local data? All entries go loss.",
+        "Factory Reset Tracker?",
+        "Are you absolutely sure you want to restore the default state? Saara custom entries local cache se delete ho jayega.",
         () => {
           localStorage.removeItem('wanderbudget_master_v16_premium');
           seedInitialSampleData();
