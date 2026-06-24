@@ -1006,8 +1006,8 @@ function doPost(e) {
             <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Who paid whom?</label>
             <div class="relative">
               <select id="expenseModalSettleDirection" class="w-full bg-neutralSlate-100 dark:bg-neutralSlate-905 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold text-xs">
-                <option value="you_to_friend">You Paid Friend (Abhijeet ko diye)</option>
-                <option value="friend_to_you">Friend Paid You (Abhijeet ne mujhe diye)</option>
+                <option value="you_to_friend">You Paid Friend (Friend ko diye)</option>
+                <option value="friend_to_you">Friend Paid You (Friend ne mujhe diye)</option>
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
                 <i data-lucide="chevron-down" class="w-4 h-4"></i>
@@ -1043,14 +1043,14 @@ function doPost(e) {
               <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Amount Spent</label>
               <div class="relative">
                 <span class="absolute left-3 top-2.5 font-bold text-neutralSlate-555 active-currency">₹</span>
-                <input type="number" step="any" id="expenseModalAmount" required placeholder="190" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 pl-7 pr-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 font-black text-sm">
+                <input type="number" step="any" id="expenseModalAmount" required placeholder="Amount" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 pl-7 pr-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 font-black text-sm">
               </div>
             </div>
             <div>
               <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Payment Channel</label>
               <div class="relative">
                 <select id="expenseModalPaymentMethod" required class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold">
-                  <option value="UPI">UPI / Digital App</option>
+                  <option value="UPI">UPI / G-Pay </option>
                   <option value="Card">Credit/Debit Card</option>
                   <option value="Cash">Cash</option>
                 </select>
