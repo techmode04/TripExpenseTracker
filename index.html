@@ -1,0 +1,2876 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>WanderBudget — Small Trip Expense Book & Padi Debt Khata</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              900: '#4c1d95',
+            },
+            neutralSlate: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+              500: '#64748b',
+              600: '#475569',
+              750: '#1e293b',
+              800: '#1e293b',
+              850: '#172033',
+              900: '#0f172a',
+              955: '#090f1d',
+              950: '#020617'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Google Fonts Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 99px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #334155;
+    }
+    
+    @media (max-width: 640px) {
+      input, select, textarea, button {
+        font-size: 16px !important;
+      }
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-full-width {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+    }
+
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .animate-pulse-ring {
+      animation: pulse-ring 3s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-neutralSlate-50 text-neutralSlate-900 dark:bg-neutralSlate-955 dark:text-neutralSlate-100 min-h-screen transition-colors duration-200 pb-16 sm:pb-6">
+
+  <!-- FULL SCREEN OVERLAY 1: Google Cloud Pull & Handshake Screen -->
+  <div id="cloudHandshakeScreen" class="fixed inset-0 flex flex-col items-center justify-center bg-[#090f1d] text-white transition-opacity duration-500" style="z-index: 10000;">
+    <div class="relative flex items-center justify-center w-36 h-36 mb-8">
+      <!-- Rotating outer track circular indicator -->
+      <div class="absolute inset-0 rounded-full border-4 border-neutralSlate-800"></div>
+      <div class="absolute inset-0 rounded-full border-4 border-t-blue-500 border-r-emerald-500 animate-spin"></div>
+      <!-- Center cloud icon element -->
+      <div class="absolute w-20 h-20 rounded-full bg-slate-900/80 flex items-center justify-center shadow-lg animate-pulse">
+        <i data-lucide="cloud-lightning" class="w-10 h-10 text-blue-400"></i>
+      </div>
+    </div>
+
+    <h2 class="text-xl sm:text-2xl font-black tracking-tight mb-2">Dey sync to Cloud...</h2>
+    <p class="text-xs sm:text-sm text-neutralSlate-400 max-w-sm text-center px-6 leading-relaxed mb-10">
+      Make you wait small, we dey open di database
+    </p>
+
+    <!-- Tech Handshake Status Bar -->
+    <div class="border-t border-neutralSlate-800 pt-6 w-72 flex flex-col items-center">
+      <div class="flex items-center gap-2 text-[10px] tracking-widest font-black uppercase text-blue-400">
+        <span class="w-2 h-2 rounded-full bg-blue-500 animate-ping"></span>
+        <span id="handshakeStatusText">DEY CONNECT WELL WELL</span>
+      </div>
+      <button id="handshakeSkipBtn" onclick="bypassSyncFlow()" class="hidden mt-6 px-4 py-2 bg-neutralSlate-800 hover:bg-neutralSlate-700 text-neutralSlate-300 text-[10px] font-bold uppercase tracking-widest rounded-lg transition">
+        Go ahead offline
+      </button>
+    </div>
+  </div>
+
+  <!-- FULL SCREEN OVERLAY 2: Secure Admin Login PIN Lock (Default 0000) -->
+  <div id="adminPinScreen" class="hidden fixed inset-0 flex flex-col items-center justify-center bg-[#090f1d] text-white transition-opacity duration-300" style="z-index: 9999;">
+    <div class="w-full max-w-md px-6">
+      <div class="bg-[#121b2e] border border-neutralSlate-800/80 rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center">
+        
+        <!-- Premium Tech Avatar Holder -->
+        <div class="relative w-24 h-24 mb-6">
+          <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-emerald-500 to-blue-500 animate-pulse-ring"></div>
+          <div class="absolute inset-1 rounded-full bg-slate-900 overflow-hidden border-2 border-emerald-400/30 flex items-center justify-center">
+            <!-- Modern Tech SVG Avatar instead of unstable external URLs -->
+            <svg class="w-16 h-16 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+        </div>
+
+        <h3 class="text-xl font-extrabold tracking-widest text-white uppercase">SACHINDHISLE04</h3>
+        <p class="text-[10px] text-neutralSlate-505 tracking-wider uppercase mt-1 mb-6">Secure Admin Book Terminal</p>
+
+        <!-- PIN Login form block -->
+        <div class="w-full space-y-4">
+          <div class="relative">
+            <i data-lucide="lock" class="w-4 h-4 absolute left-4 top-3.5 text-neutralSlate-550"></i>
+            <input type="password" id="loginPinInput" maxlength="4" placeholder="Enter PIN" class="w-full bg-[#1b253b] text-white placeholder-neutralSlate-550 px-12 py-3 rounded-xl border border-neutralSlate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center font-black tracking-[1em] text-lg">
+          </div>
+          <div id="pinErrorMessage" class="hidden text-rose-500 font-bold text-[11px]">Incorrect Security PIN. Try again.</div>
+          
+          <button onclick="verifySecurityPin()" class="w-full bg-[#0fa968] hover:bg-[#0c8a54] text-white py-3.5 rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/50">
+            <span>Enter System</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div class="mt-6 text-[10px] text-neutralSlate-400">
+          Tip: Di main PIN na <span class="text-emerald-400 font-black">0000</span>.
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Sticky Header Navbar -->
+  <header class="no-print sticky top-0 z-40 bg-white/80 dark:bg-neutralSlate-955/80 backdrop-blur-md border-b border-neutralSlate-200 dark:border-neutralSlate-900 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo & Cloud Status -->
+      <div class="flex items-center space-x-3">
+        <div class="bg-brand-500/10 dark:bg-brand-500/20 p-2 rounded-xl text-brand-600 dark:text-brand-400 flex items-center justify-center">
+          <span id="headerLogoContainer" class="text-xl font-bold leading-none">✈️</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 id="headerBrandName" class="text-sm sm:text-base font-bold tracking-tight text-neutralSlate-900 dark:text-white">
+              WanderBudget
+            </h1>
+            <div id="syncStatusIndicator" class="flex items-center gap-1 bg-neutralSlate-100 text-neutralSlate-600 dark:bg-neutralSlate-800 dark:text-neutralSlate-400 px-2 py-0.5 rounded-full">
+              <i data-lucide="cloud" class="w-3 h-3"></i>
+              <span class="text-[9px] uppercase font-bold tracking-wide">DONE SYNC</span>
+            </div>
+          </div>
+          <p class="text-[9px] text-neutralSlate-500 dark:text-neutralSlate-400">Small Trip Book & Padi Debt Khata</p>
+        </div>
+      </div>
+
+      <!-- Header Controls -->
+      <div class="flex items-center space-x-2">
+        <!-- Trip Selector Dropdown -->
+        <div class="relative">
+          <select id="headerTripSelector" onchange="switchTrip(this.value)" class="appearance-none bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-900 dark:hover:bg-neutralSlate-850 text-neutralSlate-800 dark:text-neutralSlate-100 pl-3 pr-8 py-2 rounded-xl text-xs sm:text-sm font-semibold border border-neutralSlate-200 dark:border-neutralSlate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 transition cursor-pointer">
+            <!-- Dynamically Loaded -->
+          </select>
+          <div class="absolute inset-y-0 right-2.5 flex items-center pointer-events-none text-neutralSlate-505">
+            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+          </div>
+        </div>
+
+        <!-- Quick Config Menu Trigger -->
+        <div class="relative">
+          <button id="configBtn" onclick="toggleDropdown('configDropdown')" class="p-2 text-neutralSlate-555 hover:text-neutralSlate-800 dark:hover:text-white hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-900 rounded-xl transition">
+            <i data-lucide="settings" class="w-4 sm:w-5 h-4 sm:h-5"></i>
+          </button>
+          
+          <div id="configDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white dark:bg-neutralSlate-900 rounded-2xl shadow-xl border border-neutralSlate-200 dark:border-neutralSlate-800 py-2 z-50 text-xs sm:text-sm max-h-[85vh] overflow-y-auto">
+            <div class="px-4 py-2 font-bold text-[10px] text-neutralSlate-400 tracking-wider uppercase border-b border-neutralSlate-100 dark:border-neutralSlate-800 mb-2 font-black">Configure Brand</div>
+            <div class="px-3 pb-3 space-y-2">
+              <div>
+                <label class="block text-[10px] text-neutralSlate-400 mb-0.5 font-bold">App Name</label>
+                <input type="text" id="customAppNameInput" oninput="updateBrandSettings()" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-950 text-neutralSlate-900 dark:text-slate-100 px-2 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs" placeholder="WanderBudget">
+              </div>
+              <div>
+                <label class="block text-[10px] text-neutralSlate-400 mb-0.5 font-bold">Logo (Emoji)</label>
+                <input type="text" id="customAppLogoInput" oninput="updateBrandSettings()" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-2 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs" placeholder="✈️">
+              </div>
+            </div>
+
+            <div class="border-t border-neutralSlate-100 dark:border-neutralSlate-800 my-1"></div>
+            <div class="px-4 py-2 font-bold text-[10px] text-neutralSlate-400 tracking-wider uppercase mb-2 font-black">Security System</div>
+            <div class="px-3 pb-3 space-y-2">
+              <div>
+                <label class="block text-[10px] text-neutralSlate-400 mb-0.5 font-bold">Terminal PIN</label>
+                <input type="password" id="customAppPinInput" maxlength="4" oninput="updateAppPin(this.value)" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-950 text-neutralSlate-900 dark:text-slate-100 px-2 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs font-bold" placeholder="0000">
+              </div>
+            </div>
+
+            <div class="border-t border-neutralSlate-100 dark:border-neutralSlate-800 my-1"></div>
+            <div class="px-4 py-2 font-bold text-[10px] text-neutralSlate-400 tracking-wider uppercase mb-1 font-black">Set Default Currency</div>
+            <div class="px-3 pb-2">
+              <select id="currencySelector" onchange="changeCurrency(this.value)" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-3 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 focus:ring-2 focus:ring-brand-500 transition text-xs font-bold">
+                <option value="₹">₹ Indian Rupee (INR)</option>
+                <option value="$">$ US Dollar (USD)</option>
+                <option value="€">€ Euro (EUR)</option>
+                <option value="£">£ British Pound (GBP)</option>
+                <option value="¥">¥ Japanese Yen (JPY)</option>
+                <option value="AED">AED Dirham (AED)</option>
+              </select>
+            </div>
+
+            <div class="border-t border-neutralSlate-100 dark:border-neutralSlate-800 my-1"></div>
+            <button onclick="triggerBackup()" class="w-full text-left px-4 py-2 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 flex items-center gap-2 text-neutralSlate-700 dark:text-neutralSlate-200">
+              <i data-lucide="download" class="w-4 h-4 text-brand-500"></i> Export JSON Backup
+            </button>
+            <button onclick="document.getElementById('importFileInput').click()" class="w-full text-left px-4 py-2 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 flex items-center gap-2 text-neutralSlate-700 dark:text-neutralSlate-200">
+              <i data-lucide="upload" class="w-4 h-4 text-emerald-500"></i> Restore JSON Backup
+            </button>
+            <input type="file" id="importFileInput" onchange="triggerRestore(event)" class="hidden" accept=".json">
+            
+            <div class="border-t border-neutralSlate-100 dark:border-neutralSlate-800 my-1"></div>
+            <button onclick="resetAllData()" class="w-full text-left px-4 py-2 hover:bg-rose-50 dark:hover:bg-rose-955/20 flex items-center gap-2 text-rose-500 font-bold">
+              <i data-lucide="trash-2" class="w-4 h-4"></i> Factory Reset All Data
+            </button>
+          </div>
+        </div>
+
+        <!-- Light/Dark Mode Switcher -->
+        <button onclick="toggleDarkMode()" class="p-2 text-neutralSlate-555 hover:text-neutralSlate-800 dark:hover:text-white hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-900 rounded-xl transition">
+          <i id="themeIcon" data-lucide="sun" class="w-4 sm:w-5 h-4 sm:h-5"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Responsive Layout Wrapper -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 print-full-width">
+    
+    <!-- Onboarding empty state -->
+    <div id="emptyStateOnboarding" class="hidden max-w-xl mx-auto bg-white dark:bg-neutralSlate-900 border border-neutralSlate-200 dark:border-neutralSlate-800 rounded-3xl p-8 text-center shadow-xl my-12">
+      <div class="w-20 h-20 bg-brand-500/10 text-brand-500 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i data-lucide="plane-takeoff" class="w-10 h-10"></i>
+      </div>
+      <h2 class="text-2xl font-black text-neutralSlate-900 dark:text-white mb-2">Welcome to WanderBudget!</h2>
+      <p class="text-sm text-neutralSlate-500 dark:text-neutralSlate-404 mb-8 leading-relaxed">
+        Abhi aapke system me koi active trip register nahi hai. Mek you start new trip or pull data from Cloud Sheet!
+      </p>
+      
+      <div class="space-y-3">
+        <button onclick="openTripModal()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3.5 px-6 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-brand-500/10">
+          <i data-lucide="plus" class="w-5 h-5"></i>
+          <span>Mek you start new trip</span>
+        </button>
+        <button onclick="pullStateFromCloud()" class="w-full bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white font-bold py-3 px-6 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-750 transition flex items-center justify-center gap-2">
+          <i data-lucide="cloud-download" class="w-4 h-4 text-emerald-500"></i>
+          <span>Pull from Cloud Sheet</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Dashboard Container -->
+    <div id="dashboardMainContent" class="block">
+      <!-- Hero Header Travel Section -->
+      <div class="relative w-full rounded-2xl overflow-hidden mb-6 bg-white dark:bg-neutralSlate-900 border border-neutralSlate-200 dark:border-neutralSlate-900 p-5 sm:p-8 shadow-sm">
+        
+        <div id="tripCoverBg" class="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-500"></div>
+
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mt-2">
+          <div class="space-y-2">
+            <div class="inline-flex items-center gap-1.5 bg-neutralSlate-100 dark:bg-neutralSlate-800 px-3 py-1 rounded-full text-[10px] font-bold text-neutralSlate-600 dark:text-neutralSlate-300">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brand-500"></i> 
+              <span id="tripDestination" class="tracking-wide">Loading...</span>
+            </div>
+            <h2 id="tripName" class="text-xl sm:text-3xl font-black tracking-tight text-neutralSlate-900 dark:text-white">Loading Trip...</h2>
+            
+            <div class="flex items-center gap-3 text-xs text-neutralSlate-555 dark:text-neutralSlate-404">
+              <span class="flex items-center gap-1">
+                <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                <span id="tripDates">Loading...</span>
+              </span>
+              <span class="no-print">•</span>
+              <button onclick="toggleDropdown('coverDropdown')" class="no-print hover:text-brand-500 font-medium flex items-center gap-1">
+                <i data-lucide="palette" class="w-3.5 h-3.5"></i> Theme Color
+              </button>
+            </div>
+          </div>
+          
+          <div id="coverDropdown" class="hidden absolute top-12 right-6 bg-white dark:bg-neutralSlate-900 p-3 rounded-xl shadow-xl border border-neutralSlate-200 dark:border-neutralSlate-800 z-50 grid grid-cols-3 gap-2">
+            <button onclick="updateCover('sunset')" class="w-8 h-8 rounded-lg bg-gradient-to-r from-orange-500 to-rose-600 border border-neutralSlate-200"></button>
+            <button onclick="updateCover('indigo')" class="w-8 h-8 rounded-lg bg-gradient-to-r from-brand-600 to-indigo-800 border border-neutralSlate-200"></button>
+            <button onclick="updateCover('forest')" class="w-8 h-8 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-700 border border-neutralSlate-200"></button>
+            <button onclick="updateCover('neon')" class="w-8 h-8 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 border border-neutralSlate-200"></button>
+            <button onclick="updateCover('ocean')" class="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 border border-neutralSlate-200"></button>
+            <button onclick="updateCover('classic')" class="w-8 h-8 rounded-lg bg-gradient-to-r from-neutralSlate-400 to-neutralSlate-600 border border-neutralSlate-200"></button>
+          </div>
+
+          <div class="no-print flex items-center gap-2 self-start md:self-auto">
+            <button onclick="openTripEditModal()" class="bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-700 dark:text-neutralSlate-200 px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 border border-neutralSlate-200 dark:border-neutralSlate-700">
+              <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Edit Trip
+            </button>
+            <button onclick="openTripModal()" class="bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-md shadow-brand-500/10 flex items-center gap-1 transition">
+              <i data-lucide="plus" class="w-4 h-4"></i> New Trip
+            </button>
+            <button onclick="triggerDeleteTrip()" class="bg-rose-50 hover:bg-rose-100 dark:bg-rose-955/20 dark:hover:bg-rose-955/40 text-rose-600 dark:text-rose-400 p-2 rounded-xl text-xs font-semibold transition flex items-center justify-center border border-rose-100 dark:border-rose-900">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scoreboard metrics -->
+      <section class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+        
+        <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between text-neutralSlate-505 dark:text-neutralSlate-400 mb-1">
+            <span class="text-[9px] font-bold uppercase tracking-wider">All di money wey spend pan di trip</span>
+            <div class="p-1 rounded-lg bg-brand-500/10 text-brand-500">
+              <i data-lucide="compass" class="w-3.5 h-3.5"></i>
+            </div>
+          </div>
+          <div>
+            <p id="statTotalTripExpense" class="text-base sm:text-xl font-black text-neutralSlate-900 dark:text-white">0.00</p>
+            <p class="text-[9px] text-neutralSlate-500 mt-0.5">Grand Total Spent</p>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-400 mb-1">
+            <span class="text-[9px] font-bold uppercase tracking-wider">Me own spending</span>
+            <div class="p-1 rounded-lg bg-amber-500/10 text-amber-500">
+              <i data-lucide="user" class="w-3.5 h-3.5"></i>
+            </div>
+          </div>
+          <div>
+            <p id="statPersonalExpense" class="text-base sm:text-xl font-bold text-neutralSlate-900 dark:text-white">0.00</p>
+            <p class="text-[9px] text-neutralSlate-500 mt-0.5">Spent on yourself only</p>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-400 mb-1">
+            <span class="text-[9px] font-bold uppercase tracking-wider">Padi dem owe you</span>
+            <div class="p-1 rounded-lg bg-emerald-500/10 text-emerald-500">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+            </div>
+          </div>
+          <div>
+            <p id="statFriendsOweYou" class="text-base sm:text-xl font-black text-emerald-600 dark:text-emerald-400">0.00</p>
+            <p class="text-[9px] text-emerald-500 font-bold mt-0.5">Udhaar to receive</p>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-400 mb-1">
+            <span class="text-[9px] font-bold uppercase tracking-wider">You owe padi dem</span>
+            <div class="p-1 rounded-lg bg-rose-500/10 text-rose-500">
+              <i data-lucide="arrow-down-left" class="w-3.5 h-3.5"></i>
+            </div>
+          </div>
+          <div>
+            <p id="statYouOweFriends" class="text-base sm:text-xl font-black text-rose-600 dark:text-rose-455">0.00</p>
+            <p class="text-[9px] text-rose-500 font-bold mt-0.5">Udhaar to return</p>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between col-span-2 sm:col-span-1">
+          <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-400 mb-1">
+            <span class="text-[9px] font-bold uppercase tracking-wider">Settle money</span>
+            <div class="p-1 rounded-lg bg-indigo-500/10 text-indigo-500">
+              <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+            </div>
+          </div>
+          <div>
+            <p id="statSettledAmount" class="text-base sm:text-xl font-bold text-indigo-600 dark:text-indigo-400">0.00</p>
+            <p class="text-[9px] text-neutralSlate-500 mt-0.5">Total funds cleared</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Clean Tab Navigation Row -->
+      <div class="no-print flex border-b border-neutralSlate-200 dark:border-neutralSlate-800 mb-6 overflow-x-auto whitespace-nowrap scrollbar-none gap-2">
+        <button onclick="switchTab('tabSpends')" id="btnTabSpends" class="tab-button px-4 py-2.5 font-bold text-xs sm:text-sm text-brand-500 border-b-2 border-brand-500 transition flex items-center gap-2">
+          <i data-lucide="book-open" class="w-4 h-4"></i> Spends & History Diary
+        </button>
+        <button onclick="switchTab('tabSplits')" id="btnTabSplits" class="tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-505 dark:text-neutralSlate-400 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2">
+          <i data-lucide="users" class="w-4 h-4"></i> Companions & Udhaar Khata
+          <span id="splitBadgeCount" class="bg-neutralSlate-200 dark:bg-neutralSlate-800 text-neutralSlate-700 dark:text-neutralSlate-300 text-[10px] px-2 py-0.5 rounded-full font-black">0</span>
+        </button>
+        <button onclick="switchTab('tabAnalytics')" id="btnTabAnalytics" class="tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-505 dark:text-neutralSlate-400 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2">
+          <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Category Stat dem
+        </button>
+        <button onclick="switchTab('tabNotes')" id="btnTabNotes" class="tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-505 dark:text-neutralSlate-400 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2">
+          <i data-lucide="cloud-lightning" class="w-4 h-4"></i> Journal & Cloud Sync
+        </button>
+      </div>
+
+      <!-- TAB 1: Spends Ledger -->
+      <div id="tabSpends" class="tab-content block">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <div class="lg:col-span-2 space-y-4">
+            <!-- Filters -->
+            <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="relative">
+                  <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-neutralSlate-400"></i>
+                  <input id="searchQuery" oninput="handleSearchInput()" type="text" placeholder="Find spending..." class="w-full bg-neutralSlate-100/60 dark:bg-neutralSlate-900/60 pl-9 pr-3 py-2 rounded-xl text-xs sm:text-sm text-neutralSlate-900 dark:text-white placeholder-neutralSlate-550 focus:outline-none focus:ring-1 focus:ring-brand-500 transition">
+                </div>
+                
+                <div class="relative">
+                  <select id="filterCategory" onchange="debouncedRenderApp()" class="w-full bg-neutralSlate-100/60 dark:bg-neutralSlate-900/60 pl-3 pr-8 py-2 rounded-xl text-xs sm:text-sm text-neutralSlate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold">
+                    <option value="ALL">All Categories</option>
+                  </select>
+                  <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                  </div>
+                </div>
+
+                <div class="relative">
+                  <select id="sortBy" onchange="debouncedRenderApp()" class="w-full bg-neutralSlate-100/60 dark:bg-neutralSlate-900/60 pl-3 pr-8 py-2 rounded-xl text-xs sm:text-sm text-neutralSlate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold">
+                    <option value="date-desc">New wan dem first</option>
+                    <option value="date-asc">Old wan dem first</option>
+                    <option value="amount-desc">Big spending first</option>
+                    <option value="amount-asc">Small spending first</option>
+                  </select>
+                  <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
+                    <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ledger Table -->
+            <div class="bg-white dark:bg-neutralSlate-900 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm overflow-hidden">
+              <div class="px-4 py-3 border-b border-neutralSlate-200 dark:border-neutralSlate-800 flex justify-between items-center bg-neutralSlate-50/50 dark:bg-neutralSlate-955/30">
+                <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 flex items-center gap-1.5">
+                  <i data-lucide="layers" class="w-5 h-5 text-brand-500"></i> All di trip spending history
+                </h3>
+                <div class="flex items-center gap-1">
+                  <button onclick="exportCSV()" class="p-1.5 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-lg text-neutralSlate-555 hover:text-neutralSlate-800 dark:hover:text-white transition text-[11px] font-bold flex items-center gap-1">
+                    <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> CSV
+                  </button>
+                  <button onclick="window.print()" class="p-1.5 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-lg text-neutralSlate-555 hover:text-neutralSlate-800 dark:hover:text-white transition text-[11px] font-bold flex items-center gap-1">
+                    <i data-lucide="printer" class="w-3.5 h-3.5"></i> Print
+                  </button>
+                </div>
+              </div>
+
+              <div id="expensesContainer" class="divide-y divide-neutralSlate-100 dark:divide-neutralSlate-800/85"></div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <button onclick="openExpenseModal()" class="w-full bg-brand-500 hover:bg-brand-600 text-white p-4 rounded-xl shadow-md shadow-brand-500/10 flex items-center justify-center gap-2 transition font-bold text-xs sm:text-sm">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i> Add spending / Settle up
+            </button>
+
+            <!-- Timeline -->
+            <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
+              <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 mb-4 flex items-center gap-1.5">
+                <i data-lucide="trending-up" class="w-4 h-4 text-brand-500"></i> Day-by-day spending timeline
+              </h3>
+              <div id="timelineContainer" class="relative border-l border-neutralSlate-200 dark:border-neutralSlate-800 ml-2.5 pl-4 space-y-4 text-xs"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: Companions & splits -->
+      <div id="tabSplits" class="tab-content hidden space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 space-y-4">
+            
+            <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
+              <div class="flex justify-between items-center mb-4">
+                <div>
+                  <h3 class="font-bold text-sm text-neutralSlate-955 dark:text-white flex items-center gap-1.5">
+                    <i data-lucide="users" class="w-4 h-4 text-brand-500"></i> List of travel padi dem
+                  </h3>
+                  <p class="text-[10px] text-neutralSlate-500">Add friends and manage personal peer-to-peer udhaar diaries.</p>
+                </div>
+                <button onclick="openFriendModal()" class="bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white border border-neutralSlate-200 dark:border-neutralSlate-800 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition flex items-center gap-1">
+                  <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Add Padi
+                </button>
+              </div>
+
+              <div id="friendsListContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+            </div>
+
+            <div class="bg-white dark:bg-neutralSlate-900 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm overflow-hidden">
+              <div class="px-4 py-3.5 border-b border-neutralSlate-200 dark:border-neutralSlate-800 flex justify-between items-center bg-neutralSlate-50/50 dark:bg-neutralSlate-955/30">
+                <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 flex items-center gap-1.5">
+                  <i data-lucide="table" class="w-4 h-4 text-brand-500"></i> Padi Debt Balance Sheet
+                </h3>
+                <button onclick="shareSplitSummaryWhatsApp()" class="text-emerald-500 hover:text-emerald-600 dark:text-emerald-400 dark:hover:text-emerald-355 font-bold text-xs flex items-center gap-1.5 transition">
+                  <i data-lucide="send" class="w-3.5 h-3.5"></i> WhatsApp Summary
+                </button>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[450px]">
+                  <thead>
+                    <tr class="border-b border-neutralSlate-200 dark:border-neutralSlate-800 text-[10px] text-neutralSlate-500 dark:text-neutralSlate-400 uppercase font-bold tracking-wider bg-neutralSlate-50/40 dark:bg-neutralSlate-955/40">
+                      <th class="py-2.5 px-4">Padi Name</th>
+                      <th class="py-2.5 px-4 text-right">You pay for dem</th>
+                      <th class="py-2.5 px-4 text-right">Dem pay for you</th>
+                      <th class="py-2.5 px-4 text-right">Debt Balance Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="splitBalanceTableBody" class="divide-y divide-neutralSlate-100 dark:divide-neutralSlate-800 text-xs"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="bg-white dark:bg-neutralSlate-900 border border-neutralSlate-200 dark:border-neutralSlate-900 p-5 rounded-xl shadow-sm">
+              <h4 class="font-bold text-xs text-brand-600 dark:text-brand-400 flex items-center gap-1.5 mb-2 uppercase tracking-wide">
+                <i data-lucide="calculator" class="w-4 h-4"></i> Quick Settle Up Actions
+              </h4>
+              <p class="text-[11px] text-neutralSlate-500 leading-relaxed mb-4">
+                Directly record a cash settlement with your companions here to clear their ledger balance.
+              </p>
+              <div id="settleSuggestionsContainer" class="space-y-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Statistics -->
+      <div id="tabAnalytics" class="tab-content hidden space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          
+          <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col">
+            <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 mb-4 flex items-center gap-1.5">
+              <i data-lucide="pie-chart" class="w-4 h-4 text-brand-500"></i> How spending share by category
+            </h3>
+            <div class="flex-1 flex items-center justify-center min-h-[220px] sm:min-h-[260px] relative">
+              <canvas id="categoryPieChart" class="max-w-[220px] sm:max-w-[260px]"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col">
+            <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 mb-4 flex items-center gap-1.5">
+              <i data-lucide="bar-chart" class="w-4 h-4 text-brand-500"></i> Day-by-day spending chart
+            </h3>
+            <div class="flex-1 flex items-center justify-center min-h-[220px] sm:min-h-[260px]">
+              <canvas id="dailySpendsChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
+            <h4 class="font-bold text-xs text-neutralSlate-900 dark:text-white mb-3 flex items-center gap-1.5">
+              <i data-lucide="sparkles" class="w-4 h-4 text-brand-500"></i> Big and small spending dem
+            </h4>
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center justify-between p-2 bg-neutralSlate-50 dark:bg-neutralSlate-955 rounded-lg">
+                <div>
+                  <p class="text-[9px] text-neutralSlate-500">Big pass spending</p>
+                  <p id="extremeBiggestDesc" class="font-bold text-neutralSlate-800 dark:text-slate-200 truncate max-w-[130px]">---</p>
+                </div>
+                <p id="extremeBiggestVal" class="font-bold text-rose-500">0.00</p>
+              </div>
+              <div class="flex items-center justify-between p-2 bg-neutralSlate-50 dark:bg-neutralSlate-955 rounded-lg">
+                <div>
+                  <p class="text-[9px] text-neutralSlate-500">Small pass spending</p>
+                  <p id="extremeCheapestDesc" class="font-bold text-neutralSlate-800 dark:text-slate-200 truncate max-w-[130px]">---</p>
+                </div>
+                <p id="extremeCheapestVal" class="font-bold text-emerald-500">0.00</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
+            <h4 class="font-bold text-xs text-neutralSlate-900 dark:text-white mb-3 flex items-center gap-1.5">
+              <i data-lucide="credit-card" class="w-4 h-4 text-brand-500"></i> How you pay di money
+            </h4>
+            <div class="space-y-2.5 text-xs pt-1">
+              <div class="flex items-center justify-between">
+                <span class="text-neutralSlate-555 flex items-center gap-1.5 font-semibold">
+                  <i data-lucide="smartphone" class="w-4 h-4 text-neutralSlate-400"></i> UPI (Digital)
+                </span>
+                <span id="paymentUPIVal" class="font-bold text-neutralSlate-800 dark:text-white">0.00</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-neutralSlate-555 flex items-center gap-1.5 font-semibold">
+                  <i data-lucide="credit-card" class="w-4 h-4 text-neutralSlate-400"></i> Card dem
+                </span>
+                <span id="paymentCardVal" class="font-bold text-neutralSlate-800 dark:text-white">0.00</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-neutralSlate-555 flex items-center gap-1.5 font-semibold">
+                  <i data-lucide="coins" class="w-4 h-4 text-neutralSlate-400"></i> Cash money
+                </span>
+                <span id="paymentCashVal" class="font-bold text-neutralSlate-800 dark:text-white">0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-950 shadow-sm">
+            <h4 class="font-bold text-xs text-neutralSlate-900 dark:text-white mb-3 flex items-center gap-1.5">
+              <i data-lucide="flame" class="w-4 h-4 text-brand-500"></i> Area wey you spend pass
+            </h4>
+            <div class="space-y-3 text-xs pt-1">
+              <div class="p-2.5 bg-neutralSlate-50 dark:bg-neutralSlate-955 rounded-lg flex items-center justify-between">
+                <div>
+                  <p class="text-[9px] text-neutralSlate-500">Category wey you use pass</p>
+                  <p id="extremeMostCategory" class="font-bold mt-0.5 text-neutralSlate-800 dark:text-white">---</p>
+                </div>
+                <span id="extremeMostCategoryCount" class="bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 font-bold text-[10px] px-2 py-0.5 rounded-full">0 times</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: Journal & Sync Configuration -->
+      <div id="tabNotes" class="tab-content hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 space-y-4">
+            
+            <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
+              <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 mb-1 flex items-center gap-1.5">
+                <i data-lucide="book-open" class="w-5 h-5 text-brand-500"></i> Travel book & Checklists
+              </h3>
+              <p class="text-[10px] text-neutralSlate-500 mb-3">Keep hotel details, routes, flight PNR references, checklists and quick memories safe here.</p>
+              <textarea id="tripJournal" oninput="saveTripJournal()" placeholder="Enter hotel directions, bus seat details, tickets, itinerary and quick travel logs..." class="w-full min-h-[140px] bg-neutralSlate-50 dark:bg-neutralSlate-955 p-3 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-800 dark:text-white placeholder-neutralSlate-500 focus:outline-none focus:ring-1 focus:ring-brand-500 transition font-mono leading-relaxed text-xs"></textarea>
+              <div class="text-right text-[9px] text-neutralSlate-400 italic mt-1 font-semibold">Saves automatically to active trip diary.</div>
+            </div>
+
+            <div class="bg-white dark:bg-neutralSlate-900 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 p-5 relative overflow-hidden shadow-sm">
+              <div class="flex items-center justify-between border-b border-neutralSlate-100 dark:border-neutralSlate-800 pb-3 mb-4">
+                <div class="flex items-center gap-2">
+                  <div class="p-1.5 rounded-lg bg-brand-500/10 text-brand-500">
+                    <i data-lucide="cloud" class="w-4 sm:w-5 h-4 sm:h-5"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-xs sm:text-sm tracking-wide text-neutralSlate-900 dark:text-white uppercase font-black">GOOGLE SHEETS DATA SYNC</h3>
+                    <p class="text-[9px] text-neutralSlate-500">Realtime cross-device spreadsheet database backup</p>
+                  </div>
+                </div>
+                <span id="cloudSyncStatusBadge" class="bg-neutralSlate-100 text-neutralSlate-600 dark:bg-neutralSlate-800 dark:text-neutralSlate-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-neutralSlate-200 dark:border-neutralSlate-700">
+                  LOCAL ONLY
+                </span>
+              </div>
+
+              <div class="bg-neutralSlate-50 dark:bg-neutralSlate-950 border border-neutralSlate-200 dark:border-neutralSlate-800 p-3.5 rounded-xl mb-4 flex items-center justify-between">
+                <div>
+                  <h4 class="font-bold text-xs text-neutralSlate-800 dark:text-slate-200">Cloud Auto-Sync</h4>
+                  <p class="text-[10px] text-neutralSlate-500 mt-0.5">Dey backup automatic in background</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="autoSyncToggle" onchange="toggleAutoSync(this.checked)" class="sr-only peer">
+                  <div class="w-9 h-5 bg-neutralSlate-300 dark:bg-neutralSlate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
+                </label>
+              </div>
+
+              <div class="space-y-1.5 mb-4">
+                <div class="flex justify-between items-center">
+                  <label class="block text-[9px] font-bold tracking-wider text-brand-500 uppercase font-black">GOOGLE APPS SCRIPT WEB APP URL</label>
+                  <button onclick="restoreDefaultCloudUrl()" class="text-brand-500 hover:text-brand-600 text-[9px] font-bold underline transition">
+                    Reset to Default Script URL
+                  </button>
+                </div>
+                <div class="relative">
+                  <i data-lucide="link-2" class="w-3.5 h-3.5 absolute left-3 top-2.5 text-neutralSlate-400"></i>
+                  <input type="url" id="gasUrlInput" oninput="updateCloudUrl(this.value)" class="w-full bg-neutralSlate-100 dark:bg-neutralSlate-955 pl-8 pr-3 py-1.5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs text-neutralSlate-900 dark:text-white placeholder-neutralSlate-500 focus:outline-none focus:ring-1 focus:ring-brand-500 transition" placeholder="https://script.google.com/macros/s/.../exec">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 mb-4">
+                <button onclick="pushStateToCloud()" class="bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white border border-neutralSlate-200 dark:border-neutralSlate-800 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
+                  <i data-lucide="cloud-lightning" class="w-4 h-4 text-brand-500"></i> Push to Cloud
+                </button>
+                <button onclick="pullStateFromCloud()" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md shadow-brand-500/10 transition">
+                  <i data-lucide="cloud-download" class="w-4 h-4"></i> Pull from Cloud
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
+              <h4 class="font-bold text-xs text-neutralSlate-800 dark:text-white mb-3 flex items-center gap-1.5">
+                <i data-lucide="info" class="w-4 h-4 text-brand-500"></i> Trip details summary
+              </h4>
+              <div class="divide-y divide-neutralSlate-100 dark:divide-neutralSlate-800 text-xs">
+                <div class="py-2.5 flex justify-between">
+                  <span class="text-neutralSlate-555 font-medium">Trip budget limit</span>
+                  <span id="notesPlannedBudget" class="font-bold text-neutralSlate-800 dark:text-white">0.00</span>
+                </div>
+                <div class="py-2.5 flex justify-between">
+                  <span class="text-neutralSlate-555 font-medium">Day wey we go start</span>
+                  <span id="notesStartDate" class="font-medium text-neutralSlate-800 dark:text-white">---</span>
+                </div>
+                <div class="py-2.5 flex justify-between">
+                  <span class="text-neutralSlate-555 font-medium">Day wey we go kam back</span>
+                  <span id="notesEndDate" class="font-medium text-neutralSlate-800 dark:text-white">---</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL 1: Add Companion -->
+  <div id="friendModal" class="hidden fixed inset-0 z-50 overflow-y-auto no-print">
+    <div class="flex items-center justify-center min-h-screen p-4 text-center">
+      <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeFriendModal()">
+        <div class="absolute inset-0 bg-neutralSlate-900/60 dark:bg-neutralSlate-955/70 backdrop-blur-sm"></div>
+      </div>
+      
+      <div class="relative bg-white dark:bg-neutralSlate-900 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all max-w-md w-full border border-neutralSlate-200 dark:border-neutralSlate-800 z-10">
+        <div class="px-5 py-4 border-b border-neutralSlate-100 dark:border-neutralSlate-800 flex items-center justify-between">
+          <h3 class="text-sm font-bold text-neutralSlate-955 dark:text-white flex items-center gap-1.5">
+            <i data-lucide="user-plus" class="text-brand-500"></i> Add travel padi
+          </h3>
+          <button onclick="closeFriendModal()" class="p-1 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-lg text-neutralSlate-555 transition">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <form id="friendForm" onsubmit="saveFriend(event)" class="p-5 space-y-4 text-xs">
+          <div>
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Padi Name</label>
+            <input type="text" id="friendModalName" required placeholder="e.g. Abhijeet, Sarthak, Rohan" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 transition">
+          </div>
+          <div>
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Phone Number (Optional)</label>
+            <input type="tel" id="friendModalPhone" placeholder="e.g. 9765456543" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 transition">
+          </div>
+          <div>
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Theme Color</label>
+            <div class="grid grid-cols-4 gap-2">
+              <button type="button" onclick="selectFriendColor('bg-indigo-500 text-white')" class="friend-color-btn p-2 rounded-lg text-[10px] font-bold bg-indigo-500 text-white border-2 border-indigo-400">Indigo</button>
+              <button type="button" onclick="selectFriendColor('bg-orange-500 text-white')" class="friend-color-btn p-2 rounded-lg text-[10px] font-bold bg-orange-500 text-white border-2 border-transparent">Orange</button>
+              <button type="button" onclick="selectFriendColor('bg-emerald-500 text-white')" class="friend-color-btn p-2 rounded-lg text-[10px] font-bold bg-emerald-500 text-white border-2 border-transparent">Emerald</button>
+              <button type="button" onclick="selectFriendColor('bg-rose-500 text-white')" class="friend-color-btn p-2 rounded-lg text-[10px] font-bold bg-rose-500 text-white border-2 border-transparent">Rose</button>
+            </div>
+            <input type="hidden" id="friendModalColor" value="bg-indigo-500 text-white">
+          </div>
+          <div class="pt-4 border-t border-neutralSlate-100 dark:border-neutralSlate-800 flex justify-end gap-2">
+            <button type="button" onclick="closeFriendModal()" class="px-4 py-2 text-neutralSlate-555 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-xl font-bold transition">Comot</button>
+            <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white px-5 py-2 rounded-xl font-bold shadow-md transition">Save Padi</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Create Trip -->
+  <div id="tripModal" class="hidden fixed inset-0 z-50 overflow-y-auto no-print">
+    <div class="flex items-center justify-center min-h-screen p-4 text-center">
+      <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeTripModal()">
+        <div class="absolute inset-0 bg-neutralSlate-900/60 dark:bg-neutralSlate-955/70 backdrop-blur-sm"></div>
+      </div>
+
+      <div class="relative bg-white dark:bg-neutralSlate-900 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all max-w-md w-full border border-neutralSlate-200 dark:border-neutralSlate-800 z-10">
+        <div class="px-5 py-4 border-b border-neutralSlate-100 dark:border-neutralSlate-800 flex items-center justify-between">
+          <h3 id="tripModalTitle" class="text-sm font-bold text-neutralSlate-955 dark:text-white flex items-center gap-1.5">
+            <i data-lucide="map" class="text-brand-500"></i> Edit Destination
+          </h3>
+          <button onclick="closeTripModal()" class="p-1 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-lg text-neutralSlate-555 transition">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <form id="tripForm" onsubmit="saveTrip(event)" class="p-5 space-y-4 text-xs">
+          <input type="hidden" id="tripModalId">
+          <div>
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Trip Name</label>
+            <input type="text" id="tripModalName" required placeholder="e.g. Tirupati Balaji, Goa Trip" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white font-bold focus:outline-none focus:ring-1 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Location Details</label>
+            <input type="text" id="tripModalDestination" required placeholder="e.g. South India, Andhra Pradesh" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white font-bold focus:outline-none focus:ring-1 focus:ring-brand-500">
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Day wey we go start</label>
+              <input type="date" id="tripModalStartDate" required class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white">
+            </div>
+            <div>
+              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Day wey we go kam back</label>
+              <input type="date" id="tripModalEndDate" required class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white">
+            </div>
+          </div>
+          <div>
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Trip Budget Limit</label>
+            <div class="relative">
+              <span class="absolute left-3.5 top-2.5 font-bold text-neutralSlate-555 active-currency">₹</span>
+              <input type="number" id="tripModalBudget" required placeholder="5000" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 pl-8 pr-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white font-bold focus:outline-none">
+            </div>
+          </div>
+          <div class="pt-4 border-t border-neutralSlate-100 dark:border-neutralSlate-800 flex justify-end gap-2">
+            <button type="button" onclick="closeTripModal()" class="px-4 py-2 text-neutralSlate-555 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-xl font-bold transition">Comot</button>
+            <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white px-5 py-2 rounded-xl font-bold shadow transition">Save Destination</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Expense Logs -->
+  <div id="expenseModal" class="hidden fixed inset-0 z-50 overflow-y-auto no-print">
+    <div class="flex items-center justify-center min-h-screen p-4 text-center">
+      <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeExpenseModal()">
+        <div class="absolute inset-0 bg-neutralSlate-900/60 dark:bg-neutralSlate-955/70 backdrop-blur-sm"></div>
+      </div>
+
+      <div class="relative bg-white dark:bg-neutralSlate-900 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all max-w-md w-full border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs text-neutralSlate-900 dark:text-white z-10">
+        <div class="px-5 py-4 border-b border-neutralSlate-100 dark:border-neutralSlate-800 flex items-center justify-between">
+          <h3 id="expenseModalTitle" class="text-sm sm:text-base font-bold text-neutralSlate-955 dark:text-white flex items-center gap-1.5">
+            <i data-lucide="plus-circle" class="text-brand-500"></i> Write down new spending
+          </h3>
+          <button onclick="closeExpenseModal()" class="p-1 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-lg text-neutralSlate-555 transition">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <form id="expenseForm" onsubmit="saveExpense(event)" class="p-5 space-y-4">
+          <input type="hidden" id="expenseModalId">
+
+          <div>
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Transaction Type</label>
+            <div class="relative">
+              <select id="expenseModalType" onchange="handleTypeChange(this.value)" required class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold text-xs sm:text-sm">
+                <option value="personal">Me one spending 👤</option>
+                <option value="i_paid_friend">I pay for padi 📤</option>
+                <option value="friend_paid_me">Padi pay for me 📥</option>
+                <option value="settlement">Settle up (Return money) 🤝</option>
+              </select>
+              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
+                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+              </div>
+            </div>
+          </div>
+
+          <div id="friendInvolvedRow" class="hidden">
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Padi wey join</label>
+            <div class="relative">
+              <select id="expenseModalFriend" class="w-full bg-neutralSlate-100 dark:bg-neutralSlate-905 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold text-xs">
+              </select>
+              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
+                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+              </div>
+            </div>
+          </div>
+
+          <div id="settlementDirectionRow" class="hidden">
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Who pay who?</label>
+            <div class="relative">
+              <select id="expenseModalSettleDirection" class="w-full bg-neutralSlate-100 dark:bg-neutralSlate-905 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold text-xs">
+                <option value="you_to_friend">You pay padi</option>
+                <option value="friend_to_you">Padi pay you</option>
+              </select>
+              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
+                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Date</label>
+              <input type="date" id="expenseModalDate" required class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500">
+            </div>
+            <div>
+              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Category</label>
+              <div class="relative">
+                <select id="expenseModalCategory" required class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold">
+                </select>
+                <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
+                  <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Description</label>
+            <input type="text" id="expenseModalDescription" required placeholder="e.g. Bus ticket, Hotel room, Petrol, Tea" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 font-bold text-sm">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Money wey you spend</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 font-bold text-neutralSlate-555 active-currency">₹</span>
+                <input type="number" step="any" id="expenseModalAmount" required placeholder="190" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 pl-7 pr-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 font-black text-sm">
+              </div>
+            </div>
+            <div>
+              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">How you pay</label>
+              <div class="relative">
+                <select id="expenseModalPaymentMethod" required class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold">
+                  <option value="UPI">UPI / Digital App</option>
+                  <option value="Card">Credit/Debit Card</option>
+                  <option value="Cash">Cash</option>
+                </select>
+                <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
+                  <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <div>
+              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Receipt paper (Optional)</label>
+              <div class="flex items-center gap-2">
+                <input type="file" id="expenseModalBillInput" onchange="processBillImage(event)" class="hidden" accept="image/*">
+                <button type="button" onclick="document.getElementById('expenseModalBillInput').click()" class="bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white text-[10px] font-bold px-3 py-1.5 rounded-xl border border-dashed border-neutralSlate-300 dark:border-neutralSlate-700 flex items-center gap-1 transition">
+                  <i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-brand-500"></i> Upload Receipt
+                </button>
+                <span id="billAttachmentStatus" class="text-[9px] text-neutralSlate-505 italic truncate max-w-[120px]">None</span>
+              </div>
+              <input type="hidden" id="expenseModalBillBase64">
+            </div>
+            <div>
+              <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Small notes (Optional)</label>
+              <input type="text" id="expenseModalNotes" placeholder="e.g. ticket booking, taxi ride..." class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-1.5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs text-neutralSlate-955 dark:text-white">
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-neutralSlate-100 dark:border-neutralSlate-800 flex justify-end gap-2">
+            <button type="button" onclick="closeExpenseModal()" class="px-4 py-2 text-neutralSlate-555 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-xl font-bold transition">Comot</button>
+            <button id="expenseSubmitBtn" type="submit" class="bg-brand-500 hover:bg-brand-600 text-white px-6 py-2 rounded-xl font-bold shadow transition">Save spending</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: Global Customized Confirmation Dialog -->
+  <div id="alertDialog" class="hidden fixed inset-0 z-[100] overflow-y-auto no-print">
+    <div class="flex items-center justify-center min-h-screen p-4 text-center">
+      <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeAlertDialog()">
+        <div class="absolute inset-0 bg-neutralSlate-900/60 dark:bg-neutralSlate-955/70 backdrop-blur-sm"></div>
+      </div>
+      
+      <div class="relative bg-white dark:bg-neutralSlate-900 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all max-w-sm w-full border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs text-neutralSlate-900 dark:text-white z-10">
+        <div class="p-5">
+          <div class="flex items-center gap-2 text-orange-500 mb-2">
+            <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+            <h3 id="alertTitle" class="text-sm font-bold">You sure say you wan do dis?</h3>
+          </div>
+          <p id="alertMessage" class="text-neutralSlate-505 dark:text-neutralSlate-404 text-xs mt-2 leading-relaxed">Dis one you no go fit change back.</p>
+          <div class="mt-5 flex justify-end gap-2">
+            <button id="alertCancelBtn" onclick="closeAlertDialog()" class="px-4 py-2 bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-700 dark:text-slate-355 border border-neutralSlate-200 dark:border-neutralSlate-700 rounded-xl font-bold hover:bg-neutralSlate-200 transition">Cancel</button>
+            <button id="alertConfirmBtn" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold transition">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Di standard categories dem
+    const CATEGORIES = [
+      { id: "Food", name: "Food 🍽️", bgClass: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20" },
+      { id: "Train", name: "Train 🚆", bgClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20" },
+      { id: "Bus", name: "Bus 🚌", bgClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20" },
+      { id: "Flight", name: "Flight ✈️", bgClass: "bg-sky-500/10 text-sky-605 text-sky-600 dark:text-sky-400 border border-sky-500/20" },
+      { id: "Taxi", name: "Taxi 🚕", bgClass: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20" },
+      { id: "Petrol", name: "Petrol ⛽", bgClass: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" },
+      { id: "Hotel", name: "Hotel 🏨", bgClass: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20" },
+      { id: "Darshan", name: "Ticket 🙏", bgClass: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20" },
+      { id: "Shopping", name: "Shopping 🛍️", bgClass: "bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-500/20" },
+      { id: "Snacks", name: "Snacks ☕", bgClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20" },
+      { id: "Water", name: "Water 💧", bgClass: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20" },
+      { id: "Medical", name: "Medical 💊", bgClass: "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20" },
+      { id: "Misc", name: "Misc 📌", bgClass: "bg-neutralSlate-500/10 text-neutralSlate-600 dark:text-neutralSlate-400 border border-neutralSlate-500/20" }
+    ];
+
+    // Di main state of di app
+    let appState = {
+      trips: [],
+      activeTripId: "",
+      currency: "₹",
+      theme: "light",
+      appName: "WanderBudget",
+      appLogo: "✈️",
+      gasUrl: "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec", // Newly integrated user Script URL
+      autoSync: true,
+      securityPin: "0000", // PIN Defaulted to 0000
+      lastUpdated: 0       // Keep 0 initially so cloud pulling will safely overwrite clean state
+    };
+
+    // Chart JS instance dem
+    let pieChartInstance = null;
+    let barChartInstance = null;
+    let syncStatusState = "local"; 
+    let backgroundPollInterval = null;
+
+    // Helper to make unique ID dem
+    function generateUniqueId(prefix) {
+      const randomStr = Math.random().toString(36).substring(2, 9);
+      return `${prefix}-${Date.now()}-${randomStr}`;
+    }
+
+    // For change UI text safe safe
+    function safeSetText(elementId, value) {
+      const element = document.getElementById(elementId);
+      if (element) element.textContent = value;
+    }
+
+    // Fetch with retry time by time
+    async function fetchWithRetry(url, options = {}, retries = 5, delay = 1000) {
+      try {
+        const response = await fetch(url, options);
+        if (!response.ok) throw new Error('Network response not ok');
+        return response;
+      } catch (err) {
+        if (retries > 0) {
+          await new Promise(resolve => setTimeout(resolve, delay));
+          return fetchWithRetry(url, options, retries - 1, delay * 2);
+        }
+        throw err;
+      }
+    }
+
+    window.onload = async function() {
+      loadDataFromStorage();
+      populateCategorySelectors();
+      applyBrandSettings();
+      applyThemeFromState();
+      await executeStartupHandshake();
+    }
+
+    function loadDataFromStorage() {
+      const savedData = localStorage.getItem('wanderbudget_master_v16_premium');
+      if (savedData) {
+        try {
+          appState = JSON.parse(savedData);
+        } catch (e) {
+          console.error("Storage corrupted, seeding initial", e);
+          seedInitialSampleData();
+        }
+      } else {
+        seedInitialSampleData();
+      }
+
+      if (!appState || !appState.trips) {
+        seedInitialSampleData();
+      }
+
+      if (!appState.appName) appState.appName = "WanderBudget";
+      if (!appState.appLogo) appState.appLogo = "✈️";
+      if (!appState.gasUrl) appState.gasUrl = "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec";
+      if (appState.autoSync === undefined) appState.autoSync = true;
+      if (!appState.securityPin) appState.securityPin = "0000"; 
+      if (appState.lastUpdated === undefined) appState.lastUpdated = 0;
+    }
+
+    // Blank state for let person start fresh
+    function seedInitialSampleData() {
+      appState = {
+        trips: [], 
+        activeTripId: "",
+        currency: "₹",
+        theme: "light",
+        appName: "WanderBudget",
+        appLogo: "✈️",
+        gasUrl: "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec",
+        autoSync: true,
+        securityPin: "0000",
+        lastUpdated: 0 
+      };
+      saveStateToLocalStorageDirectly();
+    }
+
+    function saveStateToLocalStorageDirectly() {
+      localStorage.setItem('wanderbudget_master_v16_premium', JSON.stringify(appState));
+    }
+
+    function saveStateToLocalStorage() {
+      appState.lastUpdated = Date.now(); 
+      saveStateToLocalStorageDirectly();
+      if (appState.autoSync && appState.gasUrl) {
+        triggerSilentCloudSync();
+      }
+    }
+
+    async function executeStartupHandshake() {
+      const statusText = document.getElementById('handshakeStatusText');
+      const skipBtn = document.getElementById('handshakeSkipBtn');
+
+      if (!appState.gasUrl) {
+        transitionToPinScreen();
+        return;
+      }
+
+      statusText.textContent = "ESTABLISHING SECURE HANDSHAKE...";
+      
+      setTimeout(() => {
+        if (skipBtn) skipBtn.classList.remove('hidden');
+      }, 3000);
+
+      try {
+        statusText.textContent = "PULLING TRIP LEDGERS...";
+        const response = await fetch(appState.gasUrl);
+        if (!response.ok) throw new Error('Response not ok');
+        const result = await response.json();
+        
+        if (result && result.status === "success" && result.data) {
+          statusText.textContent = "SYNCHRONIZING SECURE DATABASE...";
+          const cloudState = result.data;
+          
+          const cloudTime = cloudState.lastUpdated || 0;
+          const localTime = appState.lastUpdated || 0;
+          
+          if (cloudTime > localTime || localTime === 0 || !appState.trips || appState.trips.length === 0) {
+            const currentGasUrl = appState.gasUrl; 
+            appState = cloudState;
+            
+            if (currentGasUrl) {
+              appState.gasUrl = currentGasUrl; 
+            }
+            if (!appState.securityPin) appState.securityPin = "0000";
+            saveStateToLocalStorageDirectly();
+          }
+          
+          populateCategorySelectors();
+          applyBrandSettings();
+          applyThemeFromState();
+          statusText.textContent = "DECRYPTING LOCAL STORE...";
+        }
+      } catch (err) {
+        console.warn("Handshake fallback to offline local cache", err);
+      }
+
+      setTimeout(() => {
+        transitionToPinScreen();
+      }, 1200);
+    }
+
+    function transitionToPinScreen() {
+      const splash = document.getElementById('cloudHandshakeScreen');
+      if (splash) {
+        splash.classList.add('opacity-0');
+        setTimeout(() => splash.classList.add('hidden'), 500);
+      }
+
+      const pinScreen = document.getElementById('adminPinScreen');
+      if (pinScreen) {
+        pinScreen.classList.remove('hidden');
+        pinScreen.classList.add('opacity-100');
+        document.getElementById('loginPinInput').focus();
+      }
+    }
+
+    function bypassSyncFlow() {
+      transitionToPinScreen();
+    }
+
+    // Check if di PIN correct
+    function verifySecurityPin() {
+      const entered = document.getElementById('loginPinInput').value;
+      const targetPin = appState.securityPin || "0000";
+      const errorMsg = document.getElementById('pinErrorMessage');
+
+      if (entered === targetPin) {
+        errorMsg.classList.add('hidden');
+        
+        const pinScreen = document.getElementById('adminPinScreen');
+        if (pinScreen) {
+          pinScreen.classList.add('opacity-0');
+          setTimeout(() => pinScreen.classList.add('hidden'), 300);
+        }
+
+        renderApp();
+        startBackgroundPolling(); 
+      } else {
+        errorMsg.classList.remove('hidden');
+        document.getElementById('loginPinInput').value = '';
+        document.getElementById('loginPinInput').focus();
+      }
+    }
+
+    function updateAppPin(newPin) {
+      if (newPin && newPin.length === 4) {
+        appState.securityPin = newPin;
+        saveStateToLocalStorage();
+      }
+    }
+
+    let silentSyncDebounceTimer = null;
+    function triggerSilentCloudSync() {
+      updateSyncStatusUI("syncing");
+
+      if (silentSyncDebounceTimer) clearTimeout(silentSyncDebounceTimer);
+      silentSyncDebounceTimer = setTimeout(() => {
+        fetchWithRetry(appState.gasUrl, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'sync',
+            data: appState
+          }),
+          headers: {
+            'Content-Type': 'text/plain'
+          }
+        })
+        .then(() => {
+          updateSyncStatusUI("synced");
+        })
+        .catch(err => {
+          console.error("Auto Sync Push failed", err);
+          updateSyncStatusUI("error");
+        });
+      }, 1200);
+    }
+
+    // Automatic check in background
+    function startBackgroundPolling() {
+      if (backgroundPollInterval) clearInterval(backgroundPollInterval);
+      if (appState.autoSync && appState.gasUrl) {
+        backgroundPollInterval = setInterval(async () => {
+          await silentBackgroundPull();
+        }, 12000); 
+      }
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        if (backgroundPollInterval) {
+          clearInterval(backgroundPollInterval);
+          backgroundPollInterval = null;
+        }
+      } else {
+        startBackgroundPolling();
+      }
+    });
+
+    async function silentBackgroundPull() {
+      if (!appState.gasUrl || !appState.autoSync) return;
+      try {
+        const response = await fetch(appState.gasUrl);
+        if (!response.ok) return;
+        const result = await response.json();
+        
+        if (result && result.status === "success" && result.data) {
+          const cloudState = result.data;
+          const cloudTime = cloudState.lastUpdated || 0;
+          const localTime = appState.lastUpdated || 0;
+          
+          if (cloudTime > localTime || (localTime === 0 && cloudState.trips && cloudState.trips.length > 0)) {
+            const currentGasUrl = appState.gasUrl;
+            appState = cloudState;
+            
+            if (currentGasUrl) {
+              appState.gasUrl = currentGasUrl;
+            }
+            if (!appState.securityPin) appState.securityPin = "0000";
+            
+            saveStateToLocalStorageDirectly();
+            renderApp();
+            
+            updateSyncStatusUI("pulled-new");
+            setTimeout(() => {
+              updateSyncStatusUI("synced");
+            }, 3500);
+          }
+        }
+      } catch (err) {
+        // fail silently
+      }
+    }
+
+    function updateSyncStatusUI(status) {
+      syncStatusState = status;
+      const syncHeader = document.getElementById('syncStatusIndicator');
+      const cloudBadge = document.getElementById('cloudSyncStatusBadge');
+
+      if (syncHeader) {
+        if (!appState.gasUrl) {
+          syncHeader.innerHTML = `<i data-lucide="cloud" class="w-3 h-3 text-neutralSlate-400"></i> <span class="text-[9px] text-neutralSlate-500 uppercase font-bold tracking-wider">Local Only</span>`;
+        } else {
+          switch (status) {
+            case 'syncing':
+              syncHeader.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3 animate-spin text-brand-500"></i> <span class="text-[9px] text-brand-600 dark:text-brand-400 uppercase font-bold tracking-wider">Syncing...</span>`;
+              break;
+            case 'synced':
+              syncHeader.innerHTML = `<i data-lucide="cloud" class="w-3 h-3 text-emerald-600 dark:text-emerald-400"></i> <span class="text-[9px] text-emerald-600 dark:text-emerald-400 uppercase font-bold tracking-wider">DONE SYNC</span>`;
+              break;
+            case 'pulling':
+              syncHeader.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3 animate-spin text-brand-500"></i> <span class="text-[9px] text-brand-600 dark:text-brand-400 uppercase font-bold tracking-wider">Pulling...</span>`;
+              break;
+            case 'pulled-new':
+              syncHeader.innerHTML = `<i data-lucide="cloud-lightning" class="w-3 h-3 text-emerald-500 animate-bounce"></i> <span class="text-[9px] text-emerald-600 dark:text-emerald-400 uppercase font-black tracking-wider animate-pulse">Updated from Cloud!</span>`;
+              break;
+            case 'error':
+              syncHeader.innerHTML = `<i data-lucide="cloud-off" class="w-3 h-3 text-rose-500"></i> <span class="text-[9px] text-rose-500 uppercase font-bold tracking-wider">Failed</span>`;
+              break;
+            default:
+              syncHeader.innerHTML = `<i data-lucide="cloud" class="w-3 h-3 text-emerald-600 dark:text-emerald-400"></i> <span class="text-[9px] text-emerald-600 dark:text-emerald-400 uppercase font-bold tracking-wider">Connected</span>`;
+              break;
+          }
+        }
+      }
+
+      if (cloudBadge) {
+        if (!appState.gasUrl) {
+          cloudBadge.textContent = "LOCAL ONLY";
+          cloudBadge.className = "bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-600 dark:text-neutralSlate-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-neutralSlate-200 dark:border-neutralSlate-700";
+        } else {
+          switch (status) {
+            case 'syncing':
+              cloudBadge.textContent = "SYNCING...";
+              cloudBadge.className = "bg-brand-500/10 text-brand-600 dark:text-brand-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-brand-500/20";
+              break;
+            case 'synced':
+              cloudBadge.textContent = "DONE SYNC";
+              cloudBadge.className = "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/20";
+              break;
+            case 'pulling':
+              cloudBadge.textContent = "PULLING...";
+              cloudBadge.className = "bg-brand-500/10 text-brand-600 dark:text-brand-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-brand-500/20";
+              break;
+            case 'pulled-new':
+              cloudBadge.textContent = "NEW DATA INJECTED";
+              cloudBadge.className = "bg-emerald-550/10 text-emerald-700 dark:text-emerald-400 text-[10px] font-black px-2.5 py-0.5 rounded-full border border-emerald-500/30 animate-pulse";
+              break;
+            case 'error':
+              cloudBadge.textContent = "ERROR";
+              cloudBadge.className = "bg-rose-500/10 text-rose-600 dark:text-rose-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-rose-500/20";
+              break;
+            default:
+              cloudBadge.textContent = appState.autoSync ? "AUTO ON" : "CONNECTED";
+              cloudBadge.className = "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/20";
+              break;
+          }
+        }
+      }
+      lucide.createIcons();
+    }
+
+    function toggleAutoSync(isChecked) {
+      appState.autoSync = isChecked;
+      saveStateToLocalStorage();
+      updateSyncStatusUI("local");
+      startBackgroundPolling();
+    }
+
+    function updateCloudUrl(val) {
+      appState.gasUrl = val.trim();
+      saveStateToLocalStorage();
+      updateSyncStatusUI("local");
+      startBackgroundPolling();
+    }
+
+    function restoreDefaultCloudUrl() {
+      appState.gasUrl = "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec";
+      const gasInp = document.getElementById('gasUrlInput');
+      if (gasInp) gasInp.value = "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec";
+      saveStateToLocalStorage();
+      updateSyncStatusUI("local");
+      startBackgroundPolling();
+      openToastAlert("Di default Cloud URL don change back!");
+    }
+
+    function copyAppsScriptCode() {
+      const code = document.getElementById('appsScriptCodeText').textContent;
+      const el = document.createElement('textarea');
+      el.value = code;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      openToastAlert("Google Script code copy ho gaya! Ab isey apne extensions App script window me paste karein.");
+    }
+
+    function pushStateToCloud() {
+      if (!appState.gasUrl) {
+        openToastAlert("Mek you paste di correct Cloud URL first!");
+        return;
+      }
+      triggerSilentCloudSync();
+    }
+
+    function pullStateFromCloud() {
+      if (!appState.gasUrl) {
+        openToastAlert("Mek you paste di correct Cloud URL first!");
+        return;
+      }
+
+      updateSyncStatusUI("pulling");
+
+      fetchWithRetry(appState.gasUrl)
+      .then(res => {
+        if (!res.ok) throw new Error("Sync database server disconnected");
+        return res.json();
+      })
+      .then(res => {
+        if (res && res.status === "success" && res.data) {
+          const currentGasUrl = appState.gasUrl; 
+          appState = res.data;
+          
+          if (currentGasUrl) {
+            appState.gasUrl = currentGasUrl; 
+          }
+          if (!appState.securityPin) appState.securityPin = "0000";
+          
+          saveStateToLocalStorageDirectly();
+          loadDataFromStorage();
+          applyBrandSettings();
+          renderApp();
+          updateSyncStatusUI("synced");
+          openToastAlert("We don pull data from Cloud Sheet successfully!");
+        } else {
+          updateSyncStatusUI("error");
+          openToastAlert("Cloud database dey empty or e no get correct response.");
+        }
+      })
+      .catch(err => {
+        console.error("Cloud Pull Error:", err);
+        updateSyncStatusUI("error");
+        
+        showAlertDialog(
+          "Pull System No Work 🚨",
+          "Two reason dem fit make dis fail:<br><br>1. Permissions no set to 'Anyone'.<br><br>2. Sahi Web App URL no paste (URL for end with /exec).<br><br>Mek you check instruction box inside Tab 4 (Journal & Cloud Sync).",
+          () => {},
+          false
+        );
+      });
+    }
+
+    function updateBrandSettings() {
+      const name = document.getElementById('customAppNameInput').value.trim();
+      const logo = document.getElementById('customAppLogoInput').value.trim();
+
+      appState.appName = name || "WanderBudget";
+      appState.appLogo = logo || "✈️";
+
+      saveStateToLocalStorage();
+      applyBrandSettings();
+    }
+
+    function applyBrandSettings() {
+      const headerTitle = document.getElementById('headerBrandName');
+      const headerLogo = document.getElementById('headerLogoContainer');
+      
+      if (headerTitle) headerTitle.textContent = appState.appName;
+      if (headerLogo) headerLogo.textContent = appState.appLogo;
+
+      const nameInp = document.getElementById('customAppNameInput');
+      const logoInp = document.getElementById('customAppLogoInput');
+      const gasInp = document.getElementById('gasUrlInput');
+      const syncToggle = document.getElementById('autoSyncToggle');
+      const pinInp = document.getElementById('customAppPinInput');
+
+      if (nameInp) nameInp.value = appState.appName;
+      if (logoInp) logoInp.value = appState.appLogo;
+      if (gasInp) gasInp.value = appState.gasUrl || "";
+      if (syncToggle) syncToggle.checked = appState.autoSync;
+      if (pinInp) pinInp.value = appState.securityPin || "0000";
+
+      document.title = `${appState.appName} — Small Trip Book & Padi Debt Khata`;
+    }
+
+    function calculateBalances(trip) {
+      const balances = {};
+      const paidForThem = {};
+      const paidForMe = {};
+      const members = trip.members || [];
+
+      members.forEach(m => {
+        balances[m.id] = 0;
+        paidForThem[m.id] = 0;
+        paidForMe[m.id] = 0;
+      });
+
+      const expenses = trip.expenses || [];
+      expenses.forEach(exp => {
+        const type = exp.type || 'personal';
+        const fid = exp.friendId;
+        const amount = parseFloat(exp.amount) || 0;
+
+        if (type === 'i_paid_friend' && fid && balances[fid] !== undefined) {
+          balances[fid] += amount;
+          paidForThem[fid] += amount;
+        } else if (type === 'friend_paid_me' && fid && balances[fid] !== undefined) {
+          balances[fid] -= amount;
+          paidForMe[fid] += amount;
+        } else if (type === 'settlement' && fid && balances[fid] !== undefined) {
+          const dir = exp.settlementDirection || 'you_to_friend';
+          if (dir === 'you_to_friend') {
+            balances[fid] += amount;
+          } else {
+            balances[fid] -= amount;
+          }
+        }
+      });
+
+      return { balances, paidForThem, paidForMe };
+    }
+
+    function toggleDropdown(dropdownId) {
+      const dropdown = document.getElementById(dropdownId);
+      if (dropdown) {
+        if (dropdown.classList.contains('hidden')) {
+          dropdown.classList.remove('hidden');
+        } else {
+          dropdown.classList.add('hidden');
+        }
+      }
+    }
+
+    window.addEventListener('click', function(e) {
+      const configDropdown = document.getElementById('configDropdown');
+      const configBtn = document.getElementById('configBtn');
+      if (configDropdown && configBtn && !configBtn.contains(e.target) && !configDropdown.contains(e.target)) {
+        configDropdown.classList.add('hidden');
+      }
+
+      const coverDropdown = document.getElementById('coverDropdown');
+      if (coverDropdown && !e.target.closest('#coverDropdown') && !e.target.closest('button[onclick*="coverDropdown"]')) {
+        coverDropdown.classList.add('hidden');
+      }
+    });
+
+    function populateCategorySelectors() {
+      const filterSelect = document.getElementById('filterCategory');
+      const formSelect = document.getElementById('expenseModalCategory');
+
+      if (filterSelect) filterSelect.innerHTML = '<option value="ALL">All Categories</option>';
+      if (formSelect) formSelect.innerHTML = '';
+
+      CATEGORIES.forEach(cat => {
+        const optForm = document.createElement('option');
+        optForm.value = cat.id;
+        optForm.textContent = cat.name;
+        if (formSelect) formSelect.appendChild(optForm);
+
+        const optFilter = document.createElement('option');
+        optFilter.value = cat.id;
+        optFilter.textContent = cat.name;
+        if (filterSelect) filterSelect.appendChild(optFilter);
+      });
+    }
+
+    // Change currency symbol
+    function changeCurrency(symbol) {
+      appState.currency = symbol;
+      saveStateToLocalStorage();
+      document.querySelectorAll('.active-currency').forEach(el => el.textContent = symbol);
+      renderApp();
+    }
+
+    function toggleDarkMode() {
+      const docHtml = document.documentElement;
+      if (docHtml.classList.contains('dark')) {
+        docHtml.classList.remove('dark');
+        docHtml.classList.add('light');
+        appState.theme = 'light';
+      } else {
+        docHtml.classList.remove('light');
+        docHtml.classList.add('dark');
+        appState.theme = 'dark';
+      }
+      saveStateToLocalStorage();
+      applyThemeFromState();
+    }
+
+    function applyThemeFromState() {
+      const docHtml = document.documentElement;
+      const icon = document.getElementById('themeIcon');
+      
+      if (appState.theme === 'dark') {
+        docHtml.classList.add('dark');
+        docHtml.classList.remove('light');
+        if (icon) icon.setAttribute('data-lucide', 'sun');
+      } else {
+        docHtml.classList.remove('dark');
+        docHtml.classList.add('light');
+        if (icon) icon.setAttribute('data-lucide', 'moon');
+      }
+      lucide.createIcons();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.add('hidden');
+        tab.classList.remove('block');
+      });
+      document.getElementById(tabId).classList.remove('hidden');
+      document.getElementById(tabId).classList.add('block');
+
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.className = "tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-505 dark:text-neutralSlate-404 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2 whitespace-nowrap";
+      });
+
+      const activeBtn = document.getElementById('btnT' + tabId.substring(1));
+      if (activeBtn) {
+        activeBtn.className = "tab-button px-4 py-2.5 font-bold text-xs sm:text-sm text-brand-500 border-b-2 border-brand-500 transition flex items-center gap-2 whitespace-nowrap";
+      }
+
+      if (tabId === 'tabAnalytics') {
+        setTimeout(initCharts, 120);
+      }
+    }
+
+    function switchTrip(tripId) {
+      appState.activeTripId = tripId;
+      saveStateToLocalStorage();
+      renderApp();
+    }
+
+    function formatCurrency(amount) {
+      return appState.currency + " " + parseFloat(amount || 0).toLocaleString('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    let searchDebounceTimer = null;
+    function handleSearchInput() {
+      if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        renderApp();
+      }, 200);
+    }
+
+    let renderAppDebounceTimer = null;
+    function debouncedRenderApp() {
+      if (renderAppDebounceTimer) clearTimeout(renderAppDebounceTimer);
+      renderAppDebounceTimer = setTimeout(() => {
+        renderApp();
+      }, 16);
+    }
+
+    function renderApp() {
+      if (!appState.trips || appState.trips.length === 0) {
+        document.getElementById('dashboardMainContent').classList.add('hidden');
+        document.getElementById('emptyStateOnboarding').classList.remove('hidden');
+        
+        const switcher = document.getElementById('headerTripSelector');
+        if (switcher) switcher.innerHTML = '<option value="">No Active Trip</option>';
+        return;
+      }
+
+      if (!appState.activeTripId || !appState.trips.some(t => t.id === appState.activeTripId)) {
+        appState.activeTripId = appState.trips[0].id;
+      }
+
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (!activeTrip) return;
+
+      document.getElementById('dashboardMainContent').classList.remove('hidden');
+      document.getElementById('emptyStateOnboarding').classList.add('hidden');
+
+      const calc = calculateBalances(activeTrip);
+      const members = activeTrip.members || [];
+      safeSetText('splitBadgeCount', members.length);
+
+      const switcher = document.getElementById('headerTripSelector');
+      if (switcher) {
+        switcher.innerHTML = '';
+        appState.trips.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.id;
+          opt.textContent = t.name;
+          if (t.id === appState.activeTripId) opt.selected = true;
+          switcher.appendChild(opt);
+        });
+      }
+
+      safeSetText('tripName', activeTrip.name);
+      safeSetText('tripDestination', activeTrip.destination);
+
+      const parsedStart = new Date(activeTrip.startDate);
+      const parsedEnd = new Date(activeTrip.endDate);
+      const optFormat = { year: 'numeric', month: 'short', day: 'numeric' };
+      safeSetText('tripDates', `${parsedStart.toLocaleDateString('en-US', optFormat)} — ${parsedEnd.toLocaleDateString('en-US', optFormat)}`);
+
+      applyTripCoverBackground(activeTrip.coverImage || 'sunset');
+
+      safeSetText('notesPlannedBudget', formatCurrency(activeTrip.budget));
+      safeSetText('notesStartDate', parsedStart.toLocaleDateString('en-US', optFormat));
+      safeSetText('notesEndDate', parsedEnd.toLocaleDateString('en-US', optFormat));
+
+      const journalTextarea = document.getElementById('tripJournal');
+      if (journalTextarea) {
+        journalTextarea.value = activeTrip.journal || "";
+      }
+
+      let totalTripExpense = 0;
+      let personalExpense = 0;
+      let friendsOweYou = 0;
+      let youOweFriends = 0;
+      let settledAmount = 0;
+
+      let upiTotal = 0;
+      let cardTotal = 0;
+      let cashTotal = 0;
+      let biggestAmt = 0;
+      let biggestDesc = "No Spends Logged";
+      let cheapestAmt = Infinity;
+      let cheapestDesc = "No Spends Logged";
+
+      const frequencyMap = {};
+
+      const expenses = activeTrip.expenses || [];
+      expenses.forEach(exp => {
+        const amt = parseFloat(exp.amount) || 0;
+        const type = exp.type || 'personal';
+
+        if (type !== 'settlement') {
+          totalTripExpense += amt;
+        }
+
+        if (type === 'personal') {
+          personalExpense += amt;
+        }
+
+        if (type === 'settlement') {
+          settledAmount += amt;
+        }
+
+        if (exp.paymentMethod === 'UPI') upiTotal += amt;
+        if (exp.paymentMethod === 'Card') cardTotal += amt;
+        if (exp.paymentMethod === 'Cash') cashTotal += amt;
+
+        if (type !== 'settlement') {
+          if (amt > biggestAmt) {
+            biggestAmt = amt;
+            biggestDesc = exp.description;
+          }
+          if (amt < cheapestAmt) {
+            cheapestAmt = amt;
+            cheapestDesc = exp.description;
+          }
+          frequencyMap[exp.category] = (frequencyMap[exp.category] || 0) + 1;
+        }
+      });
+
+      if (cheapestAmt === Infinity) cheapestAmt = 0;
+
+      Object.keys(calc.balances).forEach(fId => {
+        const bal = calc.balances[fId];
+        if (bal > 0.01) {
+          friendsOweYou += bal;
+        } else if (bal < -0.01) {
+          youOweFriends += Math.abs(bal);
+        }
+      });
+
+      safeSetText('statTotalTripExpense', formatCurrency(totalTripExpense));
+      safeSetText('statPersonalExpense', formatCurrency(personalExpense));
+      safeSetText('statFriendsOweYou', formatCurrency(friendsOweYou));
+      safeSetText('statYouOweFriends', formatCurrency(youOweFriends));
+      safeSetText('statSettledAmount', formatCurrency(settledAmount));
+
+      safeSetText('extremeBiggestDesc', biggestDesc);
+      safeSetText('extremeBiggestVal', formatCurrency(biggestAmt));
+      safeSetText('extremeCheapestDesc', cheapestDesc);
+      safeSetText('extremeCheapestVal', formatCurrency(cheapestAmt));
+
+      safeSetText('paymentUPIVal', formatCurrency(upiTotal));
+      safeSetText('paymentCardVal', formatCurrency(cardTotal));
+      safeSetText('paymentCashVal', formatCurrency(cashTotal));
+
+      let maxFrequency = 0;
+      let popularCategory = "None";
+      Object.keys(frequencyMap).forEach(key => {
+        if (frequencyMap[key] > maxFrequency) {
+          maxFrequency = frequencyMap[key];
+          popularCategory = key;
+        }
+      });
+      const resolvedCatName = CATEGORIES.find(c => c.id === popularCategory)?.name || popularCategory;
+      safeSetText('extremeMostCategory', resolvedCatName);
+      safeSetText('extremeMostCategoryCount', `${maxFrequency} times`);
+
+      const filteredAndSortedExpenses = filterAndSortExpenses(activeTrip.expenses);
+      renderExpensesList(filteredAndSortedExpenses, members);
+      renderDailyTimelineWidget(activeTrip.expenses);
+      renderSplitsSystem(activeTrip, calc);
+
+      updateSyncStatusUI(syncStatusState);
+      lucide.createIcons();
+    }
+
+    function applyTripCoverBackground(themeName) {
+      const coverBg = document.getElementById('tripCoverBg');
+      if (!coverBg) return;
+      coverBg.className = "absolute inset-x-0 top-0 h-2 transition-all duration-300 " + getCoverBgClass(themeName);
+    }
+
+    function getCoverBgClass(themeName) {
+      switch (themeName) {
+        case 'sunset': return "bg-gradient-to-r from-orange-400 to-rose-600";
+        case 'forest': return "bg-gradient-to-r from-emerald-500 to-teal-700";
+        case 'neon': return "bg-gradient-to-r from-purple-500 to-pink-500";
+        case 'ocean': return "bg-gradient-to-r from-blue-500 to-cyan-500";
+        case 'classic': return "bg-gradient-to-r from-neutralSlate-400 to-neutralSlate-600";
+        case 'indigo':
+        default: return "bg-gradient-to-r from-brand-500 to-indigo-700";
+      }
+    }
+
+    function updateCover(themeName) {
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (activeTrip) {
+        activeTrip.coverImage = themeName;
+        saveStateToLocalStorage();
+        applyTripCoverBackground(themeName);
+      }
+      document.getElementById('coverDropdown').classList.add('hidden');
+    }
+
+    function filterAndSortExpenses(expenses) {
+      const query = document.getElementById('searchQuery').value.toLowerCase().trim();
+      const catFilter = document.getElementById('filterCategory').value;
+      const sortingValue = document.getElementById('sortBy').value;
+
+      let filtered = expenses.filter(exp => {
+        const matchesQuery = !query || 
+          exp.description.toLowerCase().includes(query) || 
+          (exp.notes && exp.notes.toLowerCase().includes(query)) || 
+          exp.category.toLowerCase().includes(query);
+
+        const matchesCategory = catFilter === 'ALL' || exp.category === catFilter;
+        return matchesQuery && matchesCategory;
+      });
+
+      filtered.sort((a, b) => {
+        const parsedA = new Date(a.date);
+        const parsedB = new Date(b.date);
+        if (sortingValue === 'date-desc') return parsedB - parsedA;
+        if (sortingValue === 'date-asc') return parsedA - parsedB;
+        if (sortingValue === 'amount-desc') return parseFloat(b.amount) - parseFloat(a.amount);
+        if (sortingValue === 'amount-asc') return parseFloat(a.amount) - parseFloat(b.amount);
+        return 0;
+      });
+
+      return filtered;
+    }
+
+    function renderExpensesList(expenses, members) {
+      const container = document.getElementById('expensesContainer');
+      container.innerHTML = '';
+
+      if (expenses.length === 0) {
+        container.innerHTML = `
+          <div class="py-12 px-4 text-center text-neutralSlate-400">
+            <p class="font-semibold text-xs sm:text-sm">No spend records found</p>
+            <p class="text-[10px] mt-0.5 text-neutralSlate-555">Tap "Add Spend / Settlement" to record items.</p>
+          </div>
+        `;
+        return;
+      }
+
+      expenses.forEach(exp => {
+        const categoryDetails = CATEGORIES.find(c => c.id === exp.category) || { name: exp.category, bgClass: "bg-neutralSlate-100 text-neutralSlate-600 border border-neutralSlate-200" };
+        const row = document.createElement('div');
+        row.className = "p-3 sm:px-5 hover:bg-neutralSlate-50/50 dark:hover:bg-neutralSlate-850/30 transition duration-150 flex items-center justify-between gap-3 text-xs";
+
+        let billBadge = '';
+        if (exp.billImage) {
+          billBadge = `
+            <button onclick="previewBillImage('${exp.id}')" class="text-brand-500 hover:underline flex items-center gap-0.5 text-[9px] font-bold mt-1">
+              <i data-lucide="paperclip" class="w-3 h-3"></i> View Receipt
+            </button>
+          `;
+        }
+
+        const dateObj = new Date(exp.date);
+        const dateStr = dateObj.toLocaleDateString('en-US', { day: '2-digit', month: 'short' });
+
+        const type = exp.type || 'personal';
+        const companion = members.find(m => m.id === exp.friendId) || { name: 'Friend' };
+        
+        let subBadgeText = '';
+        let borderOverride = '';
+
+        if (type === 'personal') {
+          subBadgeText = `<span class="text-[8px] bg-slate-100 dark:bg-slate-850 text-slate-500 px-1.5 py-0.5 rounded font-black tracking-wide">👤 PERSONAL</span>`;
+        } else if (type === 'i_paid_friend') {
+          subBadgeText = `<span class="text-[8px] bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 px-1.5 py-0.5 rounded font-black tracking-wide">📤 YOU PAID FOR ${companion.name.toUpperCase()}</span>`;
+        } else if (type === 'friend_paid_me') {
+          subBadgeText = `<span class="text-[8px] bg-rose-100 dark:bg-rose-900/30 text-rose-505 px-1.5 py-0.5 rounded font-black tracking-wide">📥 ${companion.name.toUpperCase()} PAID FOR YOU</span>`;
+        } else if (type === 'settlement') {
+          const dir = exp.settlementDirection || 'you_to_friend';
+          const directionText = dir === 'you_to_friend' ? `YOU → ${companion.name.toUpperCase()}` : `${companion.name.toUpperCase()} → YOU`;
+          subBadgeText = `<span class="text-[8px] bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 px-1.5 py-0.5 rounded font-black tracking-wide">🤝 SETTLEMENT: ${directionText}</span>`;
+          borderOverride = 'border-l-4 border-indigo-500';
+        }
+
+        row.innerHTML = `
+          <div class="flex items-center gap-3 overflow-hidden ${borderOverride}">
+            <div class="flex-shrink-0 text-center w-10 h-10 bg-neutralSlate-100 dark:bg-neutralSlate-955 rounded-lg flex flex-col justify-center border border-neutralSlate-200/50 dark:border-neutralSlate-800/80">
+              <span class="text-[8px] font-semibold uppercase tracking-wider text-neutralSlate-555">${dateStr.split(' ')[0]}</span>
+              <span class="text-xs font-bold text-neutralSlate-800 dark:text-neutralSlate-200 leading-none">${dateStr.split(' ')[1]}</span>
+            </div>
+            
+            <div class="overflow-hidden">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <h4 class="font-bold text-neutralSlate-800 dark:text-slate-100 truncate max-w-[130px] sm:max-w-xs">${exp.description}</h4>
+                <span class="px-1.5 py-0.5 rounded text-[8px] font-bold tracking-wider uppercase ${categoryDetails.bgClass}">${categoryDetails.name}</span>
+                ${subBadgeText}
+              </div>
+              <p class="text-[10px] text-neutralSlate-400 mt-0.5 truncate">${exp.notes || 'No description notes.'}</p>
+              ${billBadge}
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <span class="font-bold text-xs sm:text-sm text-neutralSlate-900 dark:text-white">${formatCurrency(exp.amount)}</span>
+            <div class="flex items-center gap-1">
+              <button onclick="openExpenseEditModal('${exp.id}')" class="p-1 text-neutralSlate-400 hover:text-brand-500 rounded-lg transition">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="triggerDeleteExpense('${exp.id}')" class="p-1 text-neutralSlate-400 hover:text-rose-500 rounded-lg transition">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function renderDailyTimelineWidget(expenses) {
+      const container = document.getElementById('timelineContainer');
+      container.innerHTML = '';
+      if (!expenses || expenses.length === 0) return;
+
+      const dateGroups = {};
+      expenses.forEach(exp => {
+        if (exp.type !== 'settlement') {
+          if (!dateGroups[exp.date]) dateGroups[exp.date] = [];
+          dateGroups[exp.date].push(exp);
+        }
+      });
+
+      const sortedDates = Object.keys(dateGroups).sort((a,b) => new Date(b) - new Date(a));
+      sortedDates.forEach(date => {
+        const list = dateGroups[date];
+        const daySum = list.reduce((sum, current) => sum + parseFloat(current.amount), 0);
+        const dayDate = new Date(date);
+        const formattedDate = dayDate.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' });
+
+        const node = document.createElement('div');
+        node.className = "relative mb-4";
+        node.innerHTML = `
+          <div class="absolute -left-[21px] top-1.5 bg-brand-500 w-1.5 h-1.5 rounded-full ring-4 ring-neutralSlate-50 dark:ring-neutralSlate-955"></div>
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-[10px] font-bold text-neutralSlate-700 dark:text-slate-300">${formattedDate}</span>
+            <span class="text-[10px] font-bold text-brand-600 dark:text-brand-400">${formatCurrency(daySum)}</span>
+          </div>
+          <div class="space-y-1 pl-2.5 border-l border-neutralSlate-200 dark:border-neutralSlate-800 text-[10px]">
+            ${list.map(item => `
+              <div class="flex justify-between items-center py-0.5">
+                <span class="text-neutralSlate-555 truncate max-w-[120px]">${item.description}</span>
+                <span class="font-bold text-neutralSlate-700 dark:text-slate-200">${formatCurrency(item.amount)}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(node);
+      });
+    }
+
+    function renderSplitsSystem(trip, calc) {
+      const members = trip.members || [];
+      const companionListDiv = document.getElementById('friendsListContainer');
+      companionListDiv.innerHTML = '';
+
+      if (members.length === 0) {
+        companionListDiv.innerHTML = `
+          <div class="col-span-full py-6 text-center text-neutralSlate-400">
+            <p class="font-semibold text-xs">No companion friends logged yet.</p>
+            <p class="text-[10px] mt-0.5">Click "Add Friend" to open an Udhaar Diary.</p>
+          </div>
+        `;
+      } else {
+        members.forEach(m => {
+          const bal = calc.balances[m.id] || 0;
+          let balLabel = '';
+          if (bal > 0.01) {
+            balLabel = `<span class="text-xs font-black text-emerald-600 dark:text-emerald-400">Owes you ${formatCurrency(bal)}</span>`;
+          } else if (bal < -0.01) {
+            balLabel = `<span class="text-xs font-black text-rose-500">You owe them ${formatCurrency(Math.abs(bal))}</span>`;
+          } else {
+            balLabel = `<span class="text-xs text-neutralSlate-500 font-bold">All Settled up! ✅</span>`;
+          }
+
+          const card = document.createElement('div');
+          card.className = "p-3 bg-neutralSlate-50 dark:bg-neutralSlate-955 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 relative flex flex-col justify-between min-h-[85px] shadow-sm";
+          card.innerHTML = `
+            <button onclick="deleteFriend('${m.id}')" class="absolute top-2.5 right-2.5 text-neutralSlate-400 hover:text-rose-500 transition">
+              <i data-lucide="trash" class="w-3.5 h-3.5"></i>
+            </button>
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-8 h-8 flex-shrink-0 rounded-full ${m.color || 'bg-neutralSlate-400'} flex items-center justify-center font-bold text-xs uppercase shadow-sm">
+                ${m.name.charAt(0)}
+              </div>
+              <div class="overflow-hidden text-xs">
+                <h4 class="font-bold truncate text-neutralSlate-800 dark:text-white">${m.name}</h4>
+                <p class="text-[9px] text-neutralSlate-500 truncate font-semibold">${m.phone || 'No phone'}</p>
+              </div>
+            </div>
+            <div>
+              ${balLabel}
+            </div>
+          `;
+          companionListDiv.appendChild(card);
+        });
+      }
+
+      const tableBody = document.getElementById('splitBalanceTableBody');
+      tableBody.innerHTML = '';
+      
+      if (members.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-neutralSlate-400">Add companion friends to map udhaar.</td></tr>`;
+      } else {
+        members.forEach(m => {
+          const youPaid = calc.paidForThem[m.id] || 0;
+          const theyPaid = calc.paidForMe[m.id] || 0;
+          const netBal = calc.balances[m.id] || 0;
+
+          let styleClass = "text-neutralSlate-500 font-bold";
+          let statusText = "Settled";
+          if (netBal > 0.01) {
+            styleClass = "text-emerald-600 dark:text-emerald-400 font-black";
+            statusText = `They owe You`;
+          } else if (netBal < -0.01) {
+            styleClass = "text-rose-600 dark:text-rose-455 font-black";
+            statusText = `You owe Them`;
+          }
+
+          const tr = document.createElement('tr');
+          tr.className = "border-b border-neutralSlate-150 dark:border-neutralSlate-800/85 hover:bg-neutralSlate-50/40 dark:hover:bg-neutralSlate-850/25 text-xs text-neutralSlate-700 dark:text-neutralSlate-300";
+          tr.innerHTML = `
+            <td class="py-2.5 px-4 flex items-center gap-2">
+              <div class="w-6 h-6 flex-shrink-0 rounded-full ${m.color || 'bg-neutralSlate-400'} flex items-center justify-center font-bold text-[10px] uppercase shadow-sm">${m.name.charAt(0)}</div>
+              <span class="font-bold text-neutralSlate-800 dark:text-slate-100">${m.name}</span>
+            </td>
+            <td class="py-2.5 px-4 text-right">${formatCurrency(youPaid)}</td>
+            <td class="py-2.5 px-4 text-right">${formatCurrency(theyPaid)}</td>
+            <td class="py-2.5 px-4 text-right ${styleClass}">${statusText}: ${formatCurrency(Math.abs(netBal))}</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      }
+
+      const suggestionsDiv = document.getElementById('settleSuggestionsContainer');
+      suggestionsDiv.innerHTML = '';
+      let activeDuesCount = 0;
+
+      members.forEach(m => {
+        const bal = calc.balances[m.id] || 0;
+        if (Math.abs(bal) > 0.01) {
+          activeDuesCount++;
+          const item = document.createElement('div');
+          item.className = "p-3 bg-neutralSlate-50 dark:bg-neutralSlate-955 border border-neutralSlate-200 dark:border-neutralSlate-800 rounded-xl flex items-center justify-between gap-3 text-xs shadow-sm";
+          
+          let actionLabel = '';
+          let direction = 'you_to_friend';
+          
+          if (bal > 0) {
+            actionLabel = `<strong>${m.name}</strong> pays You`;
+            direction = 'friend_to_you';
+          } else {
+            actionLabel = `You pay <strong>${m.name}</strong>`;
+            direction = 'you_to_friend';
+          }
+
+          item.innerHTML = `
+            <div>
+              <p class="text-[10px] text-neutralSlate-505 font-semibold">${actionLabel}</p>
+              <p class="text-xs font-black text-brand-600 dark:text-brand-400 mt-0.5">${formatCurrency(Math.abs(bal))}</p>
+            </div>
+            <button onclick="triggerQuickSettle('${m.id}', ${Math.abs(bal)}, '${direction}')" class="bg-brand-500 hover:bg-brand-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg transition shadow-sm">
+              Settle
+            </button>
+          `;
+          suggestionsDiv.appendChild(item);
+        }
+      });
+
+      if (activeDuesCount === 0) {
+        suggestionsDiv.innerHTML = `
+          <div class="py-4 text-center text-neutralSlate-505 bg-neutralSlate-50 dark:bg-neutralSlate-950 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800">
+            <i data-lucide="check-check" class="w-5 h-5 mx-auto text-emerald-500 mb-1"></i>
+            <p class="text-[11px] font-bold text-neutralSlate-700 dark:text-slate-355">All Balances Settled!</p>
+          </div>
+        `;
+      }
+    }
+
+    function shareSplitSummaryWhatsApp() {
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (!activeTrip) return;
+
+      const calc = calculateBalances(activeTrip);
+      const members = activeTrip.members || [];
+
+      let text = `*${appState.appName} Udhaar Report: ${activeTrip.name}* 🗺️\n\n`;
+      text += `*Companions Balance Sheets:*\n`;
+
+      let activeDues = false;
+      members.forEach(m => {
+        const bal = calc.balances[m.id] || 0;
+        let balText = 'Fully Settled Up ✅';
+        if (bal > 0.01) {
+          balText = `Owes you: ${formatCurrency(bal)} 🟢`;
+          activeDues = true;
+        } else if (bal < -0.01) {
+          balText = `You owe them: ${formatCurrency(Math.abs(bal))} 🔴`;
+          activeDues = true;
+        }
+        text += `• _${m.name}_: ${balText}\n`;
+      });
+
+      if (!activeDues) {
+        text += `\nNo active outstanding debts found!`;
+      }
+
+      text += `\nGenerated via WanderBudget Travel Manager.`;
+      const encoded = encodeURIComponent(text);
+      window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
+    }
+
+    function openFriendModal() {
+      document.getElementById('friendForm').reset();
+      selectFriendColor('bg-indigo-500 text-white');
+      document.getElementById('friendModal').classList.remove('hidden');
+    }
+
+    function closeFriendModal() {
+      document.getElementById('friendModal').classList.add('hidden');
+      document.getElementById('friendForm').reset();
+    }
+
+    function selectFriendColor(colorClass) {
+      document.querySelectorAll('.friend-color-btn').forEach(btn => {
+        btn.classList.remove('border-indigo-400');
+        btn.classList.add('border-transparent');
+      });
+      
+      const matches = Array.from(document.querySelectorAll('.friend-color-btn')).filter(btn => btn.getAttribute('onclick').includes(colorClass));
+      if (matches.length > 0) {
+        matches[0].classList.add('border-indigo-400');
+        matches[0].classList.remove('border-transparent');
+      }
+      document.getElementById('friendModalColor').value = colorClass;
+    }
+
+    function saveFriend(event) {
+      event.preventDefault();
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (!activeTrip) return;
+
+      const name = document.getElementById('friendModalName').value.trim();
+      const phone = document.getElementById('friendModalPhone').value.trim();
+      const color = document.getElementById('friendModalColor').value;
+
+      if (!activeTrip.members) activeTrip.members = [];
+      
+      const newFriend = {
+        id: generateUniqueId('friend'),
+        name,
+        phone: phone || 'No phone',
+        color
+      };
+
+      activeTrip.members.push(newFriend);
+      saveStateToLocalStorage();
+      closeFriendModal();
+      renderApp();
+    }
+
+    function deleteFriend(friendId) {
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (!activeTrip) return;
+
+      const hasReferences = activeTrip.expenses.some(e => e.friendId === friendId);
+      let warningMsg = "Are you sure you want to remove this companion friend?";
+      if (hasReferences) {
+        warningMsg += " Removing them will clear their profile card, but historical logged transactions involving them will persist in the registers.";
+      }
+
+      showAlertDialog(
+        "Remove Companion Friend?",
+        warningMsg,
+        () => {
+          activeTrip.members = activeTrip.members.filter(m => m.id !== friendId);
+          saveStateToLocalStorage();
+          renderApp();
+        }
+      );
+    }
+
+    function triggerQuickSettle(friendId, amount, direction) {
+      openExpenseModal();
+      document.getElementById('expenseModalType').value = 'settlement';
+      handleTypeChange('settlement');
+
+      document.getElementById('expenseModalFriend').value = friendId;
+      document.getElementById('expenseModalSettleDirection').value = direction;
+      document.getElementById('expenseModalAmount').value = amount.toFixed(2);
+      document.getElementById('expenseModalDescription').value = "Settle Balance";
+    }
+
+    function openTripModal() {
+      document.getElementById('tripModalTitle').innerHTML = '<i data-lucide="map" class="w-4 h-4 text-brand-500"></i> New Travel Destination';
+      document.getElementById('tripModalId').value = '';
+      document.getElementById('tripForm').reset();
+      
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('tripModalStartDate').value = today;
+      document.getElementById('tripModalEndDate').value = today;
+
+      document.getElementById('tripModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function openTripEditModal() {
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (!activeTrip) return;
+
+      document.getElementById('tripModalTitle').innerHTML = '<i data-lucide="pencil" class="w-4 h-4 text-brand-500"></i> Edit Destination';
+      document.getElementById('tripModalId').value = activeTrip.id;
+      document.getElementById('tripModalName').value = activeTrip.name;
+      document.getElementById('tripModalDestination').value = activeTrip.destination;
+      document.getElementById('tripModalStartDate').value = activeTrip.startDate;
+      document.getElementById('tripModalEndDate').value = activeTrip.endDate;
+      document.getElementById('tripModalBudget').value = activeTrip.budget;
+
+      document.getElementById('tripModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeTripModal() {
+      document.getElementById('tripModal').classList.add('hidden');
+      document.getElementById('tripForm').reset();
+    }
+
+    function saveTrip(event) {
+      event.preventDefault();
+
+      const modalId = document.getElementById('tripModalId').value;
+      const name = document.getElementById('tripModalName').value.trim();
+      const destination = document.getElementById('tripModalDestination').value.trim();
+      const startDate = document.getElementById('tripModalStartDate').value;
+      const endDate = document.getElementById('tripModalEndDate').value;
+      const budget = parseFloat(document.getElementById('tripModalBudget').value) || 0;
+
+      if (new Date(endDate) < new Date(startDate)) {
+        openToastAlert("Departure date must precede returning date.");
+        return;
+      }
+
+      if (modalId) {
+        const tripIndex = appState.trips.findIndex(t => t.id === modalId);
+        if (tripIndex !== -1) {
+          appState.trips[tripIndex].name = name;
+          appState.trips[tripIndex].destination = destination;
+          appState.trips[tripIndex].startDate = startDate;
+          appState.trips[tripIndex].endDate = endDate;
+          appState.trips[tripIndex].budget = budget;
+        }
+      } else {
+        const newTripId = generateUniqueId('trip');
+        const newTrip = {
+          id: newTripId,
+          name: name,
+          destination: destination,
+          startDate: startDate,
+          endDate: endDate,
+          budget: budget,
+          coverImage: 'sunset',
+          journal: '',
+          members: [],
+          expenses: []
+        };
+        appState.trips.push(newTrip);
+        appState.activeTripId = newTripId;
+      }
+
+      saveStateToLocalStorage();
+      closeTripModal();
+      renderApp();
+    }
+
+    function showAlertDialog(title, message, onConfirm, showConfirmBtn = true) {
+      const modal = document.getElementById('alertDialog');
+      document.getElementById('alertTitle').textContent = title;
+      document.getElementById('alertMessage').innerHTML = message.replace(/\n/g, '<br>');
+
+      const confirmBtn = document.getElementById('alertConfirmBtn');
+      const cancelBtn = document.getElementById('alertCancelBtn');
+
+      cancelBtn.textContent = "Cancel";
+
+      if (showConfirmBtn) {
+        confirmBtn.classList.remove('hidden');
+        confirmBtn.onclick = function() {
+          onConfirm();
+          closeAlertDialog();
+        }
+      } else {
+        confirmBtn.classList.add('hidden');
+        cancelBtn.textContent = "OK";
+      }
+      modal.classList.remove('hidden');
+    }
+
+    function closeAlertDialog() {
+      document.getElementById('alertDialog').classList.add('hidden');
+    }
+
+    function triggerDeleteTrip() {
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (!activeTrip) return;
+
+      showAlertDialog(
+        "Confirm Deleting " + activeTrip.name,
+        "Are you sure you want to permanently delete this trip and wipe all its logged diaries?",
+        () => {
+          appState.trips = appState.trips.filter(t => t.id !== appState.activeTripId);
+          if (appState.trips.length === 0) {
+            appState.activeTripId = "";
+          } else {
+            appState.activeTripId = appState.trips[0].id;
+          }
+          saveStateToLocalStorage();
+          renderApp();
+        },
+        true
+      );
+    }
+
+    function handleTypeChange(val) {
+      const friendRow = document.getElementById('friendInvolvedRow');
+      const settleDirectionRow = document.getElementById('settlementDirectionRow');
+
+      if (val === 'personal') {
+        friendRow.classList.add('hidden');
+        settleDirectionRow.classList.add('hidden');
+      } else if (val === 'settlement') {
+        friendRow.classList.remove('hidden');
+        settleDirectionRow.classList.remove('hidden');
+      } else {
+        friendRow.classList.remove('hidden');
+        settleDirectionRow.classList.add('hidden');
+      }
+    }
+
+    function openExpenseModal() {
+      closeExpenseModal();
+      document.getElementById('expenseModalTitle').innerHTML = '<i data-lucide="plus-circle" class="text-brand-500"></i> Write down new spending';
+      document.getElementById('expenseModalId').value = '';
+      
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (activeTrip) {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('expenseModalDate').value = today;
+        populateExpensesFriendSelectors(activeTrip);
+      }
+
+      document.getElementById('expenseModalType').value = "personal";
+      handleTypeChange('personal');
+
+      document.getElementById('expenseModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function openExpenseEditModal(expenseId) {
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (!activeTrip) return;
+
+      const exp = activeTrip.expenses.find(e => e.id === expenseId);
+      if (!exp) return;
+
+      document.getElementById('expenseModalTitle').innerHTML = '<i data-lucide="pencil" class="text-brand-500"></i> Edit Spend details';
+      document.getElementById('expenseModalId').value = exp.id;
+      document.getElementById('expenseModalDate').value = exp.date;
+      document.getElementById('expenseModalCategory').value = exp.category;
+      document.getElementById('expenseModalDescription').value = exp.description;
+      document.getElementById('expenseModalAmount').value = exp.amount;
+      document.getElementById('expenseModalPaymentMethod').value = exp.paymentMethod;
+      document.getElementById('expenseModalNotes').value = exp.notes || '';
+      document.getElementById('expenseModalBillBase64').value = exp.billImage || '';
+
+      if (exp.billImage) {
+        document.getElementById('billAttachmentStatus').textContent = "Loaded";
+      } else {
+        document.getElementById('billAttachmentStatus').textContent = "None";
+      }
+
+      populateExpensesFriendSelectors(activeTrip);
+
+      const type = exp.type || 'personal';
+      document.getElementById('expenseModalType').value = type;
+      handleTypeChange(type);
+
+      if (type !== 'personal') {
+        document.getElementById('expenseModalFriend').value = exp.friendId || '';
+      }
+
+      if (type === 'settlement') {
+        document.getElementById('expenseModalSettleDirection').value = exp.settlementDirection || 'you_to_friend';
+      }
+
+      document.getElementById('expenseModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function populateExpensesFriendSelectors(trip) {
+      const select = document.getElementById('expenseModalFriend');
+      if (!select) return;
+      select.innerHTML = '';
+
+      const members = trip.members || [];
+      if (members.length === 0) {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = 'No companion friends added yet.';
+        select.appendChild(opt);
+      } else {
+        members.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m.id;
+          opt.textContent = m.name;
+          select.appendChild(opt);
+        });
+      }
+    }
+
+    // Comot modal panel
+    function closeExpenseModal() {
+      document.getElementById('expenseModal').classList.add('hidden');
+      document.getElementById('expenseForm').reset();
+      document.getElementById('expenseModalId').value = '';
+      document.getElementById('billAttachmentStatus').textContent = "None";
+      document.getElementById('expenseModalBillBase64').value = "";
+    }
+
+    function processBillImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (file.size > 2 * 1024 * 1024) {
+        openToastAlert("Image size for small pass 2MB!");
+        return;
+      }
+
+      const fileReader = new FileReader();
+      fileReader.onload = function(e) {
+        document.getElementById('expenseModalBillBase64').value = e.target.result;
+        document.getElementById('billAttachmentStatus').textContent = "Loaded: " + file.name.substring(0,8) + "...";
+      };
+      fileReader.readAsDataURL(file);
+    }
+
+    function openToastAlert(msg) {
+      showAlertDialog("Notification", msg, () => {}, false);
+    }
+
+    function saveExpense(event) {
+      event.preventDefault();
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (!activeTrip) return;
+
+      const id = document.getElementById('expenseModalId').value;
+      const date = document.getElementById('expenseModalDate').value;
+      const category = document.getElementById('expenseModalCategory').value;
+      const description = document.getElementById('expenseModalDescription').value.trim();
+      const amount = parseFloat(document.getElementById('expenseModalAmount').value) || 0;
+      const paymentMethod = document.getElementById('expenseModalPaymentMethod').value;
+      const notes = document.getElementById('expenseModalNotes').value.trim();
+      const billBase64 = document.getElementById('expenseModalBillBase64').value;
+
+      const type = document.getElementById('expenseModalType').value;
+      const friendId = document.getElementById('expenseModalFriend').value;
+      const settlementDirection = document.getElementById('expenseModalSettleDirection').value;
+
+      if (amount <= 0) {
+        openToastAlert("Check di money! E for big pass zero.");
+        return;
+      }
+
+      if (type !== 'personal' && !friendId) {
+        openToastAlert("Mek you select one padi first!");
+        return;
+      }
+
+      const expenseObject = {
+        id: id || generateUniqueId('exp'),
+        date,
+        category,
+        description,
+        amount,
+        paymentMethod,
+        notes,
+        billImage: billBase64,
+        type,
+        friendId: type === 'personal' ? '' : friendId,
+        settlementDirection: type === 'settlement' ? settlementDirection : ''
+      };
+
+      if (id) {
+        const expIndex = activeTrip.expenses.findIndex(e => e.id === id);
+        if (expIndex !== -1) {
+          activeTrip.expenses[expIndex] = expenseObject;
+        }
+      } else {
+        activeTrip.expenses.push(expenseObject);
+      }
+
+      saveStateToLocalStorage();
+      closeExpenseModal();
+      renderApp();
+    }
+
+    function triggerDeleteExpense(expenseId) {
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (!activeTrip) return;
+
+      const exp = activeTrip.expenses.find(e => e.id === expenseId);
+      if (!exp) return;
+
+      showAlertDialog(
+        "Delete Transaction Record?",
+        `You sure say you wan delete di spending record for "${exp.description}"?`,
+        () => {
+          activeTrip.expenses = activeTrip.expenses.filter(e => e.id !== expenseId);
+          saveStateToLocalStorage();
+          renderApp();
+        },
+        true
+      );
+    }
+
+    function saveTripJournal() {
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (activeTrip) {
+        activeTrip.journal = document.getElementById('tripJournal').value;
+        saveStateToLocalStorage();
+      }
+    }
+
+    function previewBillImage(expenseId) {
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (!activeTrip) return;
+
+      const exp = activeTrip.expenses.find(e => e.id === expenseId);
+      if (!exp || !exp.billImage) return;
+
+      const previewWindow = window.open();
+      if (previewWindow) {
+        previewWindow.document.write(`
+          <html>
+            <head>
+              <title>Receipt Preview</title>
+              <style>
+                body {
+                  background: #0f172a;
+                  color: white;
+                  font-family: sans-serif;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  min-height: 100vh;
+                  margin: 0;
+                  padding: 20px;
+                }
+                img {
+                  max-width: 90%;
+                  max-height: 80vh;
+                  border-radius: 12px;
+                  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                }
+                h2 { margin-bottom: 5px; font-weight: bold; }
+                p { color: #94a3b8; margin-top: 0; }
+              </style>
+            </head>
+            <body>
+              <h2>${exp.description}</h2>
+              <img src="${exp.billImage}" alt="Receipt Attachment">
+            </body>
+          </html>
+        `);
+      } else {
+        openToastAlert("Popup blocked! Enable popups to preview receipt attachments.");
+      }
+    }
+
+    function initCharts() {
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (!activeTrip) return;
+
+      const isDark = document.documentElement.classList.contains('dark');
+      const textMainColor = isDark ? '#f8fafc' : '#0f172a';
+      const gridBorderColor = isDark ? '#1e293b' : '#e2e8f0';
+
+      const catTotals = {};
+      activeTrip.expenses.forEach(exp => {
+        if (exp.type !== 'settlement') {
+          catTotals[exp.category] = (catTotals[exp.category] || 0) + parseFloat(exp.amount);
+        }
+      });
+
+      const pieLabels = Object.keys(catTotals).map(catId => {
+        return CATEGORIES.find(c => c.id === catId)?.name || catId;
+      });
+      const pieValues = Object.values(catTotals);
+
+      const pieColorPalette = [
+        '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
+        '#ec4899', '#6366f1', '#06b6d4', '#14b8a6', '#f43f5e'
+      ];
+
+      if (pieChartInstance && typeof pieChartInstance.destroy === 'function') {
+        pieChartInstance.destroy();
+        pieChartInstance = null;
+      }
+
+      const pieCtx = document.getElementById('categoryPieChart').getContext('2d');
+      if (pieValues.length === 0) {
+        pieChartInstance = new Chart(pieCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['No Spends'],
+            datasets: [{ data: [1], backgroundColor: [gridBorderColor] }]
+          },
+          options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+      } else {
+        pieChartInstance = new Chart(pieCtx, {
+          type: 'doughnut',
+          data: {
+            labels: pieLabels,
+            datasets: [{
+              data: pieValues,
+              backgroundColor: pieColorPalette.slice(0, pieLabels.length),
+              borderWidth: 1.5,
+              borderColor: isDark ? '#111827' : '#ffffff'
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  color: textMainColor,
+                  font: { family: 'Inter', size: 9, weight: '500' },
+                  boxWidth: 8
+                }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return ' ' + context.label + ': ' + formatCurrency(context.raw);
+                  }
+                }
+              }
+            },
+            cutout: '70%'
+          }
+        });
+      }
+
+      const dateSpends = {};
+      activeTrip.expenses.forEach(exp => {
+        if (exp.type !== 'settlement') {
+          dateSpends[exp.date] = (dateSpends[exp.date] || 0) + parseFloat(exp.amount);
+        }
+      });
+
+      const sortedDates = Object.keys(dateSpends).sort((a,b) => new Date(a) - new Date(b));
+      const barLabels = sortedDates.map(dStr => {
+        const dObj = new Date(dStr);
+        return dObj.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+      });
+      const barValues = sortedDates.map(dStr => dateSpends[dStr]);
+
+      if (barChartInstance && typeof barChartInstance.destroy === 'function') {
+        barChartInstance.destroy();
+        barChartInstance = null;
+      }
+
+      const barCtx = document.getElementById('dailySpendsChart').getContext('2d');
+      if (barValues.length === 0) {
+        barChartInstance = new Chart(barCtx, {
+          type: 'bar',
+          data: {
+            labels: ['No Spends'],
+            datasets: [{ data: [0] }]
+          },
+          options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+      } else {
+        barChartInstance = new Chart(barCtx, {
+          type: 'bar',
+          data: {
+            labels: barLabels,
+            datasets: [{
+              label: 'Daily Flow',
+              data: barValues,
+              backgroundColor: '#8b5cf6',
+              borderRadius: 4,
+              borderSkipped: false
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return ' Spends: ' + formatCurrency(context.raw);
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: textMainColor, font: { family: 'Inter', size: 9 } }
+              },
+              y: {
+                grid: { color: gridBorderColor },
+                ticks: { color: textMainColor, font: { family: 'Inter', size: 9 } }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    function exportCSV() {
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      if (!activeTrip || !activeTrip.expenses || activeTrip.expenses.length === 0) {
+        openToastAlert("Spends register khali hai!");
+        return;
+      }
+
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "Date,Category,Description,Amount,Payment Method,Transaction Type,Friend Involved,Notes\r\n";
+
+      activeTrip.expenses.forEach(exp => {
+        const date = exp.date || "";
+        const category = exp.category || "";
+        const description = (exp.description || "").replace(/"/g, '""');
+        const amount = exp.amount || 0;
+        const pm = exp.paymentMethod || "";
+        const type = exp.type || "personal";
+        const companion = activeTrip.members.find(m => m.id === exp.friendId)?.name || "";
+        const notes = (exp.notes || "").replace(/"/g, '""');
+
+        csvContent += `"${date}","${category}","${description}",${amount},"${pm}","${type}","${companion}","${notes}"\r\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `WanderBudget_${activeTrip.name.replace(/\s+/g, '_')}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function triggerBackup() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+      const link = document.createElement("a");
+      link.setAttribute("href", dataStr);
+      link.setAttribute("download", `WanderBudget_UdhaarBackup_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function triggerRestore(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const fileReader = new FileReader();
+      fileReader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed && parsed.trips && Array.isArray(parsed.trips)) {
+            const currentGasUrl = appState.gasUrl; 
+            appState = parsed;
+            
+            if (currentGasUrl && !appState.gasUrl) {
+              appState.gasUrl = currentGasUrl;
+            }
+            if (!appState.securityPin) appState.securityPin = "0000";
+            
+            saveStateToLocalStorageDirectly();
+            loadDataFromStorage();
+            applyBrandSettings();
+            renderApp();
+            openToastAlert("Backup don restore well well!");
+          } else {
+            openToastAlert("Mek you upload di right JSON backup file.");
+          }
+        } catch (error) {
+          openToastAlert("Upload validation no work!");
+        }
+      };
+      fileReader.readAsText(file);
+    }
+
+    function resetAllData() {
+      showAlertDialog(
+        "Reset di whole app?",
+        "You sure say you wan clear all your local data? All entries go loss.",
+        () => {
+          localStorage.removeItem('wanderbudget_master_v16_premium');
+          seedInitialSampleData();
+          applyBrandSettings();
+          renderApp();
+        },
+        true
+      );
+    }
+  </script>
+</body>
+</html>
