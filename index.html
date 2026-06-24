@@ -167,7 +167,7 @@
           </button>
         </div>
 
-        <div class="mt-6 text-[10px] text-neutralSlate-400">
+        <div class="mt-6 text-[10px] text-neutralSlate-404">
           Tip: Default PIN code is <span class="text-emerald-400 font-black">0000</span>.
         </div>
 
@@ -189,7 +189,7 @@
             <h1 id="headerBrandName" class="text-sm sm:text-base font-bold tracking-tight text-neutralSlate-900 dark:text-white">
               WanderBudget
             </h1>
-            <div id="syncStatusIndicator" class="flex items-center gap-1 bg-neutralSlate-100 text-neutralSlate-600 dark:bg-neutralSlate-800 dark:text-neutralSlate-400 px-2 py-0.5 rounded-full">
+            <div id="syncStatusIndicator" class="flex items-center gap-1 bg-neutralSlate-100 text-neutralSlate-600 dark:bg-neutralSlate-800 dark:text-neutralSlate-404 px-2 py-0.5 rounded-full">
               <i data-lucide="cloud" class="w-3 h-3"></i>
               <span class="text-[9px] uppercase font-bold tracking-wide">SYNCED</span>
             </div>
@@ -212,7 +212,7 @@
 
         <!-- Quick Config Menu Trigger -->
         <div class="relative">
-          <button id="configBtn" onclick="toggleDropdown('configDropdown')" class="p-2 text-neutralSlate-505 hover:text-neutralSlate-800 dark:hover:text-white hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-900 rounded-xl transition">
+          <button id="configBtn" onclick="toggleDropdown('configDropdown')" class="p-2 text-neutralSlate-555 hover:text-neutralSlate-800 dark:hover:text-white hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-900 rounded-xl transition">
             <i data-lucide="settings" class="w-4 sm:w-5 h-4 sm:h-5"></i>
           </button>
           
@@ -221,7 +221,7 @@
             <div class="px-3 pb-3 space-y-2">
               <div>
                 <label class="block text-[10px] text-neutralSlate-400 mb-0.5 font-bold">App Name</label>
-                <input type="text" id="customAppNameInput" oninput="updateBrandSettings()" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-950 text-neutralSlate-900 dark:text-slate-100 px-2 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs" placeholder="WanderBudget">
+                <input type="text" id="customAppNameInput" oninput="updateBrandSettings()" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-2 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs" placeholder="WanderBudget">
               </div>
               <div>
                 <label class="block text-[10px] text-neutralSlate-400 mb-0.5 font-bold">Logo (Emoji)</label>
@@ -234,7 +234,7 @@
             <div class="px-3 pb-3 space-y-2">
               <div>
                 <label class="block text-[10px] text-neutralSlate-400 mb-0.5 font-bold">Terminal PIN</label>
-                <input type="password" id="customAppPinInput" maxlength="4" oninput="updateAppPin(this.value)" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-950 text-neutralSlate-900 dark:text-slate-100 px-2 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs font-bold" placeholder="0000">
+                <input type="password" id="customAppPinInput" maxlength="4" oninput="updateAppPin(this.value)" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-2 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs font-bold" placeholder="0000">
               </div>
             </div>
 
@@ -357,7 +357,7 @@
         
         <!-- KPI: Total Trip Expense -->
         <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between">
-          <div class="flex items-center justify-between text-neutralSlate-505 dark:text-neutralSlate-400 mb-1">
+          <div class="flex items-center justify-between text-neutralSlate-505 dark:text-neutralSlate-404 mb-1">
             <span class="text-[9px] font-bold uppercase tracking-wider">TOTAL TRIP EXPENSE</span>
             <div class="p-1 rounded-lg bg-brand-500/10 text-brand-500">
               <i data-lucide="compass" class="w-3.5 h-3.5"></i>
@@ -371,7 +371,7 @@
 
         <!-- KPI: Personal Expense -->
         <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between">
-          <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-400 mb-1">
+          <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-404 mb-1">
             <span class="text-[9px] font-bold uppercase tracking-wider">PERSONAL EXPENSE</span>
             <div class="p-1 rounded-lg bg-amber-500/10 text-amber-500">
               <i data-lucide="user" class="w-3.5 h-3.5"></i>
@@ -385,7 +385,7 @@
 
         <!-- KPI: Friends Owe You -->
         <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between">
-          <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-400 mb-1">
+          <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-404 mb-1">
             <span class="text-[9px] font-bold uppercase tracking-wider">FRIENDS OWE YOU</span>
             <div class="p-1 rounded-lg bg-emerald-500/10 text-emerald-500">
               <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
@@ -399,7 +399,7 @@
 
         <!-- KPI: You Owe Friends -->
         <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between">
-          <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-400 mb-1">
+          <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-404 mb-1">
             <span class="text-[9px] font-bold uppercase tracking-wider">YOU OWE FRIENDS</span>
             <div class="p-1 rounded-lg bg-rose-500/10 text-rose-500">
               <i data-lucide="arrow-down-left" class="w-3.5 h-3.5"></i>
@@ -413,7 +413,7 @@
 
         <!-- KPI: Settled Amount -->
         <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between col-span-2 sm:col-span-1">
-          <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-400 mb-1">
+          <div class="flex items-center justify-between text-neutralSlate-555 dark:text-neutralSlate-404 mb-1">
             <span class="text-[9px] font-bold uppercase tracking-wider">SETTLED AMOUNT</span>
             <div class="p-1 rounded-lg bg-indigo-500/10 text-indigo-500">
               <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
@@ -431,14 +431,14 @@
         <button onclick="switchTab('tabSpends')" id="btnTabSpends" class="tab-button px-4 py-2.5 font-bold text-xs sm:text-sm text-brand-500 border-b-2 border-brand-500 transition flex items-center gap-2">
           <i data-lucide="book-open" class="w-4 h-4"></i> Spends & History Diary
         </button>
-        <button onclick="switchTab('tabSplits')" id="btnTabSplits" class="tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-505 dark:text-neutralSlate-400 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2">
+        <button onclick="switchTab('tabSplits')" id="btnTabSplits" class="tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-505 dark:text-neutralSlate-404 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2">
           <i data-lucide="users" class="w-4 h-4"></i> Companions & Udhaar Khata
           <span id="splitBadgeCount" class="bg-neutralSlate-200 dark:bg-neutralSlate-800 text-neutralSlate-700 dark:text-neutralSlate-300 text-[10px] px-2 py-0.5 rounded-full font-black">0</span>
         </button>
-        <button onclick="switchTab('tabAnalytics')" id="btnTabAnalytics" class="tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-505 dark:text-neutralSlate-400 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2">
+        <button onclick="switchTab('tabAnalytics')" id="btnTabAnalytics" class="tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-505 dark:text-neutralSlate-404 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2">
           <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Category Statistics
         </button>
-        <button onclick="switchTab('tabNotes')" id="btnTabNotes" class="tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-505 dark:text-neutralSlate-400 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2">
+        <button onclick="switchTab('tabNotes')" id="btnTabNotes" class="tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-505 dark:text-neutralSlate-404 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2">
           <i data-lucide="cloud-lightning" class="w-4 h-4"></i> Journal & Cloud Sync
         </button>
       </div>
@@ -455,7 +455,7 @@
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <!-- Search Box -->
                 <div class="relative">
-                  <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-neutralSlate-400"></i>
+                  <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-neutralSlate-404"></i>
                   <input id="searchQuery" oninput="handleSearchInput()" type="text" placeholder="Search description, tags..." class="w-full bg-neutralSlate-100/60 dark:bg-neutralSlate-900/60 pl-9 pr-3 py-2 rounded-xl text-xs sm:text-sm text-neutralSlate-900 dark:text-white placeholder-neutralSlate-550 focus:outline-none focus:ring-1 focus:ring-brand-500 transition">
                 </div>
                 
@@ -566,7 +566,7 @@
               <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse min-w-[450px]">
                   <thead>
-                    <tr class="border-b border-neutralSlate-200 dark:border-neutralSlate-800 text-[10px] text-neutralSlate-500 dark:text-neutralSlate-400 uppercase font-bold tracking-wider bg-neutralSlate-50/40 dark:bg-neutralSlate-955/40">
+                    <tr class="border-b border-neutralSlate-200 dark:border-neutralSlate-800 text-[10px] text-neutralSlate-500 dark:text-neutralSlate-404 uppercase font-bold tracking-wider bg-neutralSlate-50/40 dark:bg-neutralSlate-955/40">
                       <th class="py-2.5 px-4">Companion Name</th>
                       <th class="py-2.5 px-4 text-right">You Paid For Them</th>
                       <th class="py-2.5 px-4 text-right">They Paid For You</th>
@@ -779,7 +779,7 @@
                 </button>
                 
                 <div id="gasCodeCollapsible" class="hidden mt-3 space-y-2 text-[11px] text-neutralSlate-600 dark:text-neutralSlate-300 leading-relaxed border-t border-neutralSlate-200 dark:border-neutralSlate-800/80 pt-3">
-                  <p class="font-semibold text-rose-500 dark:text-rose-400">🚨 IMPORTANT RULE FOR CORRECT SETUP (Pull/Push failures stop karne ke liye):</p>
+                  <p class="font-semibold text-rose-500 dark:text-rose-404">🚨 IMPORTANT RULE FOR CORRECT SETUP (Pull/Push failures stop karne ke liye):</p>
                   <p>Jab aap Apps Script deploy karein, toh yeh do options bilkul sahi select hone chahiye:</p>
                   <ul class="list-disc list-inside space-y-1 pl-1 font-semibold text-neutralSlate-805 dark:text-white">
                     <li>Execute as: <span class="text-brand-500">Me (your-email@gmail.com)</span></li>
@@ -967,6 +967,7 @@ function doPost(e) {
 
         <form id="expenseForm" onsubmit="saveExpense(event)" class="p-5 space-y-4">
           <input type="hidden" id="expenseModalId">
+          <input type="hidden" id="expenseModalSettledId"> <!-- Hidden original expense ID link -->
 
           <!-- Transaction Type Selector -->
           <div>
@@ -1136,7 +1137,7 @@ function doPost(e) {
       theme: "light",
       appName: "WanderBudget",
       appLogo: "✈️",
-      gasUrl: "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec",
+      gasUrl: "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec", // Newly integrated user Script URL
       autoSync: true,
       securityPin: "0000", // PIN Defaulted to 0000
       lastUpdated: 0       // Keep 0 initially so cloud pulling will safely overwrite clean state
@@ -1513,9 +1514,9 @@ function doPost(e) {
     }
 
     function restoreDefaultCloudUrl() {
-      appState.gasUrl = "https://script.google.com/macros/s/AKfycbyNDK0Gy_uDnrgFbbXTovyxqiF5oE1_b7Ob85bjVrj-kQ_EhojmtA1gMIutfMQhB3Nb/exec";
+      appState.gasUrl = "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec";
       const gasInp = document.getElementById('gasUrlInput');
-      if (gasInp) gasInp.value = "https://script.google.com/macros/s/AKfycbyNDK0Gy_uDnrgFbbXTovyxqiF5oE1_b7Ob85bjVrj-kQ_EhojmtA1gMIutfMQhB3Nb/exec";
+      if (gasInp) gasInp.value = "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec";
       saveStateToLocalStorage();
       updateSyncStatusUI("local");
       startBackgroundPolling();
@@ -1640,12 +1641,21 @@ function doPost(e) {
         const amount = parseFloat(exp.amount) || 0;
 
         if (type === 'i_paid_friend' && fid && balances[fid] !== undefined) {
-          balances[fid] += amount;
           paidForThem[fid] += amount;
+          // Only add to active outstanding balance if this individual transaction is NOT settled
+          const isSettled = expenses.some(e => e.type === 'settlement' && e.settledExpenseId === exp.id);
+          if (!isSettled) {
+            balances[fid] += amount;
+          }
         } else if (type === 'friend_paid_me' && fid && balances[fid] !== undefined) {
-          balances[fid] -= amount;
           paidForMe[fid] += amount;
-        } else if (type === 'settlement' && fid && balances[fid] !== undefined) {
+          // Only add to active outstanding balance if this individual transaction is NOT settled
+          const isSettled = expenses.some(e => e.type === 'settlement' && e.settledExpenseId === exp.id);
+          if (!isSettled) {
+            balances[fid] -= amount;
+          }
+        } else if (type === 'settlement' && fid && balances[fid] !== undefined && !exp.settledExpenseId) {
+          // General bulk settlement (backward compatibility)
           const dir = exp.settlementDirection || 'you_to_friend';
           if (dir === 'you_to_friend') {
             balances[fid] += amount;
@@ -1792,7 +1802,6 @@ function doPost(e) {
     }
 
     function renderApp() {
-      // If there are no trips at all, show empty onboarding screen
       if (!appState.trips || appState.trips.length === 0) {
         document.getElementById('dashboardMainContent').classList.add('hidden');
         document.getElementById('emptyStateOnboarding').classList.remove('hidden');
@@ -1816,7 +1825,6 @@ function doPost(e) {
       const members = activeTrip.members || [];
       safeSetText('splitBadgeCount', members.length);
 
-      // Populate Trip Selector
       const switcher = document.getElementById('headerTripSelector');
       if (switcher) {
         switcher.innerHTML = '';
@@ -1881,7 +1889,6 @@ function doPost(e) {
           settledAmount += amt;
         }
 
-        // Analytical indicators
         if (exp.paymentMethod === 'UPI') upiTotal += amt;
         if (exp.paymentMethod === 'Card') cardTotal += amt;
         if (exp.paymentMethod === 'Cash') cashTotal += amt;
@@ -1901,7 +1908,6 @@ function doPost(e) {
 
       if (cheapestAmt === Infinity) cheapestAmt = 0;
 
-      // Calculate aggregated friend udhaar KPIs
       Object.keys(calc.balances).forEach(fId => {
         const bal = calc.balances[fId];
         if (bal > 0.01) {
@@ -1911,7 +1917,6 @@ function doPost(e) {
         }
       });
 
-      // Update KPIs on Dashboard
       safeSetText('statTotalTripExpense', formatCurrency(totalTripExpense));
       safeSetText('statPersonalExpense', formatCurrency(personalExpense));
       safeSetText('statFriendsOweYou', formatCurrency(friendsOweYou));
@@ -1982,6 +1987,9 @@ function doPost(e) {
       const sortingValue = document.getElementById('sortBy').value;
 
       let filtered = expenses.filter(exp => {
+        // EXCLUDE settlement rows from the history register list view
+        if (exp.type === 'settlement') return false;
+
         const matchesQuery = !query || 
           exp.description.toLowerCase().includes(query) || 
           (exp.notes && exp.notes.toLowerCase().includes(query)) || 
@@ -2010,13 +2018,16 @@ function doPost(e) {
 
       if (expenses.length === 0) {
         container.innerHTML = `
-          <div class="py-12 px-4 text-center text-neutralSlate-400">
+          <div class="py-12 px-4 text-center text-neutralSlate-404">
             <p class="font-semibold text-xs sm:text-sm">No spend records found</p>
             <p class="text-[10px] mt-0.5 text-neutralSlate-555">Tap "Add Spend / Settlement" to record items.</p>
           </div>
         `;
         return;
       }
+
+      const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
+      const allExpenses = activeTrip ? activeTrip.expenses : [];
 
       expenses.forEach(exp => {
         const categoryDetails = CATEGORIES.find(c => c.id === exp.category) || { name: exp.category, bgClass: "bg-neutralSlate-100 text-neutralSlate-600 border border-neutralSlate-200" };
@@ -2047,11 +2058,18 @@ function doPost(e) {
           subBadgeText = `<span class="text-[8px] bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 px-1.5 py-0.5 rounded font-black tracking-wide">📤 YOU PAID FOR ${companion.name.toUpperCase()}</span>`;
         } else if (type === 'friend_paid_me') {
           subBadgeText = `<span class="text-[8px] bg-rose-100 dark:bg-rose-900/30 text-rose-505 px-1.5 py-0.5 rounded font-black tracking-wide">📥 ${companion.name.toUpperCase()} PAID FOR YOU</span>`;
-        } else if (type === 'settlement') {
-          const dir = exp.settlementDirection || 'you_to_friend';
-          const directionText = dir === 'you_to_friend' ? `YOU → ${companion.name.toUpperCase()}` : `${companion.name.toUpperCase()} → YOU`;
-          subBadgeText = `<span class="text-[8px] bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 px-1.5 py-0.5 rounded font-black tracking-wide">🤝 SETTLEMENT: ${directionText}</span>`;
-          borderOverride = 'border-l-4 border-indigo-500';
+        }
+
+        // Search for a linked settlement transaction in our database
+        const settlementTx = allExpenses.find(e => e.type === 'settlement' && e.settledExpenseId === exp.id);
+        const isAlreadySettled = !!settlementTx;
+
+        // Custom pink line requested update: Show "Settled on [Date]" if settled
+        let notesText = exp.notes || 'No description notes.';
+        if (isAlreadySettled && settlementTx) {
+          const sDateObj = new Date(settlementTx.date);
+          const formattedSDate = sDateObj.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
+          notesText = `<span class="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Settled on ${formattedSDate}</span>` + (exp.notes ? ` <span class="text-neutralSlate-400">| ${exp.notes}</span>` : '');
         }
 
         row.innerHTML = `
@@ -2067,34 +2085,48 @@ function doPost(e) {
                 <span class="px-1.5 py-0.5 rounded text-[8px] font-bold tracking-wider uppercase ${categoryDetails.bgClass}">${categoryDetails.name}</span>
                 ${subBadgeText}
               </div>
-              <p class="text-[10px] text-neutralSlate-400 mt-0.5 truncate">${exp.notes || 'No description notes.'}</p>
+              <p id="descNotesText-${exp.id}" class="text-[10px] text-neutralSlate-400 mt-0.5 truncate">${notesText}</p>
               ${billBadge}
             </div>
           </div>
 
-          <!-- Settle Up option right in the middle-right area as circled in edited-image.png -->
+          <!-- Quick smart Settle buttons on table rows with instant disable badge once clicked -->
           ${(type === 'i_paid_friend' || type === 'friend_paid_me') ? `
             <div class="hidden sm:block flex-shrink-0 no-print">
-              <button onclick="triggerQuickSettle('${exp.friendId}', ${exp.amount}, '${type === 'i_paid_friend' ? 'friend_to_you' : 'you_to_friend'}', '${exp.description.replace(/'/g, "\\'")}')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[10px] px-3 py-1.5 rounded-lg transition shadow-sm flex items-center gap-1">
-                <i data-lucide="handshake" class="w-3.5 h-3.5"></i>
-                <span>Settle</span>
-              </button>
+              ${isAlreadySettled ? `
+                <span class="bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 font-bold text-[10px] px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-emerald-500/20">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500"></i>
+                  <span>Settled</span>
+                </span>
+              ` : `
+                <button onclick="triggerQuickSettle('${exp.friendId}', ${exp.amount}, '${type === 'i_paid_friend' ? 'friend_to_you' : 'you_to_friend'}', '${exp.description.replace(/'/g, "\\'")}', '${exp.id}')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[10px] px-3 py-1.5 rounded-lg transition shadow-sm flex items-center gap-1">
+                  <i data-lucide="handshake" class="w-3.5 h-3.5"></i>
+                  <span>Settle</span>
+                </button>
+              `}
             </div>
           ` : ''}
 
           <div class="flex items-center gap-2 flex-shrink-0 justify-end">
-            <!-- Mobile Compact Settle Action -->
+            <!-- Mobile Compact Settle Action or badge status -->
             ${(type === 'i_paid_friend' || type === 'friend_paid_me') ? `
-              <button onclick="triggerQuickSettle('${exp.friendId}', ${exp.amount}, '${type === 'i_paid_friend' ? 'friend_to_you' : 'you_to_friend'}', '${exp.description.replace(/'/g, "\\'")}')" class="sm:hidden bg-emerald-500 hover:bg-emerald-600 text-white p-1 rounded-lg transition flex items-center justify-center">
-                <i data-lucide="handshake" class="w-3.5 h-3.5"></i>
-              </button>
+              ${isAlreadySettled ? `
+                <span class="sm:hidden text-emerald-500 flex items-center justify-center p-1" title="Already Settled">
+                  <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                </span>
+              ` : `
+                <button onclick="triggerQuickSettle('${exp.friendId}', ${exp.amount}, '${type === 'i_paid_friend' ? 'friend_to_you' : 'you_to_friend'}', '${exp.description.replace(/'/g, "\\'")}', '${exp.id}')" class="sm:hidden bg-emerald-500 hover:bg-emerald-600 text-white p-1 rounded-lg transition flex items-center justify-center">
+                  <i data-lucide="handshake" class="w-3.5 h-3.5"></i>
+                </button>
+              `}
             ` : ''}
+            
             <span class="font-bold text-xs sm:text-sm text-neutralSlate-900 dark:text-white">${formatCurrency(exp.amount)}</span>
             <div class="flex items-center gap-1">
-              <button onclick="openExpenseEditModal('${exp.id}')" class="p-1 text-neutralSlate-400 hover:text-brand-500 rounded-lg transition">
+              <button onclick="openExpenseEditModal('${exp.id}')" class="p-1 text-neutralSlate-404 hover:text-brand-500 rounded-lg transition">
                 <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
               </button>
-              <button onclick="triggerDeleteExpense('${exp.id}')" class="p-1 text-neutralSlate-400 hover:text-rose-500 rounded-lg transition">
+              <button onclick="triggerDeleteExpense('${exp.id}')" class="p-1 text-neutralSlate-404 hover:text-rose-500 rounded-lg transition">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
             </div>
@@ -2265,7 +2297,7 @@ function doPost(e) {
 
       if (activeDuesCount === 0) {
         suggestionsDiv.innerHTML = `
-          <div class="py-4 text-center text-neutralSlate-505 bg-neutralSlate-50 dark:bg-neutralSlate-950 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800">
+          <div class="py-4 text-center text-neutralSlate-505 bg-neutralSlate-50 dark:bg-neutralSlate-955 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800">
             <i data-lucide="check-check" class="w-5 h-5 mx-auto text-emerald-500 mb-1"></i>
             <p class="text-[11px] font-bold text-neutralSlate-700 dark:text-slate-355">All Balances Settled!</p>
           </div>
@@ -2376,8 +2408,8 @@ function doPost(e) {
       );
     }
 
-    // Quick Settle up redirector with original description integration
-    function triggerQuickSettle(friendId, amount, direction, originalDesc = "") {
+    // Quick Settle up redirector containing the targeted original expenseId link
+    function triggerQuickSettle(friendId, amount, direction, originalDesc = "", settledExpenseId = "") {
       openExpenseModal();
       document.getElementById('expenseModalType').value = 'settlement';
       handleTypeChange('settlement');
@@ -2386,6 +2418,9 @@ function doPost(e) {
       document.getElementById('expenseModalSettleDirection').value = direction;
       document.getElementById('expenseModalAmount').value = amount.toFixed(2);
       document.getElementById('expenseModalDescription').value = originalDesc ? `Settle: ${originalDesc}` : "Settle Balance";
+      
+      // Save linking original expense ID so we can dynamically replace the button with Settled Badge!
+      document.getElementById('expenseModalSettledId').value = settledExpenseId;
     }
 
     function openTripModal() {
@@ -2537,6 +2572,7 @@ function doPost(e) {
       closeExpenseModal();
       document.getElementById('expenseModalTitle').innerHTML = '<i data-lucide="plus-circle" class="text-brand-500"></i> Log Spend Transaction';
       document.getElementById('expenseModalId').value = '';
+      document.getElementById('expenseModalSettledId').value = ''; // Clean old keys
       
       const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
       if (activeTrip) {
@@ -2561,6 +2597,7 @@ function doPost(e) {
 
       document.getElementById('expenseModalTitle').innerHTML = '<i data-lucide="pencil" class="text-brand-500"></i> Edit Spend details';
       document.getElementById('expenseModalId').value = exp.id;
+      document.getElementById('expenseModalSettledId').value = exp.settledExpenseId || '';
       document.getElementById('expenseModalDate').value = exp.date;
       document.getElementById('expenseModalCategory').value = exp.category;
       document.getElementById('expenseModalDescription').value = exp.description;
@@ -2618,8 +2655,13 @@ function doPost(e) {
       document.getElementById('expenseModal').classList.add('hidden');
       document.getElementById('expenseForm').reset();
       document.getElementById('expenseModalId').value = '';
+      document.getElementById('expenseModalSettledId').value = ''; // Clean old linked keys
       document.getElementById('billAttachmentStatus').textContent = "None";
       document.getElementById('expenseModalBillBase64').value = "";
+      
+      // Safety release of form submit locking
+      const submitBtn = document.getElementById('expenseSubmitBtn');
+      if (submitBtn) submitBtn.disabled = false;
     }
 
     function processBillImage(event) {
@@ -2645,10 +2687,19 @@ function doPost(e) {
 
     function saveExpense(event) {
       event.preventDefault();
+
+      // LOCK SUBMISSION TO PREVENT DUPLICATES: Immediately lock di submit button
+      const submitBtn = document.getElementById('expenseSubmitBtn');
+      if (submitBtn) submitBtn.disabled = true;
+
       const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
-      if (!activeTrip) return;
+      if (!activeTrip) {
+        if (submitBtn) submitBtn.disabled = false;
+        return;
+      }
 
       const id = document.getElementById('expenseModalId').value;
+      const settledId = document.getElementById('expenseModalSettledId').value; // Get original key link if any
       const date = document.getElementById('expenseModalDate').value;
       const category = document.getElementById('expenseModalCategory').value;
       const description = document.getElementById('expenseModalDescription').value.trim();
@@ -2663,11 +2714,13 @@ function doPost(e) {
 
       if (amount <= 0) {
         openToastAlert("Check amount! Cost must be greater than zero.");
+        if (submitBtn) submitBtn.disabled = false;
         return;
       }
 
       if (type !== 'personal' && !friendId) {
         openToastAlert("Pehle companion select karein!");
+        if (submitBtn) submitBtn.disabled = false;
         return;
       }
 
@@ -2682,7 +2735,8 @@ function doPost(e) {
         billImage: billBase64,
         type,
         friendId: type === 'personal' ? '' : friendId,
-        settlementDirection: type === 'settlement' ? settlementDirection : ''
+        settlementDirection: type === 'settlement' ? settlementDirection : '',
+        settledExpenseId: type === 'settlement' ? settledId : '' // Safely store di original mapped expense link
       };
 
       if (id) {
@@ -2710,7 +2764,8 @@ function doPost(e) {
         "Delete Transaction Record?",
         `Kya aap spend diary entry "${exp.description}" ko remove karna chahte hain?`,
         () => {
-          activeTrip.expenses = activeTrip.expenses.filter(e => e.id !== expenseId);
+          // Delete both the original expense AND any linked settlement transactions automatically!
+          activeTrip.expenses = activeTrip.expenses.filter(e => e.id !== expenseId && e.settledExpenseId !== expenseId);
           saveStateToLocalStorage();
           renderApp();
         },
