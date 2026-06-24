@@ -1894,9 +1894,11 @@ function doPost(e) {
           settledAmount += amt;
         }
 
+        if (type !== 'settlement') {
         if (exp.paymentMethod === 'UPI') upiTotal += amt;
         if (exp.paymentMethod === 'Card') cardTotal += amt;
         if (exp.paymentMethod === 'Cash') cashTotal += amt;
+}
 
         if (type !== 'settlement') {
           if (amt > biggestAmt) {
