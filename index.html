@@ -123,7 +123,7 @@
     </div>
 
     <h2 class="text-xl sm:text-2xl font-black tracking-tight mb-2">Syncing with Cloud...</h2>
-    <p class="text-xs sm:text-sm text-neutralSlate-400 max-w-sm text-center px-6 leading-relaxed mb-10">
+    <p class="text-xs sm:text-sm text-neutralSlate-404 max-w-sm text-center px-6 leading-relaxed mb-10">
       Please wait while we secure your latest database terminal
     </p>
 
@@ -148,19 +148,18 @@
              <div class="absolute inset-1 rounded-full bg-slate-900 overflow-hidden border-2 border-emerald-400/30 flex items-center justify-center">
               <img src="./logo.png"
                   alt="Logo"
-                class="w-full h-full object-cover">
-    
+                class="w-full h-full object-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%238b5cf6\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'m12 8-4 4 4 4\'/><path d=\'M16 12H8\'/></svg>'">
             </div>
         </div>
 
         <h3 class="text-xl font-extrabold tracking-widest text-white uppercase">SACHINDHISLE04</h3>
-        <p class="text-[10px] text-neutralSlate-505 tracking-wider uppercase mt-1 mb-6">Secure Admin Dashboard Terminal</p>
+        <p class="text-[10px] text-neutralSlate-400 tracking-wider uppercase mt-1 mb-6">Secure Admin Dashboard Terminal</p>
 
         <!-- PIN Login form block -->
         <div class="w-full space-y-4">
           <div class="relative">
-            <i data-lucide="lock" class="w-4 h-4 absolute left-4 top-3.5 text-neutralSlate-550"></i>
-            <input type="password" id="loginPinInput" maxlength="4" placeholder="Enter Login PIN" class="w-full bg-[#1b253b] text-white placeholder-neutralSlate-550 px-12 py-3 rounded-xl border border-neutralSlate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center font-black tracking-normal text-lg">
+            <i data-lucide="lock" class="w-4 h-4 absolute left-4 top-3.5 text-neutralSlate-400"></i>
+            <input type="password" id="loginPinInput" maxlength="4" placeholder="Enter Login PIN" class="w-full bg-[#1b253b] text-white placeholder-neutralSlate-400 px-12 py-3 rounded-xl border border-neutralSlate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center font-black tracking-normal text-lg">
           </div>
           <div id="pinErrorMessage" class="hidden text-rose-500 font-bold text-[11px]">Incorrect Security PIN. Please try again.</div>
           
@@ -281,13 +280,24 @@
   <!-- Main Responsive Layout Wrapper -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 print-full-width">
     
+    <!-- Print Report Header Details (Visible only in Print mode) -->
+    <div class="hidden print:block border-b border-neutralSlate-300 dark:border-neutralSlate-800 pb-4 mb-6 text-xs text-neutralSlate-800 dark:text-neutralSlate-100">
+      <h3 class="text-base font-extrabold uppercase tracking-tight mb-2">Trip Budget Analysis Summary</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <div><strong>Trip Budget Limit:</strong> <span id="printBudgetLimit">--</span></div>
+        <div><strong>Total Expense:</strong> <span id="printTotalExpense">--</span></div>
+        <div><strong>Remaining Budget:</strong> <span id="printRemainingBudget">--</span></div>
+        <div><strong>Budget Status:</strong> <span id="printBudgetStatus">--</span></div>
+      </div>
+    </div>
+
     <!-- Onboarding empty state -->
     <div id="emptyStateOnboarding" class="hidden max-w-xl mx-auto bg-white dark:bg-neutralSlate-900 border border-neutralSlate-200 dark:border-neutralSlate-800 rounded-3xl p-8 text-center shadow-xl my-12">
       <div class="w-20 h-20 bg-brand-500/10 text-brand-500 rounded-full flex items-center justify-center mx-auto mb-6">
         <i data-lucide="plane-takeoff" class="w-10 h-10"></i>
       </div>
       <h2 class="text-2xl font-black text-neutralSlate-900 dark:text-white mb-2">Welcome to WanderBudget!</h2>
-      <p class="text-sm text-neutralSlate-500 dark:text-neutralSlate-404 mb-8 leading-relaxed">
+      <p class="text-sm text-neutralSlate-505 dark:text-neutralSlate-404 mb-8 leading-relaxed">
         Abhi aapke system me koi active trip register nahi hai. Apni budget logs, spends, aur companion udhaar khata manage karne ke liye ek new trip start karein ya Cloud Sheet se data pull karein!
       </p>
       
@@ -312,7 +322,7 @@
         <div id="tripCoverBg" class="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-500"></div>
 
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mt-2">
-          <div class="space-y-2">
+          <div class="space-y-2 w-full">
             <div class="inline-flex items-center gap-1.5 bg-neutralSlate-100 dark:bg-neutralSlate-800 px-3 py-1 rounded-full text-[10px] font-bold text-neutralSlate-600 dark:text-neutralSlate-300">
               <i data-lucide="map-pin" class="w-3.5 h-3.5 text-brand-500"></i> 
               <span id="tripDestination" class="tracking-wide">Loading...</span>
@@ -328,6 +338,11 @@
               <button onclick="toggleDropdown('coverDropdown')" class="no-print hover:text-brand-500 font-medium flex items-center gap-1">
                 <i data-lucide="palette" class="w-3.5 h-3.5"></i> Theme Color
               </button>
+            </div>
+
+            <!-- Dynamic Budget Warning & Status Panel (Trip Header integration) -->
+            <div id="tripHeaderBudgetContainer" class="mt-3 pt-3 border-t border-neutralSlate-200 dark:border-neutralSlate-800/80 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-neutralSlate-650 dark:text-neutralSlate-300">
+              <!-- Handled in JS -->
             </div>
           </div>
           
@@ -359,7 +374,7 @@
       <section class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
         
         <!-- KPI: Total Trip Expense -->
-        <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between">
+        <div id="kpiTotalExpenseCard" class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between transition-colors">
           <div class="flex items-center justify-between text-neutralSlate-505 dark:text-neutralSlate-404 mb-1">
             <span class="text-[9px] font-bold uppercase tracking-wider">TOTAL TRIP EXPENSE</span>
             <div class="p-1 rounded-lg bg-brand-500/10 text-brand-500">
@@ -569,7 +584,7 @@
               <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse min-w-[450px]">
                   <thead>
-                    <tr class="border-b border-neutralSlate-200 dark:border-neutralSlate-800 text-[10px] text-neutralSlate-500 dark:text-neutralSlate-404 uppercase font-bold tracking-wider bg-neutralSlate-50/40 dark:bg-neutralSlate-955/40">
+                    <tr class="border-b border-neutralSlate-200 dark:border-neutralSlate-800 text-[10px] text-neutralSlate-505 dark:text-neutralSlate-404 uppercase font-bold tracking-wider bg-neutralSlate-50/40 dark:bg-neutralSlate-955/40">
                       <th class="py-2.5 px-4">Companion Name</th>
                       <th class="py-2.5 px-4 text-right">You Paid For Them</th>
                       <th class="py-2.5 px-4 text-right">They Paid For You</th>
@@ -691,7 +706,7 @@
                   <p class="text-[9px] text-neutralSlate-500">Most Visited Category</p>
                   <p id="extremeMostCategory" class="font-bold mt-0.5 text-neutralSlate-800 dark:text-white">---</p>
                 </div>
-                <span id="extremeMostCategoryCount" class="bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 font-bold text-[10px] px-2 py-0.5 rounded-full">0 times</span>
+                <span id="extremeMostCategoryCount" class="bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 font-bold text-[10px] px-2.5 py-0.5 rounded-full">0 times</span>
               </div>
             </div>
           </div>
@@ -757,7 +772,7 @@
                   </button>
                 </div>
                 <div class="relative">
-                  <i data-lucide="link-2" class="w-3.5 h-3.5 absolute left-3 top-2.5 text-neutralSlate-400"></i>
+                  <i data-lucide="link-2" class="w-3.5 h-3.5 absolute left-3 top-2.5 text-neutralSlate-404"></i>
                   <input type="url" id="gasUrlInput" oninput="updateCloudUrl(this.value)" class="w-full bg-neutralSlate-100 dark:bg-neutralSlate-955 pl-8 pr-3 py-1.5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs text-neutralSlate-900 dark:text-white placeholder-neutralSlate-500 focus:outline-none focus:ring-1 focus:ring-brand-500 transition" placeholder="https://script.google.com/macros/s/.../exec">
                 </div>
               </div>
@@ -1117,21 +1132,20 @@ function doPost(e) {
   <script>
     // Standard System Categories
     const CATEGORIES = [
-      { id: "Food", name: "Food 🍽️", bgClass: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20" },
-      { id: "Train", name: "Train 🚆", bgClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20" },
-      { id: "Bus", name: "Bus 🚌", bgClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20" },
-      { id: "Auto", name: "Auto 🛺", bgClass: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20" },
-      { id: "Taxi", name: "Taxi 🚕", bgClass: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20" },
-      { id: "Petrol", name: "Petrol ⛽", bgClass: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" },
-      { id: "Hotel", name: "Hotel 🏨", bgClass: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20" },
-      { id: "Shopping", name: "Shopping 🛍️", bgClass: "bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-500/20" },
-      { id: "Snacks", name: "Snacks ☕", bgClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20" },
-      { id: "Water", name: "Water 💧", bgClass: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20" },
-      { id: "Darshan", name: "Ticket 🙏", bgClass: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20" },
-      { id: "Medical", name: "Medical 💊", bgClass: "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20" },
-      { id: "Flight", name: "Flight ✈️", bgClass: "bg-sky-500/10 text-sky-605 text-sky-600 dark:text-sky-400 border border-sky-500/20" },
+      { id: "Food", name: "Food 🍽️", bgClass: "bg-orange-500/10 text-orange-600 dark:text-orange-404 border border-orange-500/20" },
+      { id: "Train", name: "Train 🚆", bgClass: "bg-blue-500/10 text-blue-600 dark:text-blue-404 border border-blue-500/20" },
+      { id: "Bus", name: "Bus 🚌", bgClass: "bg-amber-500/10 text-amber-600 dark:text-amber-404 border border-amber-500/20" },
+      { id: "Auto", name: "Auto 🛺", bgClass: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-404 border border-yellow-500/20" },
+      { id: "Taxi", name: "Taxi 🚕", bgClass: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-404 border border-yellow-500/20" },
+      { id: "Petrol", name: "Petrol ⛽", bgClass: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-404 border border-emerald-500/20" },
+      { id: "Hotel", name: "Hotel 🏨", bgClass: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-404 border border-indigo-500/20" },
+      { id: "Shopping", name: "Shopping 🛍️", bgClass: "bg-pink-500/10 text-pink-600 dark:text-pink-404 border border-pink-500/20" },
+      { id: "Snacks", name: "Snacks ☕", bgClass: "bg-amber-500/10 text-amber-600 dark:text-amber-404 border border-amber-500/20" },
+      { id: "Water", name: "Water 💧", bgClass: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-404 border border-cyan-500/20" },
+      { id: "Darshan", name: "Ticket 🙏", bgClass: "bg-rose-500/10 text-rose-600 dark:text-rose-404 border border-rose-500/20" },
+      { id: "Medical", name: "Medical 💊", bgClass: "bg-red-500/10 text-red-600 dark:text-red-404 border border-red-500/20" },
+      { id: "Flight", name: "Flight ✈️", bgClass: "bg-sky-500/10 text-sky-600 dark:text-sky-404 border border-sky-500/20" },
       { id: "Misc", name: "Other 📌", bgClass: "bg-neutralSlate-500/10 text-neutralSlate-600 dark:text-neutralSlate-404 border border-neutralSlate-500/20" }
-    
     ];
 
     // Master App State (Clean blank state, PIN changed to 0000, lastUpdated set to 0 for cloud override)
@@ -1443,7 +1457,7 @@ function doPost(e) {
 
       if (syncHeader) {
         if (!appState.gasUrl) {
-          syncHeader.innerHTML = `<i data-lucide="cloud" class="w-3 h-3 text-neutralSlate-404"></i> <span class="text-[9px] text-neutralSlate-500 uppercase font-bold tracking-wider">Local Only</span>`;
+          syncHeader.innerHTML = `<i data-lucide="cloud" class="w-3 h-3 text-neutralSlate-404"></i> <span class="text-[9px] text-neutralSlate-505 uppercase font-bold tracking-wider">Local Only</span>`;
         } else {
           switch (status) {
             case 'syncing':
@@ -1492,7 +1506,7 @@ function doPost(e) {
               break;
             case 'error':
               cloudBadge.textContent = "ERROR";
-              cloudBadge.className = "bg-rose-500/10 text-rose-600 dark:text-rose-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-rose-500/20";
+              cloudBadge.className = "bg-rose-500/10 text-rose-600 dark:text-rose-404 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-rose-500/20";
               break;
             default:
               cloudBadge.textContent = appState.autoSync ? "AUTO ON" : "CONNECTED";
@@ -1764,7 +1778,7 @@ function doPost(e) {
       document.getElementById(tabId).classList.add('block');
 
       document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.className = "tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-505 dark:text-neutralSlate-404 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2 whitespace-nowrap";
+        btn.className = "tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-555 dark:text-neutralSlate-404 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2 whitespace-nowrap";
       });
 
       const activeBtn = document.getElementById('btnT' + tabId.substring(1));
@@ -1788,6 +1802,17 @@ function doPost(e) {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       });
+    }
+
+    // Helper formatting function to output standard negative values without trailing minus-sign placement anomalies
+    function formatRemainingBudget(amount) {
+      const isNegative = amount < 0;
+      const absVal = Math.abs(amount);
+      const formatted = appState.currency + " " + parseFloat(absVal).toLocaleString('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      return isNegative ? "-" + formatted : formatted;
     }
 
     let searchDebounceTimer = null;
@@ -1895,10 +1920,10 @@ function doPost(e) {
         }
 
         if (type !== 'settlement') {
-        if (exp.paymentMethod === 'UPI') upiTotal += amt;
-        if (exp.paymentMethod === 'Card') cardTotal += amt;
-        if (exp.paymentMethod === 'Cash') cashTotal += amt;
-}
+          if (exp.paymentMethod === 'UPI') upiTotal += amt;
+          if (exp.paymentMethod === 'Card') cardTotal += amt;
+          if (exp.paymentMethod === 'Cash') cashTotal += amt;
+        }
 
         if (type !== 'settlement') {
           if (amt > biggestAmt) {
@@ -1929,6 +1954,91 @@ function doPost(e) {
       safeSetText('statFriendsOweYou', formatCurrency(friendsOweYou));
       safeSetText('statYouOweFriends', formatCurrency(youOweFriends));
       safeSetText('statSettledAmount', formatCurrency(settledAmount));
+
+      // --- BUDGET WARNING & TRACKING SYSTEM CORE LOGIC ---
+      const budgetLimit = parseFloat(activeTrip.budget) || 0;
+      const budgetContainer = document.getElementById('tripHeaderBudgetContainer');
+      const kpiCard = document.getElementById('kpiTotalExpenseCard');
+      
+      if (budgetContainer) {
+        if (budgetLimit <= 0) {
+          budgetContainer.innerHTML = `
+            <div class="flex items-center gap-1.5 text-neutralSlate-500 dark:text-neutralSlate-404 font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-neutralSlate-400 dark:bg-neutralSlate-600"></span>
+              <span>No Budget Limit Set</span>
+            </div>
+          `;
+          
+          if (kpiCard) {
+            kpiCard.classList.remove('border-rose-500', 'dark:border-rose-500');
+            kpiCard.classList.add('border-neutralSlate-200', 'dark:border-neutralSlate-900');
+          }
+        } else {
+          const remainingBudget = budgetLimit - totalTripExpense;
+          const isExceeded = remainingBudget < 0;
+          
+          const formattedBudget = formatCurrency(budgetLimit);
+          const formattedSpent = formatCurrency(totalTripExpense);
+          const formattedRemaining = formatRemainingBudget(remainingBudget);
+          
+          let remainingText = "";
+          let warningBadgeHTML = "";
+          
+          if (remainingBudget >= 0) {
+            remainingText = `<span class="text-emerald-600 dark:text-emerald-400 font-bold">${formattedRemaining} Remaining</span>`;
+          } else {
+            const exceededAmt = Math.abs(remainingBudget);
+            remainingText = `<span class="text-rose-500 font-bold">Budget Exceeded by ${formatCurrency(exceededAmt)}</span>`;
+            warningBadgeHTML = `
+              <span class="inline-flex items-center gap-1 bg-rose-500/10 text-rose-600 dark:text-rose-400 font-black px-2.5 py-1 rounded-lg text-[10px] tracking-wide border border-rose-500/20">
+                ⚠ Budget Exceeded by ${formatCurrency(exceededAmt)}
+              </span>
+            `;
+          }
+          
+          budgetContainer.innerHTML = `
+            <div class="flex items-center gap-x-4 gap-y-1.5 flex-wrap">
+              <span class="text-neutralSlate-555 dark:text-neutralSlate-404 font-medium">Budget: <strong class="text-neutralSlate-800 dark:text-slate-200 font-bold">${formattedBudget}</strong></span>
+              <span class="text-neutralSlate-555 dark:text-neutralSlate-404 font-medium">Spent: <strong class="text-neutralSlate-800 dark:text-slate-200 font-bold">${formattedSpent}</strong></span>
+              <span class="text-neutralSlate-555 dark:text-neutralSlate-404 font-medium">Remaining: ${remainingText}</span>
+              ${warningBadgeHTML}
+            </div>
+          `;
+          
+          // Toggle Visual border on KPI Total Trip Expense card
+          if (kpiCard) {
+            if (isExceeded) {
+              kpiCard.classList.remove('border-neutralSlate-200', 'dark:border-neutralSlate-900');
+              kpiCard.classList.add('border-rose-500', 'dark:border-rose-500');
+            } else {
+              kpiCard.classList.remove('border-rose-500', 'dark:border-rose-500');
+              kpiCard.classList.add('border-neutralSlate-200', 'dark:border-neutralSlate-900');
+            }
+          }
+        }
+      }
+
+      // Populate Print-Report Variables
+      const printBudgetLimitEl = document.getElementById('printBudgetLimit');
+      const printTotalExpenseEl = document.getElementById('printTotalExpense');
+      const printRemainingBudgetEl = document.getElementById('printRemainingBudget');
+      const printBudgetStatusEl = document.getElementById('printBudgetStatus');
+      
+      if (printBudgetLimitEl && printTotalExpenseEl && printRemainingBudgetEl && printBudgetStatusEl) {
+        if (budgetLimit <= 0) {
+          printBudgetLimitEl.textContent = "No Budget Limit Set";
+          printTotalExpenseEl.textContent = formatCurrency(totalTripExpense);
+          printRemainingBudgetEl.textContent = "N/A";
+          printBudgetStatusEl.textContent = "N/A";
+        } else {
+          const remainingBudget = budgetLimit - totalTripExpense;
+          printBudgetLimitEl.textContent = formatCurrency(budgetLimit);
+          printTotalExpenseEl.textContent = formatCurrency(totalTripExpense);
+          printRemainingBudgetEl.textContent = formatRemainingBudget(remainingBudget);
+          printBudgetStatusEl.textContent = remainingBudget >= 0 ? "Under Budget" : `Budget Exceeded by ${formatCurrency(Math.abs(remainingBudget))}`;
+        }
+      }
+      // --- END BUDGET LOGIC ---
 
       safeSetText('extremeBiggestDesc', biggestDesc);
       safeSetText('extremeBiggestVal', formatCurrency(biggestAmt));
@@ -2291,7 +2401,7 @@ function doPost(e) {
 
           item.innerHTML = `
             <div>
-              <p class="text-[10px] text-neutralSlate-505 font-semibold">${actionLabel}</p>
+              <p class="text-[10px] text-neutralSlate-555 font-semibold">${actionLabel}</p>
               <p class="text-xs font-black text-brand-600 dark:text-brand-400 mt-0.5">${formatCurrency(Math.abs(bal))}</p>
             </div>
             <button onclick="triggerQuickSettle('${m.id}', ${Math.abs(bal)}, '${direction}')" class="bg-brand-500 hover:bg-brand-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg transition shadow-sm">
@@ -2695,7 +2805,7 @@ function doPost(e) {
     function saveExpense(event) {
       event.preventDefault();
 
-      // LOCK SUBMISSION TO PREVENT DUPLICATES: Immediately lock di submit button
+      // LOCK SUBMISSION TO PREVENT DUPLICATES: Immediately lock the submit button
       const submitBtn = document.getElementById('expenseSubmitBtn');
       if (submitBtn) submitBtn.disabled = true;
 
@@ -2743,7 +2853,7 @@ function doPost(e) {
         type,
         friendId: type === 'personal' ? '' : friendId,
         settlementDirection: type === 'settlement' ? settlementDirection : '',
-        settledExpenseId: type === 'settlement' ? settledId : '' // Safely store di original mapped expense link
+        settledExpenseId: type === 'settlement' ? settledId : '' // Safely store original mapped expense link
       };
 
       if (id) {
