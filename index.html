@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <link rel="icon" type="image/png" href="logo1.png">
+  <link rel="icon" type="image/png" href="logo.png">
   
   <!-- Progressive Web App Settings -->
   <link rel="manifest" href="manifest.json">
@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="TripExpense">
-  <link rel="apple-touch-icon" href="logo.png">
+  <link class="apple-touch-icon" href="logo.png">
     
   <title>TripExpenceTracker — Minimalist Trip Expense Diary & Khata</title>
   
@@ -22,6 +22,9 @@
       darkMode: 'class',
       theme: {
         extend: {
+          screens: {
+            'xs': '375px',
+          },
           colors: {
             brand: {
               50: '#f5f3ff',
@@ -135,9 +138,18 @@
     @keyframes slideInUp {
       to { transform: translateY(0); }
     }
+
+    /* Scrollbar utility optimization for horizontal tabs block on touch screens */
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-none {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
-<body class="bg-neutralSlate-50 text-neutralSlate-900 dark:bg-neutralSlate-955 dark:text-neutralSlate-100 min-h-screen transition-colors duration-200 pb-16 sm:pb-6">
+<body class="bg-neutralSlate-50 text-neutralSlate-900 dark:bg-neutralSlate-955 dark:text-neutralSlate-100 min-h-screen transition-colors duration-200 pb-20 sm:pb-6">
 
   <!-- FULL SCREEN OVERLAY 1: Startup Sync & Cloud Verification Screen -->
   <div id="cloudHandshakeScreen" class="fixed inset-0 flex flex-col items-center justify-center bg-[#090f1d] text-white transition-opacity duration-500" style="z-index: 10000;">
@@ -182,16 +194,16 @@
         <h3 class="text-xl font-extrabold tracking-widest text-white uppercase">TripExpenceTracker</h3>
         <p class="text-[10px] text-neutralSlate-404 tracking-wider uppercase mt-1 mb-1">Secure System Dashboard Terminal</p>
            <div class="mt-0 text-[10px] tracking-wider text-neutralSlate-404 text-center">
-              Defaut Pin <span class="text-emerald-400 font-bold">0000</span>
-         </div
+              Default Pin <span class="text-emerald-400 font-bold">0000</span>
+         </div>
 
         <!-- PIN Entry Form Box -->
-        <div class="w-full space-y-4">
+        <div class="w-full space-y-4 mt-4">
           <div class="relative">
-            <i data-lucide="lock" class="w-4 h-4 absolute left-4 top-3.5 text-neutralSlate-400"></i>
-            <input type="password" id="loginPinInput" maxlength="4" placeholder="Enter Login PIN" class="w-full bg-[#1b253b] text-white placeholder-neutralSlate-400 px-12 py-3 rounded-xl border border-neutralSlate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center font-black tracking-normal text-lg">
+            <i data-lucide="lock" class="w-4 h-4 absolute left-4 top-3.5 text-neutralSlate-404"></i>
+            <input type="password" id="loginPinInput" maxlength="4" placeholder="Enter Login PIN" class="w-full bg-[#1b253b] text-white placeholder-neutralSlate-404 px-12 py-3 rounded-xl border border-neutralSlate-750 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center font-black tracking-normal text-lg">
           </div>
-          <div id="pinErrorMessage" class="hidden text-rose-500 font-bold text-[11px]">Galat Security PIN hai. Kripya firse koshish karein.</div>
+          <div id="pinErrorMessage" class="hidden text-rose-505 font-bold text-[11px]">Galat Security PIN hai. Kripya firse koshish karein.</div>
           
           <button onclick="verifySecurityPin()" class="w-full bg-[#0fa968] hover:bg-[#0c8a54] text-white py-3.5 rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/50">
             <span>System Access Karein</span>
@@ -200,8 +212,8 @@
         </div>
 
         <div class="mt-6 text-[10px] tracking-wider text-neutralSlate-404 text-center">
-    Crafted with ❤️ by <span class="text-emerald-400 font-bold">SACHINDHISLE04</span>
-         </div>
+          Crafted with ❤️ by <span class="text-emerald-400 font-bold">SACHINDHISLE04</span>
+        </div>
 
       </div>
     </div>
@@ -209,98 +221,46 @@
 
   <!-- Header Navigation Bar -->
   <header class="no-print sticky top-0 z-40 bg-white/80 dark:bg-neutralSlate-955/80 backdrop-blur-md border-b border-neutralSlate-200 dark:border-neutralSlate-900 transition-all">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 overflow-hidden">
       
       <!-- Brand Logo, Info & Status -->
-      <div class="flex items-center space-x-3">
-        <div class="bg-brand-500/10 dark:bg-brand-500/20 p-2 rounded-xl text-brand-600 dark:text-brand-400 flex items-center justify-center">
-          <span id="headerLogoContainer" class="text-xl font-bold leading-none">✈️</span>
+      <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+        <div class="bg-brand-500/10 dark:bg-brand-500/20 p-1.5 sm:p-2 rounded-xl text-brand-600 dark:text-brand-400 flex items-center justify-center">
+          <span id="headerLogoContainer" class="text-base sm:text-xl font-bold leading-none">✈️</span>
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <h1 id="headerBrandName" class="text-sm sm:text-base font-bold tracking-tight text-neutralSlate-900 dark:text-white">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <h1 id="headerBrandName" class="text-xs sm:text-base font-bold tracking-tight text-neutralSlate-900 dark:text-white truncate max-w-[80px] xs:max-w-[100px] sm:max-w-none">
               TripExpenceTracker
             </h1>
-            <div id="syncStatusIndicator" class="flex items-center gap-1 bg-neutralSlate-100 text-neutralSlate-600 dark:bg-neutralSlate-800 dark:text-neutralSlate-404 px-2 py-0.5 rounded-full">
-              <i data-lucide="cloud" class="w-3 h-3"></i>
-              <span class="text-[9px] uppercase font-bold tracking-wide">LOCAL ONLY</span>
+            <div id="syncStatusIndicator" class="flex items-center gap-1 bg-neutralSlate-100 text-neutralSlate-600 dark:bg-neutralSlate-800 dark:text-neutralSlate-404 px-1.5 py-0.5 rounded-full flex-shrink-0">
+              <i data-lucide="cloud" class="w-2.5 h-2.5"></i>
+              <span class="text-[8px] sm:text-[9px] uppercase font-bold tracking-wide">LOCAL ONLY</span>
             </div>
           </div>
-          <p class="text-[9px] text-neutralSlate-500 dark:text-neutralSlate-404">Simple Trip Diary & Friends Udhaar Khata</p>
+          <p class="hidden sm:block text-[9px] text-neutralSlate-505 dark:text-neutralSlate-404">Simple Trip Diary & Friends Udhaar Khata</p>
         </div>
       </div>
 
       <!-- Control buttons -->
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
         <!-- Trip Selection Selector Dropdown -->
-        <div class="relative">
-          <select id="headerTripSelector" onchange="switchTrip(this.value)" class="appearance-none bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-900 dark:hover:bg-neutralSlate-850 text-neutralSlate-800 dark:text-neutralSlate-100 pl-3 pr-8 py-2 rounded-xl text-xs sm:text-sm font-semibold border border-neutralSlate-200 dark:border-neutralSlate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 transition cursor-pointer">
+        <div class="relative max-w-[110px] xs:max-w-[130px] sm:max-w-[200px] md:max-w-xs w-full">
+          <select id="headerTripSelector" onchange="switchTrip(this.value)" class="appearance-none bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-900 dark:hover:bg-neutralSlate-850 text-neutralSlate-800 dark:text-neutralSlate-100 pl-2.5 pr-7 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold border border-neutralSlate-200 dark:border-neutralSlate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 transition cursor-pointer truncate block w-full">
             <!-- Dynamic entries loaded here -->
           </select>
-          <div class="absolute inset-y-0 right-2.5 flex items-center pointer-events-none text-neutralSlate-505">
-            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+          <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none text-neutralSlate-505">
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
           </div>
         </div>
 
-        <!-- Custom Brand Configuration dropdown trigger -->
-        <div class="relative">
-          <button id="configBtn" onclick="toggleDropdown('configDropdown')" class="p-2 text-neutralSlate-555 hover:text-neutralSlate-800 dark:hover:text-white hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-900 rounded-xl transition">
-            <i data-lucide="settings" class="w-4 sm:w-5 h-4 sm:h-5"></i>
-          </button>
-          
-          <div id="configDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white dark:bg-neutralSlate-900 rounded-2xl shadow-xl border border-neutralSlate-200 dark:border-neutralSlate-800 py-2 z-50 text-xs sm:text-sm max-h-[85vh] overflow-y-auto">
-            <div class="px-4 py-2 font-bold text-[10px] text-neutralSlate-404 tracking-wider uppercase border-b border-neutralSlate-100 dark:border-neutralSlate-800 mb-2 font-black">Configure Brand</div>
-            <div class="px-3 pb-3 space-y-2">
-              <div>
-                <label class="block text-[10px] text-neutralSlate-400 mb-0.5 font-bold">App Name</label>
-                <input type="text" id="customAppNameInput" oninput="updateBrandSettings()" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-2 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs" placeholder="TripExpenceTracker">
-              </div>
-              <div>
-                <label class="block text-[10px] text-neutralSlate-400 mb-0.5 font-bold">Logo (Emoji)</label>
-                <input type="text" id="customAppLogoInput" oninput="updateBrandSettings()" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-2 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs" placeholder="✈️">
-              </div>
-            </div>
-
-            <div class="border-t border-neutralSlate-100 dark:border-neutralSlate-800 my-1"></div>
-            <div class="px-4 py-2 font-bold text-[10px] text-neutralSlate-404 tracking-wider uppercase mb-2 font-black">Security System</div>
-            <div class="px-3 pb-3 space-y-2">
-              <div>
-                <label class="block text-[10px] text-neutralSlate-400 mb-0.5 font-bold">Terminal PIN</label>
-                <input type="password" id="customAppPinInput" maxlength="4" oninput="updateAppPin(this.value)" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-2 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs font-bold" placeholder="0000">
-              </div>
-            </div>
-
-            <div class="border-t border-neutralSlate-100 dark:border-neutralSlate-800 my-1"></div>
-            <div class="px-4 py-2 font-bold text-[10px] text-neutralSlate-404 tracking-wider uppercase mb-1 font-black">Set Default Currency</div>
-            <div class="px-3 pb-2">
-              <select id="currencySelector" onchange="changeCurrency(this.value)" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-3 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 focus:ring-2 focus:ring-brand-500 transition text-xs font-bold">
-                <option value="₹">₹ Indian Rupee (INR)</option>
-                <option value="$">$ US Dollar (USD)</option>
-                <option value="€">€ Euro (EUR)</option>
-                <option value="£">£ British Pound (GBP)</option>
-                <option value="¥">¥ Japanese Yen (JPY)</option>
-                <option value="AED">AED Dirham (AED)</option>
-              </select>
-            </div>
-
-            <div class="border-t border-neutralSlate-100 dark:border-neutralSlate-800 my-1"></div>
-            <button onclick="triggerBackup()" class="w-full text-left px-4 py-2 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 flex items-center gap-2 text-neutralSlate-700 dark:text-neutralSlate-200">
-              <i data-lucide="download" class="w-4 h-4 text-brand-500"></i> Export JSON Backup
-            </button>
-            <button onclick="document.getElementById('importFileInput').click()" class="w-full text-left px-4 py-2 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 flex items-center gap-2 text-neutralSlate-700 dark:text-neutralSlate-200">
-              <i data-lucide="upload" class="w-4 h-4 text-emerald-500"></i> Restore JSON Backup
-            </button>
-            <input type="file" id="importFileInput" onchange="triggerRestore(event)" class="hidden" accept=".json">
-            
-            <div class="border-t border-neutralSlate-100 dark:border-neutralSlate-800 my-1"></div>
-            <button onclick="resetAllData()" class="w-full text-left px-4 py-2 hover:bg-rose-50 dark:hover:bg-rose-955/20 flex items-center gap-2 text-rose-500 font-bold">
-              <i data-lucide="trash-2" class="w-4 h-4"></i> Factory Reset All Data
-            </button>
-          </div>
-        </div>
+        <!-- Custom Brand Configuration modal trigger -->
+        <button id="configBtn" onclick="openSettingsModal()" class="p-2 text-neutralSlate-555 hover:text-neutralSlate-800 dark:hover:text-white hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-900 rounded-xl transition flex-shrink-0">
+          <i data-lucide="settings" class="w-4 sm:w-5 h-4 sm:h-5"></i>
+        </button>
 
         <!-- System Theme toggle -->
-        <button onclick="toggleDarkMode()" class="p-2 text-neutralSlate-555 hover:text-neutralSlate-800 dark:hover:text-white hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-900 rounded-xl transition">
+        <button onclick="toggleDarkMode()" class="p-2 text-neutralSlate-555 hover:text-neutralSlate-800 dark:hover:text-white hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-900 rounded-xl transition flex-shrink-0">
           <i id="themeIcon" data-lucide="sun" class="w-4 sm:w-5 h-4 sm:h-5"></i>
         </button>
       </div>
@@ -328,7 +288,7 @@
       </div>
       <h2 class="text-2xl font-black text-neutralSlate-900 dark:text-white mb-2">Welcome to TripExpenceTracker!</h2>
       <p class="text-sm text-neutralSlate-505 dark:text-neutralSlate-404 mb-8 leading-relaxed">
-        Abhi aapke system me koi active trip register nahi hai. Apni budget logs, spends, aur companion udhaar khata manage karne ke liye ek new trip start karein ya custom Sheets link se data sync karein!
+        Abhi aapke system me koi active trip register nahi hai. Apni budget logs, spends, aur companion udhaar khata manage karne ke liye ek new trip start karein ya App settings link se data sync karein!
       </p>
       
       <div class="space-y-3">
@@ -336,9 +296,9 @@
           <i data-lucide="plus" class="w-5 h-5"></i>
           <span>Apni Pehli Trip Banayein</span>
         </button>
-        <button onclick="pullStateFromCloud()" class="w-full bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white font-bold py-3 px-6 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-750 transition flex items-center justify-center gap-2">
+        <button onclick="openSettingsModal(); toggleSettingsSection('sectionCloudSync')" class="w-full bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white font-bold py-3 px-6 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-750 transition flex items-center justify-center gap-2">
           <i data-lucide="cloud-download" class="w-4 h-4 text-emerald-500"></i>
-          <span>Cloud Sheet se Pull karein</span>
+          <span>Cloud Sync se Restore karein</span>
         </button>
       </div>
     </div>
@@ -455,7 +415,7 @@
           </div>
           <div>
             <p id="statYouOweFriends" class="text-base sm:text-xl font-black text-rose-600 dark:text-rose-455">0.00</p>
-            <p class="text-[9px] text-rose-500 font-bold mt-0.5">Udhaar to return</p>
+            <p class="text-[9px] text-rose-505 font-bold mt-0.5">Udhaar to return</p>
           </div>
         </div>
 
@@ -487,7 +447,7 @@
           <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Category Statistics
         </button>
         <button onclick="switchTab('tabNotes')" id="btnTabNotes" class="tab-button px-4 py-2.5 font-medium text-xs sm:text-sm text-neutralSlate-505 dark:text-neutralSlate-404 hover:text-neutralSlate-900 dark:hover:text-white transition flex items-center gap-2">
-          <i data-lucide="cloud-lightning" class="w-4 h-4"></i> Journal & Cloud Sync
+          <i data-lucide="book-open" class="w-4 h-4"></i> Travel Diary & Notes
         </button>
       </div>
 
@@ -555,7 +515,8 @@
 
           <!-- Chronological Spent Stream Timeline widget -->
           <div class="space-y-4">
-            <button onclick="openExpenseModal()" class="w-full bg-brand-500 hover:bg-brand-600 text-white p-4 rounded-xl shadow-md shadow-brand-500/10 flex items-center justify-center gap-2 transition font-bold text-xs sm:text-sm">
+            <!-- Hidden on mobile in favor of standard Float FAB icon trigger -->
+            <button onclick="openExpenseModal()" class="hidden md:flex w-full bg-brand-500 hover:bg-brand-600 text-white p-4 rounded-xl shadow-md shadow-brand-500/10 items-center justify-center gap-2 transition font-bold text-xs sm:text-sm">
               <i data-lucide="plus-circle" class="w-4 h-4"></i> Add Spend / Settlement
             </button>
 
@@ -658,7 +619,7 @@
           </div>
 
           <!-- Cost flow chart canvas container -->
-          <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col">
+          <div class="bg-white dark:bg-neutralSlate-950 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col">
             <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 mb-4 flex items-center gap-1.5">
               <i data-lucide="bar-chart" class="w-4 h-4 text-brand-500"></i> Daily Cost Flow Index
             </h3>
@@ -736,7 +697,7 @@
         </div>
       </div>
 
-      <!-- TAB 4: Journal Logs and Cloud spreadsheet synchronization -->
+      <!-- TAB 4: Journal Logs Only -->
       <div id="tabNotes" class="tab-content hidden">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
@@ -748,116 +709,8 @@
               </h3>
               <p class="text-[10px] text-neutralSlate-500 mb-3">Hotel ke details, routes, flight PNR references, checklists aur quick memories ko yahan safe rakhein.</p>
               
-              <textarea id="tripJournal" oninput="saveTripJournal()" placeholder="Hotel directions, bus details, tickets, itinerary aur important travel logs ko yahan enter karein..." class="w-full min-h-[140px] bg-neutralSlate-50 dark:bg-neutralSlate-955 p-3 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-800 dark:text-white placeholder-neutralSlate-500 focus:outline-none focus:ring-1 focus:ring-brand-500 transition font-mono leading-relaxed text-xs"></textarea>
+              <textarea id="tripJournal" oninput="saveTripJournal()" placeholder="Hotel directions, bus details, tickets, itinerary aur important travel logs ko yahan enter karein..." class="w-full min-h-[220px] bg-neutralSlate-50 dark:bg-neutralSlate-955 p-3 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-800 dark:text-white placeholder-neutralSlate-550 focus:outline-none focus:ring-1 focus:ring-brand-500 transition font-mono leading-relaxed text-xs"></textarea>
               <div class="text-right text-[9px] text-neutralSlate-404 italic mt-1 font-semibold">Active trip diary me auto-save hota hai.</div>
-            </div>
-
-            <!-- GOOGLE CLOUD DEVICE SYNC PANEL -->
-            <div class="bg-white dark:bg-neutralSlate-900 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 p-5 relative overflow-hidden shadow-sm">
-              
-              <div class="flex items-center justify-between border-b border-neutralSlate-100 dark:border-neutralSlate-800 pb-3 mb-4">
-                <div class="flex items-center gap-2">
-                  <div class="p-1.5 rounded-lg bg-brand-500/10 text-brand-500">
-                    <i data-lucide="cloud" class="w-4 sm:w-5 h-4 sm:h-5"></i>
-                  </div>
-                  <div>
-                    <h3 class="font-bold text-xs sm:text-sm tracking-wide text-neutralSlate-900 dark:text-white uppercase font-black">GOOGLE SHEETS DATA SYNC</h3>
-                    <p class="text-[9px] text-neutralSlate-500">Realtime cross-device spreadsheet database backup system</p>
-                  </div>
-                </div>
-                <span id="cloudSyncStatusBadge" class="bg-neutralSlate-100 text-neutralSlate-600 dark:bg-neutralSlate-800 dark:text-neutralSlate-404 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-neutralSlate-200 dark:border-neutralSlate-700">
-                  LOCAL ONLY
-                </span>
-              </div>
-
-              <!-- Auto sync selector controller -->
-              <div class="bg-neutralSlate-50 dark:bg-neutralSlate-950 border border-neutralSlate-200 dark:border-neutralSlate-800 p-3.5 rounded-xl mb-4 flex items-center justify-between">
-                <div>
-                  <h4 class="font-bold text-xs text-neutralSlate-800 dark:text-slate-200">Cloud Auto-Sync</h4>
-                  <p class="text-[10px] text-neutralSlate-505 mt-0.5">
-                    Data modify ya save karne par automatic background backup.
-                  </p>
-                </div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" id="autoSyncToggle" onchange="toggleAutoSync(this.checked)" class="sr-only peer">
-                  <div class="w-9 h-5 bg-neutralSlate-300 dark:bg-neutralSlate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
-                </label>
-              </div>
-
-              <!-- Web App URL config input -->
-              <div class="space-y-1.5 mb-4">
-                <div class="flex justify-between items-center">
-                  <label class="block text-[9px] font-bold tracking-wider text-brand-500 uppercase font-black">GOOGLE APPS SCRIPT WEB APP URL</label>
-                  <button onclick="clearCloudUrl()" class="text-rose-500 hover:text-rose-600 text-[9px] font-bold underline transition">
-                    Clear URL / URL Hatayein
-                  </button>
-                </div>
-                <div class="relative">
-                  <i data-lucide="link-2" class="w-3.5 h-3.5 absolute left-3 top-2.5 text-neutralSlate-404"></i>
-                  <input type="url" id="gasUrlInput" oninput="updateCloudUrl(this.value)" class="w-full bg-neutralSlate-100 dark:bg-neutralSlate-955 pl-8 pr-3 py-1.5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs text-neutralSlate-900 dark:text-white placeholder-neutralSlate-500 focus:outline-none focus:ring-1 focus:ring-brand-500 transition" placeholder="Apne phone/system ke liye naya script URL yahan paste karein...">
-                </div>
-                <p class="text-[9px] text-neutralSlate-500 leading-relaxed pt-1">
-                  💡 <strong>Tip:</strong> Sabhi log apne mobile par apna personal Google Apps Script URL yahan dalkar apna data separate Google Sheet ke sath backup aur sync kar sakte hain!
-                </p>
-              </div>
-
-              <!-- Manual pull/push actions -->
-              <div class="grid grid-cols-2 gap-3 mb-4">
-                <button onclick="pushStateToCloud()" class="bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white border border-neutralSlate-200 dark:border-neutralSlate-800 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
-                  <i data-lucide="cloud-lightning" class="w-4 h-4 text-brand-500"></i> Push to Cloud
-                </button>
-                <button onclick="pullStateFromCloud()" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md shadow-brand-500/10 transition">
-                  <i data-lucide="cloud-download" class="w-4 h-4"></i> Pull from Cloud
-                </button>
-              </div>
-
-              <!-- Setup collapsible guidelines -->
-              <div class="mt-4 border border-dashed border-neutralSlate-300 dark:border-neutralSlate-800 rounded-xl p-4 bg-amber-50/50 dark:bg-amber-950/10">
-                <button onclick="toggleDropdown('gasCodeCollapsible')" class="w-full flex items-center justify-between text-left text-xs font-bold text-neutralSlate-850 dark:text-slate-200">
-                  <span class="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
-                    <i data-lucide="help-circle" class="w-4 h-4"></i> Setup Code & Google App Script Instructions
-                  </span>
-                  <i data-lucide="chevron-down" class="w-4 h-4"></i>
-                </button>
-                
-                <div id="gasCodeCollapsible" class="hidden mt-3 space-y-2 text-[11px] text-neutralSlate-600 dark:text-neutralSlate-300 leading-relaxed border-t border-neutralSlate-200 dark:border-neutralSlate-800/80 pt-3">
-                  <p class="font-semibold text-rose-500 dark:text-rose-404">🚨 IMPORTANT RULE FOR CORRECT SETUP (Sync failures se bachne ke liye):</p>
-                  <p>Jab aap Apps Script deploy karein, toh yeh do options bilkul sahi select hone chahiye:</p>
-                  <ul class="list-disc list-inside space-y-1 pl-1 font-semibold text-neutralSlate-805 dark:text-white">
-                    <li>Execute as: <span class="text-brand-500">Me (your-email@gmail.com)</span></li>
-                    <li>Who has access: <span class="text-emerald-500">Anyone</span> (Agar aapne "Anyone with Google Account" select kiya, toh request browser par fail ho jayegi).</li>
-                  </ul>
-                  
-                  <p class="font-bold mt-2 text-neutralSlate-800 dark:text-white">Code for your Apps Script:</p>
-                  <div class="relative bg-neutralSlate-900 text-slate-100 p-2.5 rounded-lg text-[10px] font-mono overflow-x-auto max-h-40">
-                    <pre id="appsScriptCodeText">function doGet(e) {
-  var scriptProp = PropertiesService.getScriptProperties();
-  var data = scriptProp.getProperty("wanderbudget_db");
-  return ContentService.createTextOutput(JSON.stringify({
-    status: "success",
-    data: data ? JSON.parse(data) : null
-  })).setMimeType(ContentService.MimeType.JSON);
-}
-
-function doPost(e) {
-  try {
-    var requestData = JSON.parse(e.postData.contents);
-    if (requestData.action === "sync") {
-      var scriptProp = PropertiesService.getScriptProperties();
-      scriptProp.setProperty("wanderbudget_db", JSON.stringify(requestData.data));
-      return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-  } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}</pre>
-                  </div>
-                  <button onclick="copyAppsScriptCode()" class="mt-1 px-3 py-1 bg-brand-500 text-white rounded text-[10px] font-bold hover:bg-brand-600 transition">Copy Script Code</button>
-                </div>
-              </div>
-
             </div>
           </div>
 
@@ -1137,9 +990,283 @@ function doPost(e) {
           <p id="alertMessage" class="text-neutralSlate-505 dark:text-neutralSlate-404 text-xs mt-2 leading-relaxed">Yeh action undo nahi kiya ja sakta.</p>
           <div class="mt-5 flex justify-end gap-2">
             <button id="alertCancelBtn" onclick="closeAlertDialog()" class="px-4 py-2 bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-700 dark:text-slate-355 border border-neutralSlate-200 dark:border-neutralSlate-700 rounded-xl font-bold hover:bg-neutralSlate-200 transition">Cancel</button>
-            <button id="alertConfirmBtn" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold transition">Confirm</button>
+            <button id="alertConfirmBtn" class="px-4 py-2 bg-rose-505 hover:bg-rose-606 text-white rounded-xl font-bold transition">Confirm</button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 5: Unified Accordion Settings Modal -->
+  <div id="settingsModal" class="hidden fixed inset-0 z-50 overflow-y-auto no-print">
+    <div class="flex items-center justify-center min-h-screen p-4 text-center">
+      <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeSettingsModal()">
+        <div class="absolute inset-0 bg-neutralSlate-900/60 dark:bg-neutralSlate-955/70 backdrop-blur-sm"></div>
+      </div>
+
+      <div class="relative bg-white dark:bg-neutralSlate-900 rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all max-w-lg w-full border border-neutralSlate-200 dark:border-neutralSlate-800 z-10 flex flex-col max-h-[90vh]">
+        
+        <!-- Modal Title Header -->
+        <div class="px-6 py-4 border-b border-neutralSlate-100 dark:border-neutralSlate-800 flex items-center justify-between">
+          <h3 class="text-sm sm:text-base font-black text-neutralSlate-955 dark:text-white flex items-center gap-2">
+            <i data-lucide="settings" class="text-brand-500 w-5 h-5"></i> Dashboard System Settings
+          </h3>
+          <button onclick="closeSettingsModal()" class="p-1 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-800 rounded-lg text-neutralSlate-555 transition">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Scrollable settings entries stack -->
+        <div class="p-6 overflow-y-auto space-y-4 max-h-[calc(90vh-120px)] scrollbar-thin text-xs text-neutralSlate-900 dark:text-white">
+          
+          <!-- Category 1: Profile & Custom Brand configuration -->
+          <div class="border border-neutralSlate-200 dark:border-neutralSlate-800 rounded-2xl overflow-hidden bg-neutralSlate-50/50 dark:bg-neutralSlate-955/20">
+            <button onclick="toggleSettingsSection('sectionBrand')" class="w-full px-4 py-3 flex items-center justify-between font-bold text-neutralSlate-800 dark:text-slate-200 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-850/50 transition text-xs sm:text-sm">
+              <span class="flex items-center gap-2">
+                <i data-lucide="user" class="w-4 h-4 text-brand-500"></i> 👤 Profile & Brand Name
+              </span>
+              <i data-lucide="chevron-down" id="arrow-sectionBrand" class="w-4 h-4 transition-transform"></i>
+            </button>
+            <div id="sectionBrand" class="hidden p-4 border-t border-neutralSlate-200 dark:border-neutralSlate-800 space-y-3 bg-white dark:bg-neutralSlate-900">
+              <div>
+                <label class="block text-[10px] text-neutralSlate-505 dark:text-neutralSlate-404 mb-1 font-bold">App Title Display Name</label>
+                <input type="text" id="customAppNameInput" oninput="updateBrandSettings()" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500" placeholder="TripExpenceTracker">
+              </div>
+              <div>
+                <label class="block text-[10px] text-neutralSlate-505 dark:text-neutralSlate-404 mb-1 font-bold">Brand Logo (Emoji icon)</label>
+                <input type="text" id="customAppLogoInput" oninput="updateBrandSettings()" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500" placeholder="✈️">
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 2: Appearance Mode and Currency Configuration -->
+          <div class="border border-neutralSlate-200 dark:border-neutralSlate-800 rounded-2xl overflow-hidden bg-neutralSlate-50/50 dark:bg-neutralSlate-955/20">
+            <button onclick="toggleSettingsSection('sectionAppearance')" class="w-full px-4 py-3 flex items-center justify-between font-bold text-neutralSlate-800 dark:text-slate-200 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-850/50 transition text-xs sm:text-sm">
+              <span class="flex items-center gap-2">
+                <i data-lucide="palette" class="w-4 h-4 text-brand-500"></i> 🎨 Theme & Appearance
+              </span>
+              <i data-lucide="chevron-down" id="arrow-sectionAppearance" class="w-4 h-4 transition-transform"></i>
+            </button>
+            <div id="sectionAppearance" class="hidden p-4 border-t border-neutralSlate-200 dark:border-neutralSlate-800 space-y-4 bg-white dark:bg-neutralSlate-900">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h4 class="font-bold text-xs text-neutralSlate-800 dark:text-slate-200">Light / Dark Toggle</h4>
+                  <p class="text-[10px] text-neutralSlate-500">System user interface scheme toggle.</p>
+                </div>
+                <button type="button" onclick="toggleDarkMode()" class="px-3 py-1.5 bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-700 transition flex items-center gap-1.5 text-xs font-bold">
+                  <i id="themeIconModal" data-lucide="sun" class="w-3.5 h-3.5"></i>
+                  <span id="themeTextModal">Toggle Mode</span>
+                </button>
+              </div>
+              <div class="border-t border-neutralSlate-100 dark:border-neutralSlate-800 pt-3">
+                <label class="block text-[10px] text-neutralSlate-404 mb-1.5 font-bold">System Default Currency symbol</label>
+                <select id="currencySelector" onchange="changeCurrency(this.value)" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 focus:ring-1 focus:ring-brand-500 focus:outline-none transition text-xs font-bold">
+                  <option value="₹">₹ Indian Rupee (INR)</option>
+                  <option value="$">$ US Dollar (USD)</option>
+                  <option value="€">€ Euro (EUR)</option>
+                  <option value="£">£ British Pound (GBP)</option>
+                  <option value="¥">¥ Japanese Yen (JPY)</option>
+                  <option value="AED">AED Dirham (AED)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 3: Google Sheets Sync (Entire Cloud Sync Moved completely from Tab 4) -->
+          <div class="border border-neutralSlate-200 dark:border-neutralSlate-800 rounded-2xl overflow-hidden bg-neutralSlate-50/50 dark:bg-neutralSlate-955/20">
+            <button onclick="toggleSettingsSection('sectionCloudSync')" class="w-full px-4 py-3 flex items-center justify-between font-bold text-neutralSlate-800 dark:text-slate-200 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-850/50 transition text-xs sm:text-sm">
+              <span class="flex items-center gap-2">
+                <i data-lucide="cloud" class="w-4 h-4 text-brand-500"></i> ☁️ Cloud Backup & Sync
+              </span>
+              <span id="cloudSyncModalStatus" class="bg-neutralSlate-200 dark:bg-neutralSlate-800 text-neutralSlate-600 dark:text-neutralSlate-300 text-[9px] font-black px-2 py-0.5 rounded-full mr-2">LOCAL ONLY</span>
+              <i data-lucide="chevron-down" id="arrow-sectionCloudSync" class="w-4 h-4 transition-transform"></i>
+            </button>
+            <div id="sectionCloudSync" class="hidden p-4 border-t border-neutralSlate-200 dark:border-neutralSlate-800 space-y-4 bg-white dark:bg-neutralSlate-900">
+              
+              <!-- Auto sync selector controller -->
+              <div class="bg-neutralSlate-50 dark:bg-neutralSlate-950 border border-neutralSlate-200 dark:border-neutralSlate-800 p-3.5 rounded-xl flex items-center justify-between">
+                <div>
+                  <h4 class="font-bold text-xs text-neutralSlate-800 dark:text-slate-200">Cloud Auto-Sync</h4>
+                  <p class="text-[10px] text-neutralSlate-505 mt-0.5">
+                    Data modify ya save karne par automatic background backup.
+                  </p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="autoSyncToggle" onchange="toggleAutoSync(this.checked)" class="sr-only peer">
+                  <div class="w-9 h-5 bg-neutralSlate-300 dark:bg-neutralSlate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
+                </label>
+              </div>
+
+              <!-- Web App URL config input -->
+              <div class="space-y-1.5">
+                <div class="flex justify-between items-center">
+                  <label class="block text-[9px] font-bold tracking-wider text-brand-500 uppercase font-black">GOOGLE APPS SCRIPT WEB APP URL</label>
+                  <button onclick="clearCloudUrl()" class="text-rose-500 hover:text-rose-600 text-[9px] font-bold underline transition">
+                    Clear URL / URL Hatayein
+                  </button>
+                </div>
+                <div class="relative">
+                  <i data-lucide="link-2" class="w-3.5 h-3.5 absolute left-3 top-2.5 text-neutralSlate-404"></i>
+                  <input type="url" id="gasUrlInput" oninput="updateCloudUrl(this.value)" class="w-full bg-neutralSlate-100 dark:bg-neutralSlate-955 pl-8 pr-3 py-1.5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs text-neutralSlate-900 dark:text-white placeholder-neutralSlate-500 focus:outline-none focus:ring-1 focus:ring-brand-500 transition" placeholder="Apne phone/system ke liye naya script URL yahan paste karein...">
+                </div>
+                <p class="text-[9px] text-neutralSlate-505 leading-relaxed pt-1">
+                  💡 <strong>Tip:</strong> Sabhi log apne mobile par apna personal Google Apps Script URL yahan dalkar apna data separate Google Sheet ke sath backup aur sync kar sakte hain!
+                </p>
+              </div>
+
+              <!-- Manual pull/push actions -->
+              <div class="grid grid-cols-2 gap-3">
+                <button type="button" onclick="pushStateToCloud()" class="bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white border border-neutralSlate-200 dark:border-neutralSlate-800 font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition shadow-sm">
+                  <i data-lucide="cloud-lightning" class="w-4 h-4 text-brand-500"></i> Push to Cloud
+                </button>
+                <button type="button" onclick="pullStateFromCloud()" class="bg-brand-500 hover:bg-brand-600 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md shadow-brand-500/10 transition">
+                  <i data-lucide="cloud-download" class="w-4 h-4"></i> Pull from Cloud
+                </button>
+              </div>
+
+              <!-- Setup collapsible guidelines -->
+              <div class="border border-dashed border-neutralSlate-300 dark:border-neutralSlate-800 rounded-xl p-4 bg-amber-50/50 dark:bg-amber-950/10">
+                <button type="button" onclick="toggleDropdown('gasCodeCollapsible')" class="w-full flex items-center justify-between text-left text-xs font-bold text-neutralSlate-850 dark:text-slate-200">
+                  <span class="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i> Setup Instructions & App Script Code
+                  </span>
+                  <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </button>
+                
+                <div id="gasCodeCollapsible" class="hidden mt-3 space-y-2 text-[11px] text-neutralSlate-600 dark:text-neutralSlate-300 leading-relaxed border-t border-neutralSlate-200 dark:border-neutralSlate-800/80 pt-3">
+                  <p class="font-semibold text-rose-505 dark:text-rose-404">🚨 IMPORTANT RULE FOR CORRECT SETUP (Sync failures se bachne ke liye):</p>
+                  <p>Jab aap Apps Script deploy karein, toh yeh do options bilkul sahi select hone chahiye:</p>
+                  <ul class="list-disc list-inside space-y-1 pl-1 font-semibold text-neutralSlate-805 dark:text-white">
+                    <li>Execute as: <span class="text-brand-500 font-bold">Me (your-email@gmail.com)</span></li>
+                    <li>Who has access: <span class="text-emerald-500 font-bold">Anyone</span> (Agar aapne "Anyone with Google Account" select kiya, toh request browser par fail ho jayegi).</li>
+                  </ul>
+                  
+                  <p class="font-bold mt-2 text-neutralSlate-800 dark:text-white">Code for your Apps Script:</p>
+                  <div class="relative bg-neutralSlate-900 text-slate-100 p-2.5 rounded-lg text-[10px] font-mono overflow-x-auto max-h-40">
+                    <pre id="appsScriptCodeText">function doGet(e) {
+  var scriptProp = PropertiesService.getScriptProperties();
+  var data = scriptProp.getProperty("wanderbudget_db");
+  return ContentService.createTextOutput(JSON.stringify({
+    status: "success",
+    data: data ? JSON.parse(data) : null
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  try {
+    var requestData = JSON.parse(e.postData.contents);
+    if (requestData.action === "sync") {
+      var scriptProp = PropertiesService.getScriptProperties();
+      scriptProp.setProperty("wanderbudget_db", JSON.stringify(requestData.data));
+      return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}</pre>
+                  </div>
+                  <button type="button" onclick="copyAppsScriptCode()" class="mt-1 px-3 py-1.5 bg-brand-500 text-white rounded-xl text-[10px] font-bold hover:bg-brand-600 transition shadow-sm">Copy Script Code</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Category 4: PIN & Security Change option -->
+          <div class="border border-neutralSlate-200 dark:border-neutralSlate-800 rounded-2xl overflow-hidden bg-neutralSlate-50/50 dark:bg-neutralSlate-955/20">
+            <button onclick="toggleSettingsSection('sectionSecurity')" class="w-full px-4 py-3 flex items-center justify-between font-bold text-neutralSlate-800 dark:text-slate-200 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-850/50 transition text-xs sm:text-sm">
+              <span class="flex items-center gap-2">
+                <i data-lucide="lock" class="w-4 h-4 text-brand-500"></i> 🔒 PIN & Security PIN
+              </span>
+              <i data-lucide="chevron-down" id="arrow-sectionSecurity" class="w-4 h-4 transition-transform"></i>
+            </button>
+            <div id="sectionSecurity" class="hidden p-4 border-t border-neutralSlate-200 dark:border-neutralSlate-800 space-y-3 bg-white dark:bg-neutralSlate-900">
+              <div>
+                <label class="block text-[10px] text-neutralSlate-505 dark:text-neutralSlate-404 mb-1 font-bold">Terminal PIN</label>
+                <input type="password" id="customAppPinInput" maxlength="4" oninput="updateAppPin(this.value)" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-3 py-2 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-brand-500" placeholder="0000">
+                <p class="text-[9px] text-neutralSlate-404 mt-1 font-semibold">Change the security PIN required to access this application terminal on load.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 5: Backup / Restore JSON system data -->
+          <div class="border border-neutralSlate-200 dark:border-neutralSlate-800 rounded-2xl overflow-hidden bg-neutralSlate-50/50 dark:bg-neutralSlate-955/20">
+            <button onclick="toggleSettingsSection('sectionBackupRestore')" class="w-full px-4 py-3 flex items-center justify-between font-bold text-neutralSlate-800 dark:text-slate-200 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-850/50 transition text-xs sm:text-sm">
+              <span class="flex items-center gap-2">
+                <i data-lucide="database" class="w-4 h-4 text-brand-500"></i> 💾 Backup & Restore (JSON)
+              </span>
+              <i data-lucide="chevron-down" id="arrow-sectionBackupRestore" class="w-4 h-4 transition-transform"></i>
+            </button>
+            <div id="sectionBackupRestore" class="hidden p-4 border-t border-neutralSlate-200 dark:border-neutralSlate-800 space-y-3 bg-white dark:bg-neutralSlate-900">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button type="button" onclick="triggerBackup()" class="w-full py-2.5 px-4 bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-slate-200 rounded-xl font-bold flex items-center justify-center gap-2 border border-neutralSlate-200 dark:border-neutralSlate-700 transition">
+                  <i data-lucide="download" class="w-4 h-4 text-brand-500"></i> Export JSON Backup
+                </button>
+                <button type="button" onclick="document.getElementById('importFileInput').click()" class="w-full py-2.5 px-4 bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-slate-200 rounded-xl font-bold flex items-center justify-center gap-2 border border-neutralSlate-200 dark:border-neutralSlate-700 transition">
+                  <i data-lucide="upload" class="w-4 h-4 text-emerald-500"></i> Restore JSON Backup
+                </button>
+                <input type="file" id="importFileInput" onchange="triggerRestore(event)" class="hidden" accept=".json">
+              </div>
+              <div class="border-t border-neutralSlate-150 dark:border-neutralSlate-800 my-2 pt-2">
+                <button type="button" onclick="resetAllData()" class="w-full py-2.5 px-4 bg-rose-50 hover:bg-rose-100 dark:bg-rose-955/20 dark:hover:bg-rose-955/40 text-rose-550 rounded-xl font-bold flex items-center justify-center gap-2 border border-rose-100 dark:border-rose-900/40 transition">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i> Factory Reset All Data
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 6: Export CSV spreadsheets -->
+          <div class="border border-neutralSlate-200 dark:border-neutralSlate-800 rounded-2xl overflow-hidden bg-neutralSlate-50/50 dark:bg-neutralSlate-955/20">
+            <button onclick="toggleSettingsSection('sectionExportData')" class="w-full px-4 py-3 flex items-center justify-between font-bold text-neutralSlate-800 dark:text-slate-200 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-850/50 transition text-xs sm:text-sm">
+              <span class="flex items-center gap-2">
+                <i data-lucide="file-spreadsheet" class="w-4 h-4 text-brand-500"></i> 📤 Export Spreadsheet (CSV)
+              </span>
+              <i data-lucide="chevron-down" id="arrow-sectionExportData" class="w-4 h-4 transition-transform"></i>
+            </button>
+            <div id="sectionExportData" class="hidden p-4 border-t border-neutralSlate-200 dark:border-neutralSlate-800 space-y-3 bg-white dark:bg-neutralSlate-900">
+              <p class="text-[10px] text-neutralSlate-505 dark:text-neutralSlate-404 font-semibold leading-relaxed">
+                Download your current active trip ledger spends report sheets in standard table format.
+              </p>
+              <button type="button" onclick="exportCSV()" class="w-full py-2.5 px-4 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition shadow-md shadow-brand-500/10">
+                <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Download Trip Spends CSV
+              </button>
+            </div>
+          </div>
+
+          <!-- Category 7: App details & developer specifications -->
+          <div class="border border-neutralSlate-200 dark:border-neutralSlate-800 rounded-2xl overflow-hidden bg-neutralSlate-50/50 dark:bg-neutralSlate-955/20">
+            <button onclick="toggleSettingsSection('sectionAbout')" class="w-full px-4 py-3 flex items-center justify-between font-bold text-neutralSlate-800 dark:text-slate-200 hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-850/50 transition text-xs sm:text-sm">
+              <span class="flex items-center gap-2">
+                <i data-lucide="info" class="w-4 h-4 text-brand-500"></i> ℹ️ About Application
+              </span>
+              <i data-lucide="chevron-down" id="arrow-sectionAbout" class="w-4 h-4 transition-transform"></i>
+            </button>
+            <div id="sectionAbout" class="hidden p-4 border-t border-neutralSlate-200 dark:border-neutralSlate-800 space-y-2 bg-white dark:bg-neutralSlate-900">
+              <div class="text-center py-2">
+                <h4 class="font-extrabold text-sm text-neutralSlate-850 dark:text-white">TripExpenceTracker</h4>
+                <p class="text-[10px] text-neutralSlate-404 mt-0.5">Version 1.7.0 Premium</p>
+                <div class="border-t border-neutralSlate-100 dark:border-neutralSlate-800 my-3"></div>
+                <p class="text-[10px] text-neutralSlate-505 dark:text-neutralSlate-404 leading-relaxed px-4">
+                  A premium minimal trip expense tracker, travel diary, and peer-to-peer udhaar khata book. Designed for seamless offline utility and secure Google Cloud storage sync capabilities.
+                </p>
+                <p class="text-[10px] text-brand-600 dark:text-brand-400 font-bold mt-3">
+                  Crafted with ❤️ by <span class="font-extrabold uppercase">SACHINDHISLE04</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Settings modal dismiss Done button -->
+        <div class="px-6 py-4 bg-neutralSlate-50 dark:bg-neutralSlate-955/50 border-t border-neutralSlate-100 dark:border-neutralSlate-800 text-center">
+          <button onclick="closeSettingsModal()" class="w-full bg-brand-500 hover:bg-brand-600 text-white py-2.5 rounded-xl font-bold transition shadow animate-pulse">
+            Done
+          </button>
+        </div>
+
       </div>
     </div>
   </div>
@@ -1147,8 +1274,14 @@ function doPost(e) {
   <!-- PWA Notifications & Live Toasts Floating Container -->
   <div id="pwaNotificationContainer" class="fixed bottom-4 left-4 right-4 sm:left-auto sm:max-w-sm z-[10001] no-print flex flex-col gap-2 pointer-events-none"></div>
 
+  <!-- Floating Add Expense FAB Button (Mobile Only) -->
+  <button id="mobileFabAddExpense" onclick="openExpenseModal()" class="md:hidden fixed bottom-4 right-4 z-[9997] bg-brand-500 hover:bg-brand-600 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition-transform transform active:scale-95 no-print animate-bounce">
+    <i data-lucide="plus" class="w-6 h-6"></i>
+  </button>
+
   <!-- Floating Install App Button (Visually hidden initially, shows up on compatibility match) -->
-  <button id="pwaInstallBtn" class="hidden fixed bottom-4 right-4 z-[9998] bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-750 hover:to-indigo-750 text-white font-bold py-2.5 px-4 rounded-full shadow-2xl flex items-center gap-2 text-xs transition-transform transform active:scale-95 no-print animate-bounce">
+  <!-- Shifted slightly higher on mobile to accommodate FAB stack cleanly -->
+  <button id="pwaInstallBtn" class="hidden fixed bottom-20 md:bottom-4 right-4 z-[9998] bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-750 hover:to-indigo-750 text-white font-bold py-2.5 px-4 rounded-full shadow-2xl flex items-center gap-2 text-xs transition-transform transform active:scale-95 no-print animate-pulse">
     <i data-lucide="download-cloud" class="w-4 h-4"></i>
     <span>Install App 📲</span>
   </button>
@@ -1482,10 +1615,49 @@ function doPost(e) {
       syncStatusState = status;
       const syncHeader = document.getElementById('syncStatusIndicator');
       const cloudBadge = document.getElementById('cloudSyncStatusBadge');
+      const cloudModalBadge = document.getElementById('cloudSyncModalStatus');
+
+      const updateBadge = (el) => {
+        if (!el) return;
+        if (!appState.gasUrl) {
+          el.textContent = "LOCAL ONLY";
+          el.className = "bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-600 dark:text-neutralSlate-404 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-neutralSlate-200 dark:border-neutralSlate-700";
+        } else {
+          switch (status) {
+            case 'syncing':
+              el.textContent = "SYNCING...";
+              el.className = "bg-brand-500/10 text-brand-600 dark:text-brand-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-brand-500/20 animate-pulse";
+              break;
+            case 'synced':
+              el.textContent = "SYNCED";
+              el.className = "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/20";
+              break;
+            case 'pulling':
+              el.textContent = "PULLING...";
+              el.className = "bg-brand-500/10 text-brand-600 dark:text-brand-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-brand-500/20 animate-pulse";
+              break;
+            case 'pulled-new':
+              el.textContent = "NEW UPDATE!";
+              el.className = "bg-emerald-550/10 text-emerald-700 dark:text-emerald-404 text-[10px] font-black px-2.5 py-0.5 rounded-full border border-emerald-550/30 animate-pulse";
+              break;
+            case 'error':
+              el.textContent = "ERROR";
+              el.className = "bg-rose-500/10 text-rose-600 dark:text-rose-404 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-rose-500/20";
+              break;
+            default:
+              el.textContent = appState.autoSync ? "AUTO ON" : "CONNECTED";
+              el.className = "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/20";
+              break;
+          }
+        }
+      };
+
+      updateBadge(cloudBadge);
+      updateBadge(cloudModalBadge);
 
       if (syncHeader) {
         if (!appState.gasUrl) {
-          syncHeader.innerHTML = `<i data-lucide="cloud" class="w-3 h-3 text-neutralSlate-404"></i> <span class="text-[9px] text-neutralSlate-505 uppercase font-bold tracking-wider">Local Only</span>`;
+          syncHeader.innerHTML = `<i data-lucide="cloud" class="w-3 h-3 text-neutralSlate-404"></i> <span class="text-[9px] text-neutralSlate-505 uppercase font-bold tracking-wider">LOCAL ONLY</span>`;
         } else {
           switch (status) {
             case 'syncing':
@@ -1501,44 +1673,10 @@ function doPost(e) {
               syncHeader.innerHTML = `<i data-lucide="cloud-lightning" class="w-3 h-3 text-emerald-500 animate-bounce"></i> <span class="text-[9px] text-emerald-600 dark:text-emerald-400 uppercase font-black tracking-wider animate-pulse">Updated!</span>`;
               break;
             case 'error':
-              syncHeader.innerHTML = `<i data-lucide="cloud-off" class="w-3 h-3 text-rose-500"></i> <span class="text-[9px] text-rose-500 uppercase font-bold tracking-wider">Failed</span>`;
+              syncHeader.innerHTML = `<i data-lucide="cloud-off" class="w-3 h-3 text-rose-500"></i> <span class="text-[9px] text-rose-505 uppercase font-bold tracking-wider">Failed</span>`;
               break;
             default:
               syncHeader.innerHTML = `<i data-lucide="cloud" class="w-3 h-3 text-emerald-600 dark:text-emerald-400"></i> <span class="text-[9px] text-emerald-600 dark:text-emerald-400 uppercase font-bold tracking-wider">Connected</span>`;
-              break;
-          }
-        }
-      }
-
-      if (cloudBadge) {
-        if (!appState.gasUrl) {
-          cloudBadge.textContent = "LOCAL ONLY";
-          cloudBadge.className = "bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-600 dark:text-neutralSlate-404 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-neutralSlate-200 dark:border-neutralSlate-700";
-        } else {
-          switch (status) {
-            case 'syncing':
-              cloudBadge.textContent = "SYNCING...";
-              cloudBadge.className = "bg-brand-500/10 text-brand-600 dark:text-brand-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-brand-500/20";
-              break;
-            case 'synced':
-              cloudBadge.textContent = "SYNCED";
-              cloudBadge.className = "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/20";
-              break;
-            case 'pulling':
-              cloudBadge.textContent = "PULLING...";
-              cloudBadge.className = "bg-brand-500/10 text-brand-600 dark:text-brand-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-brand-500/20";
-              break;
-            case 'pulled-new':
-              cloudBadge.textContent = "NEW DATA INJECTED";
-              cloudBadge.className = "bg-emerald-550/10 text-emerald-700 dark:text-emerald-400 text-[10px] font-black px-2.5 py-0.5 rounded-full border border-emerald-500/30 animate-pulse";
-              break;
-            case 'error':
-              cloudBadge.textContent = "ERROR";
-              cloudBadge.className = "bg-rose-500/10 text-rose-600 dark:text-rose-404 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-rose-500/20";
-              break;
-            default:
-              cloudBadge.textContent = appState.autoSync ? "AUTO ON" : "CONNECTED";
-              cloudBadge.className = "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/20";
               break;
           }
         }
@@ -1549,7 +1687,7 @@ function doPost(e) {
     function toggleAutoSync(isChecked) {
       appState.autoSync = isChecked;
       saveStateToLocalStorage();
-      updateSyncStatusUI(appState.gasUrl ? "local" : "local");
+      updateSyncStatusUI("local");
       startBackgroundPolling();
     }
 
@@ -1586,7 +1724,7 @@ function doPost(e) {
 
     function pushStateToCloud() {
       if (!appState.gasUrl) {
-        openToastAlert("Pehle tab dashboard me valid Google Apps Script URL enter karein!");
+        openToastAlert("Pehle Web App settings me valid Google Apps Script URL enter karein!");
         return;
       }
       triggerSilentCloudSync();
@@ -1632,7 +1770,7 @@ function doPost(e) {
         
         showAlertDialog(
           "Pull System Failed 🚨",
-          "Kripya dhyan dein:\n\n1. Web App deploy karte waqt aapne 'Who has access' ko 'Anyone' set kiya ho.\n\n2. Sahi Web App Script URL paste kiya ho (URL ke end me /exec hona chahiye).\n\nSetup parameters check karne ke liye Tab 4 ka manual guide check karein.",
+          "Kripya dhyan dein:\n\n1. Web App deploy karte waqt aapne 'Who has access' ko 'Anyone' set kiya ho.\n\n2. Sahi Web App Script URL paste kiya ho (URL ke end me /exec hona chahiye).\n\nSetup parameters check karne ke liye Settings page ka manual guide check karein.",
           () => {},
           false
         );
@@ -1727,12 +1865,6 @@ function doPost(e) {
     }
 
     window.addEventListener('click', function(e) {
-      const configDropdown = document.getElementById('configDropdown');
-      const configBtn = document.getElementById('configBtn');
-      if (configDropdown && configBtn && !configBtn.contains(e.target) && !configDropdown.contains(e.target)) {
-        configDropdown.classList.add('hidden');
-      }
-
       const coverDropdown = document.getElementById('coverDropdown');
       if (coverDropdown && !e.target.closest('#coverDropdown') && !e.target.closest('button[onclick*="coverDropdown"]')) {
         coverDropdown.classList.add('hidden');
@@ -1779,6 +1911,7 @@ function doPost(e) {
       }
       saveStateToLocalStorage();
       applyThemeFromState();
+      updateModalThemeStatus();
     }
 
     function applyThemeFromState() {
@@ -1795,6 +1928,52 @@ function doPost(e) {
         if (icon) icon.setAttribute('data-lucide', 'moon');
       }
       lucide.createIcons();
+    }
+
+    function updateModalThemeStatus() {
+      const themeText = document.getElementById('themeTextModal');
+      const themeIcon = document.getElementById('themeIconModal');
+      if (themeText && themeIcon) {
+        if (appState.theme === 'dark') {
+          themeText.textContent = 'Light Mode';
+          themeIcon.setAttribute('data-lucide', 'sun');
+        } else {
+          themeText.textContent = 'Dark Mode';
+          themeIcon.setAttribute('data-lucide', 'moon');
+        }
+      }
+    }
+
+    function openSettingsModal() {
+      document.getElementById('settingsModal').classList.remove('hidden');
+      updateModalThemeStatus();
+      updateSyncStatusUI(syncStatusState);
+      lucide.createIcons();
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settingsModal').classList.add('hidden');
+    }
+
+    function toggleSettingsSection(sectionId) {
+      const target = document.getElementById(sectionId);
+      const arrow = document.getElementById('arrow-' + sectionId);
+      if (target) {
+        if (target.classList.contains('hidden')) {
+          // Classic Accordion toggle clean reset
+          ['sectionBrand', 'sectionAppearance', 'sectionCloudSync', 'sectionSecurity', 'sectionBackupRestore', 'sectionExportData', 'sectionAbout'].forEach(id => {
+            const el = document.getElementById(id);
+            const ar = document.getElementById('arrow-' + id);
+            if (el) el.classList.add('hidden');
+            if (ar) ar.style.transform = 'rotate(0deg)';
+          });
+          target.classList.remove('hidden');
+          if (arrow) arrow.style.transform = 'rotate(180deg)';
+        } else {
+          target.classList.add('hidden');
+          if (arrow) arrow.style.transform = 'rotate(0deg)';
+        }
+      }
     }
 
     function switchTab(tabId) {
@@ -1996,7 +2175,7 @@ function doPost(e) {
           `;
           
           if (kpiCard) {
-            kpiCard.classList.remove('border-rose-500', 'dark:border-rose-500');
+            kpiCard.classList.remove('border-rose-505', 'dark:border-rose-505');
             kpiCard.classList.add('border-neutralSlate-200', 'dark:border-neutralSlate-900');
           }
         } else {
@@ -2014,9 +2193,9 @@ function doPost(e) {
             remainingText = `<span class="text-emerald-600 dark:text-emerald-400 font-bold">${formattedRemaining} Remaining</span>`;
           } else {
             const exceededAmt = Math.abs(remainingBudget);
-            remainingText = `<span class="text-rose-500 font-bold">Budget Exceeded by ${formatCurrency(exceededAmt)}</span>`;
+            remainingText = `<span class="text-rose-505 font-bold">Budget Exceeded by ${formatCurrency(exceededAmt)}</span>`;
             warningBadgeHTML = `
-              <span class="inline-flex items-center gap-1 bg-rose-500/10 text-rose-600 dark:text-rose-404 font-black px-2.5 py-1 rounded-lg text-[10px] tracking-wide border border-rose-500/20">
+              <span class="inline-flex items-center gap-1 bg-rose-500/10 text-rose-606 dark:text-rose-404 font-black px-2.5 py-1 rounded-lg text-[10px] tracking-wide border border-rose-500/20 animate-pulse">
                 ⚠ Budget Exceeded by ${formatCurrency(exceededAmt)}
               </span>
             `;
@@ -2034,9 +2213,9 @@ function doPost(e) {
           if (kpiCard) {
             if (isExceeded) {
               kpiCard.classList.remove('border-neutralSlate-200', 'dark:border-neutralSlate-900');
-              kpiCard.classList.add('border-rose-500', 'dark:border-rose-500');
+              kpiCard.classList.add('border-rose-505', 'dark:border-rose-505');
             } else {
-              kpiCard.classList.remove('border-rose-500', 'dark:border-rose-500');
+              kpiCard.classList.remove('border-rose-505', 'dark:border-rose-505');
               kpiCard.classList.add('border-neutralSlate-200', 'dark:border-neutralSlate-900');
             }
           }
@@ -2159,7 +2338,7 @@ function doPost(e) {
         container.innerHTML = `
           <div class="py-12 px-4 text-center text-neutralSlate-404">
             <p class="font-semibold text-xs sm:text-sm">No spend records found</p>
-            <p class="text-[10px] mt-0.5 text-neutralSlate-555">Tap "Add Spend / Settlement" to record items.</p>
+            <p class="text-[10px] mt-0.5 text-neutralSlate-555">Tap the add button to record items.</p>
           </div>
         `;
         return;
@@ -2206,7 +2385,7 @@ function doPost(e) {
         if (isAlreadySettled && settlementTx) {
           const sDateObj = new Date(settlementTx.date);
           const formattedSDate = sDateObj.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
-          notesText = `<span class="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Settled on ${formattedSDate}</span>` + (exp.notes ? ` <span class="text-neutralSlate-400">| ${exp.notes}</span>` : '');
+          notesText = `<span class="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Settled on ${formattedSDate}</span>` + (exp.notes ? ` <span class="text-neutralSlate-404">| ${exp.notes}</span>` : '');
         }
 
         row.innerHTML = `
@@ -2218,7 +2397,7 @@ function doPost(e) {
             
             <div class="overflow-hidden">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <h4 class="font-bold text-neutralSlate-800 dark:text-slate-100 truncate max-w-[130px] sm:max-w-xs">${exp.description}</h4>
+                <h4 class="font-bold text-neutralSlate-800 dark:text-slate-100 truncate max-w-[110px] xs:max-w-[130px] sm:max-w-xs">${exp.description}</h4>
                 <span class="px-1.5 py-0.5 rounded text-[8px] font-bold tracking-wider uppercase ${categoryDetails.bgClass}">${categoryDetails.name}</span>
                 ${subBadgeText}
               </div>
@@ -2230,7 +2409,7 @@ function doPost(e) {
           ${(type === 'i_paid_friend' || type === 'friend_paid_me') ? `
             <div class="hidden sm:block flex-shrink-0 no-print">
               ${isAlreadySettled ? `
-                <span class="bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 font-bold text-[10px] px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-emerald-500/20">
+                <span class="bg-emerald-50 dark:bg-emerald-955/20 text-emerald-600 dark:text-emerald-400 font-bold text-[10px] px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-emerald-500/20">
                   <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-500"></i>
                   <span>Settled</span>
                 </span>
@@ -2331,7 +2510,7 @@ function doPost(e) {
           if (bal > 0.01) {
             balLabel = `<span class="text-xs font-black text-emerald-600 dark:text-emerald-400">Owes you ${formatCurrency(bal)}</span>`;
           } else if (bal < -0.01) {
-            balLabel = `<span class="text-xs font-black text-rose-500">You owe them ${formatCurrency(Math.abs(bal))}</span>`;
+            balLabel = `<span class="text-xs font-black text-rose-505">You owe them ${formatCurrency(Math.abs(bal))}</span>`;
           } else {
             balLabel = `<span class="text-xs text-neutralSlate-500 font-bold">All Settled up! ✅</span>`;
           }
@@ -2370,7 +2549,7 @@ function doPost(e) {
           const theyPaid = calc.paidForMe[m.id] || 0;
           const netBal = calc.balances[m.id] || 0;
 
-          let styleClass = "text-neutralSlate-500 font-bold";
+          let styleClass = "text-neutralSlate-555 font-bold";
           let statusText = "Settled";
           if (netBal > 0.01) {
             styleClass = "text-emerald-600 dark:text-emerald-400 font-black";
@@ -2422,7 +2601,7 @@ function doPost(e) {
               <p class="text-[10px] text-neutralSlate-555 font-semibold">${actionLabel}</p>
               <p class="text-xs font-black text-brand-600 dark:text-brand-400 mt-0.5">${formatCurrency(Math.abs(bal))}</p>
             </div>
-            <button onclick="triggerQuickSettle('${m.id}', ${Math.abs(bal)}, '${direction}')" class="bg-brand-500 hover:bg-brand-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg transition shadow-sm">
+            <button onclick="triggerQuickSettle('${m.id}', ${Math.abs(bal)}, '${direction}')" class="bg-brand-500 hover:bg-brand-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg transition shadow-sm animate-pulse-ring">
               Settle
             </button>
           `;
@@ -3056,47 +3235,48 @@ function doPost(e) {
       const barCtx = document.getElementById('dailySpendsChart').getContext('2d');
       if (barValues.length === 0) {
         barChartInstance = new Chart(barCtx, {
-          type: 'bar',
+          type: 'line',
           data: {
             labels: ['No Spends'],
-            datasets: [{ data: [0] }]
+            datasets: [{ data: [0], backgroundColor: [gridBorderColor] }]
           },
           options: { responsive: true, plugins: { legend: { display: false } } }
         });
       } else {
         barChartInstance = new Chart(barCtx, {
-          type: 'bar',
+          type: 'line',
           data: {
             labels: barLabels,
             datasets: [{
-              label: 'Daily Flow',
+              label: 'Daily Spends',
               data: barValues,
-              backgroundColor: '#8b5cf6',
-              borderRadius: 4,
-              borderSkipped: false
+              borderColor: '#8b5cf6',
+              backgroundColor: 'rgba(139, 92, 246, 0.1)',
+              borderWidth: 2,
+              tension: 0.3,
+              fill: true
             }]
           },
           options: {
             responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                callbacks: {
-                  label: function(context) {
-                    return ' Spends: ' + formatCurrency(context.raw);
-                  }
-                }
-              }
-            },
             scales: {
               x: {
-                grid: { display: false },
+                grid: { color: gridBorderColor },
                 ticks: { color: textMainColor, font: { family: 'Inter', size: 9 } }
               },
               y: {
                 grid: { color: gridBorderColor },
                 ticks: { color: textMainColor, font: { family: 'Inter', size: 9 } }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return ' Spent: ' + formatCurrency(context.raw);
+                  }
+                }
               }
             }
           }
@@ -3106,237 +3286,120 @@ function doPost(e) {
 
     function exportCSV() {
       const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
-      if (!activeTrip || !activeTrip.expenses || activeTrip.expenses.length === 0) {
-        openToastAlert("Spends register khali hai!");
+      if (!activeTrip) return;
+
+      const expenses = activeTrip.expenses || [];
+      if (expenses.length === 0) {
+        openToastAlert("Is trip me koi transactions nahi hain.");
         return;
       }
 
       let csvContent = "data:text/csv;charset=utf-8,";
-      csvContent += "Date,Category,Description,Amount,Payment Method,Transaction Type,Friend Involved,Notes\r\n";
+      csvContent += "Date,Category,Description,Amount,Payment Method,Notes,Type\n";
 
-      activeTrip.expenses.forEach(exp => {
-        const date = exp.date || "";
-        const category = exp.category || "";
-        const description = (exp.description || "").replace(/"/g, '""');
-        const amount = exp.amount || 0;
-        const pm = exp.paymentMethod || "";
-        const type = exp.type || "personal";
-        const companion = activeTrip.members.find(m => m.id === exp.friendId)?.name || "";
-        const notes = (exp.notes || "").replace(/"/g, '""');
-
-        csvContent += `"${date}","${category}","${description}",${amount},"${pm}","${type}","${companion}","${notes}"\r\n`;
+      expenses.forEach(exp => {
+        const row = [
+          exp.date,
+          exp.category,
+          `"${exp.description.replace(/"/g, '""')}"`,
+          exp.amount,
+          exp.paymentMethod,
+          `"${(exp.notes || '').replace(/"/g, '""')}"`,
+          exp.type || 'personal'
+        ];
+        csvContent += row.join(",") + "\n";
       });
 
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
       link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `${appState.appName}_${activeTrip.name.replace(/\s+/g, '_')}.csv`);
+      link.setAttribute("download", `expenses_${activeTrip.name.replace(/\s+/g, '_')}_report.csv`);
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
+      link.remove();
     }
 
     function triggerBackup() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
-      const link = document.createElement("a");
-      link.setAttribute("href", dataStr);
-      link.setAttribute("download", `${appState.appName}_Backup_${new Date().toISOString().split('T')[0]}.json`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState));
+      const dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", `tripexpencetracker_backup_${Date.now()}.json`);
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+      openToastAlert("Backup file generated and downloaded successfully!");
     }
 
     function triggerRestore(event) {
       const file = event.target.files[0];
       if (!file) return;
 
-      const fileReader = new FileReader();
-      fileReader.onload = function(e) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
         try {
-          const parsed = JSON.parse(e.target.result);
-          if (parsed && parsed.trips && Array.isArray(parsed.trips)) {
-            const currentGasUrl = appState.gasUrl; 
-            appState = parsed;
-            
-            if (currentGasUrl && !appState.gasUrl) {
-              appState.gasUrl = currentGasUrl;
-            }
-            if (!appState.securityPin) appState.securityPin = "0000";
-            
+          const importedState = JSON.parse(e.target.result);
+          if (importedState && (importedState.trips || importedState.activeTripId)) {
+            appState = importedState;
             saveStateToLocalStorageDirectly();
-            loadDataFromStorage();
             applyBrandSettings();
+            applyThemeFromState();
             renderApp();
-            openToastAlert("Backup successfully restore ho gaya!");
+            openToastAlert("App data backup restored successfully!");
           } else {
-            openToastAlert("Sahi backup JSON file upload karein.");
+            openToastAlert("Apurva/Corrupt backup file structure found.");
           }
-        } catch (error) {
-          openToastAlert("Upload validation failed!");
+        } catch (err) {
+          openToastAlert("Restore failed: JSON parsing error.");
         }
       };
-      fileReader.readAsText(file);
+      reader.readAsText(file);
     }
 
     function resetAllData() {
       showAlertDialog(
-        "Factory Reset Tracker?",
-        "Are you absolutely sure you want to restore the default state? Saara custom entries local cache se delete ho jayega.",
+        "Factory Reset Confirm?",
+        "Are you absolutely sure you want to perform a factory reset? This will completely clear all local databases, trip records, settings configurations, and transaction logs. This action CANNOT be undone.",
         () => {
           localStorage.removeItem('tripexpencetracker_master_v17_premium');
           seedInitialSampleData();
           applyBrandSettings();
+          applyThemeFromState();
           renderApp();
+          openToastAlert("Application system reset to factory defaults.");
         },
         true
       );
     }
 
-    // ==========================================
-    // PROGRESSIVE WEB APP (PWA) IMPLEMENTATION
-    // ==========================================
-
-    let deferredPrompt;
-    let newWorker;
-
-    // Register Service Worker and watch for updates
+    let deferredPrompt = null;
     function registerServiceWorker() {
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./service-worker.js')
-            .then(registration => {
-              console.log('PWA ServiceWorker registered inside scope: ', registration.scope);
+          navigator.serviceWorker.register('./sw.js')
+            .then(reg => {
+              console.log('ServiceWorker registration successful with scope: ', reg.scope);
               
-              // Watch for active background updates
-              registration.addEventListener('updatefound', () => {
-                newWorker = registration.installing;
+              // Handle update detection
+              reg.addEventListener('updatefound', () => {
+                const newWorker = reg.installing;
                 newWorker.addEventListener('statechange', () => {
                   if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    showUpdateNotificationBanner();
+                    showPwaUpdateBanner(reg);
                   }
                 });
               });
             })
-            .catch(error => {
-              console.error('ServiceWorker registration error: ', error);
-            });
-        });
-
-        // Instant refresh on skipped waiting confirmation state change
-        let isRefreshing = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (!isRefreshing) {
-            isRefreshing = true;
-            window.location.reload();
-          }
+            .catch(err => console.warn('ServiceWorker registration failed: ', err));
         });
       }
     }
 
-    // Handles the long press home icon shortcut navigation parameters
-    function handlePwaShortcuts() {
-      const queryParams = new URLSearchParams(window.location.search);
-      const shortcutParam = queryParams.get('shortcut');
-      if (shortcutParam) {
-        // Purge parameter cleanly so page refreshes don't trigger re-action
-        window.history.replaceState({}, document.title, window.location.pathname);
-        
-        switch(shortcutParam) {
-          case 'add-expense':
-            switchTab('tabSpends');
-            setTimeout(() => { openExpenseModal(); }, 350);
-            break;
-          case 'friends':
-            switchTab('tabSplits');
-            break;
-          case 'analytics':
-            switchTab('tabAnalytics');
-            break;
-          case 'journal':
-            switchTab('tabNotes');
-            break;
-        }
-      }
-    }
-
-    // Catch install prompts
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      const installBtn = document.getElementById('pwaInstallBtn');
-      if (installBtn) installBtn.classList.remove('hidden');
-    });
-
-    window.addEventListener('appinstalled', (evt) => {
-      console.log('PWA was successfully installed.');
-      const installBtn = document.getElementById('pwaInstallBtn');
-      if (installBtn) installBtn.classList.add('hidden');
-      deferredPrompt = null;
-      
-      showAlertDialog(
-        "Application Installed Successfully! 🎉",
-        "TripExpenceTracker behaves natively on your device now! Open it anytime from your home screen with zero browser controls.",
-        () => {},
-        false
-      );
-    });
-
-    // Handle Floating Install trigger action click
-    document.getElementById('pwaInstallBtn')?.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(`User installation choice outcome: ${outcome}`);
-      deferredPrompt = null;
-      document.getElementById('pwaInstallBtn').classList.add('hidden');
-    });
-
-    // Detect offline and online status events
-    window.addEventListener('online', () => {
-      showNetworkToast(true);
-      if (appState.autoSync && appState.gasUrl) {
-        silentBackgroundPull();
-      }
-    });
-
-    window.addEventListener('offline', () => {
-      showNetworkToast(false);
-    });
-
-    // Render network toast animations
-    function showNetworkToast(isOnline) {
+    function showPwaUpdateBanner(registration) {
       const container = document.getElementById('pwaNotificationContainer');
       if (!container) return;
-      
-      const toast = document.createElement('div');
-      toast.className = `p-3 rounded-xl shadow-lg border pointer-events-auto flex items-center gap-2 text-xs slide-in-toast transition-opacity duration-300 ${
-        isOnline 
-          ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400' 
-          : 'bg-rose-500/10 border-rose-500/20 text-rose-500'
-      }`;
-      
-      toast.innerHTML = isOnline 
-        ? `<i data-lucide="wifi" class="w-4 h-4"></i> <span class="font-bold">🟢 Connected Again</span>`
-        : `<i data-lucide="wifi-off" class="w-4 h-4"></i> <span class="font-bold">🔴 Offline Mode</span>`;
-        
-      container.appendChild(toast);
-      lucide.createIcons();
-      
-      if (isOnline) {
-        setTimeout(() => {
-          toast.classList.add('opacity-0');
-          setTimeout(() => toast.remove(), 300);
-        }, 3500);
-      }
-    }
 
-    // Display a clean, dynamic update banner when static worker updates occur
-    function showUpdateNotificationBanner() {
-      const container = document.getElementById('pwaNotificationContainer');
-      if (!container) return;
-      
       const banner = document.createElement('div');
-      banner.className = "bg-slate-900 border border-brand-500/30 text-white rounded-2xl p-4 shadow-2xl flex flex-col gap-3 pointer-events-auto slide-in-toast";
+      banner.className = "p-4 bg-slate-900 border border-slate-800 text-white rounded-2xl shadow-2xl pointer-events-auto flex flex-col gap-3 slide-in-toast";
       banner.innerHTML = `
         <div class="flex items-start gap-3">
           <div class="p-2 bg-brand-500/20 text-brand-400 rounded-lg">
@@ -3362,11 +3425,39 @@ function doPost(e) {
       document.getElementById('pwaUpdateDismissBtn').addEventListener('click', () => {
         banner.remove();
       });
-      
+
       document.getElementById('pwaUpdateAcceptBtn').addEventListener('click', () => {
-        if (newWorker) {
-          newWorker.postMessage({ action: 'skipWaiting' });
+        if (registration.waiting) {
+          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
         }
+        window.location.reload();
+      });
+    }
+
+    function handlePwaShortcuts() {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const installBtn = document.getElementById('pwaInstallBtn');
+        if (installBtn) {
+          installBtn.classList.remove('hidden');
+          installBtn.addEventListener('click', () => {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+              if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+              }
+              installBtn.classList.add('hidden');
+              deferredPrompt = null;
+            });
+          });
+        }
+      });
+
+      window.addEventListener('appinstalled', (evt) => {
+        console.log('TripExpenseTracker was installed successfully');
+        const installBtn = document.getElementById('pwaInstallBtn');
+        if (installBtn) installBtn.classList.add('hidden');
       });
     }
   </script>
