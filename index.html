@@ -2,8 +2,16 @@
 <html lang="en" class="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-   <link rel="icon" type="image/png" href="logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <link rel="icon" type="image/png" href="logo.png">
+  
+  <!-- Progressive Web App Settings -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8b5cf6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TripExpense">
+  <link rel="apple-touch-icon" href="logo.png">
     
   <title>TripExpenceTracker — Minimalist Trip Expense Diary & Khata</title>
   
@@ -108,11 +116,30 @@
     .animate-pulse-ring {
       animation: pulse-ring 3s infinite ease-in-out;
     }
+
+    /* PWA Native Mobile Optimization Styles */
+    html, body {
+      overscroll-behavior-y: contain; /* Disables drag-to-refresh pull action */
+      touch-action: manipulation; /* Removes tap lag & double-tap zooming defaults */
+      user-select: none; /* Emulate native iOS/Android look */
+    }
+    input, textarea, select {
+      user-select: auto !important; /* Retains typing selections */
+    }
+
+    /* Elegant CSS sliding animations for network toast popups */
+    .slide-in-toast {
+      transform: translateY(150%);
+      animation: slideInUp 0.35s forwards cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideInUp {
+      to { transform: translateY(0); }
+    }
   </style>
 </head>
 <body class="bg-neutralSlate-50 text-neutralSlate-900 dark:bg-neutralSlate-955 dark:text-neutralSlate-100 min-h-screen transition-colors duration-200 pb-16 sm:pb-6">
 
-  <!-- FULL SCREEN OVERLAY 1: Google Cloud Pull & Handshake Screen -->
+  <!-- FULL SCREEN OVERLAY 1: Startup Sync & Cloud Verification Screen -->
   <div id="cloudHandshakeScreen" class="fixed inset-0 flex flex-col items-center justify-center bg-[#090f1d] text-white transition-opacity duration-500" style="z-index: 10000;">
     <div class="relative flex items-center justify-center w-36 h-36 mb-8">
       <div class="absolute inset-0 rounded-full border-4 border-neutralSlate-800"></div>
@@ -124,14 +151,14 @@
 
     <h2 class="text-xl sm:text-2xl font-black tracking-tight mb-2">Syncing with Cloud...</h2>
     <p class="text-xs sm:text-sm text-neutralSlate-404 max-w-sm text-center px-6 leading-relaxed mb-10">
-      Please wait while we secure your latest database terminal
+      Kripya prateeksha karein, aapka database connect kiya ja raha hai
     </p>
 
-    <!-- Tech Handshake Status Bar -->
+    <!-- Tech Status Area -->
     <div class="border-t border-neutralSlate-800 pt-6 w-72 flex flex-col items-center">
       <div class="flex items-center gap-2 text-[10px] tracking-widest font-black uppercase text-blue-400">
         <span class="w-2 h-2 rounded-full bg-blue-500 animate-ping"></span>
-        <span id="handshakeStatusText">ESTABLISHING SECURE HANDSHAKE</span>
+        <span id="handshakeStatusText">ESTABLISHING CONNECTION</span>
       </div>
       <button id="handshakeSkipBtn" onclick="bypassSyncFlow()" class="hidden mt-6 px-4 py-2 bg-neutralSlate-800 hover:bg-neutralSlate-700 text-neutralSlate-300 text-[10px] font-bold uppercase tracking-widest rounded-lg transition">
         Continue Offline Mode
@@ -139,7 +166,7 @@
     </div>
   </div>
 
-  <!-- FULL SCREEN OVERLAY 2: Secure Admin Login PIN Lock (Default 0000) -->
+  <!-- FULL SCREEN OVERLAY 2: Admin Security PIN Lock Screen -->
   <div id="adminPinScreen" class="hidden fixed inset-0 flex flex-col items-center justify-center bg-[#090f1d] text-white transition-opacity duration-300" style="z-index: 9999;">
     <div class="w-full max-w-md px-6">
       <div class="bg-[#121b2e] border border-neutralSlate-800/80 rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center">
@@ -153,35 +180,35 @@
         </div>
 
         <h3 class="text-xl font-extrabold tracking-widest text-white uppercase">SACHINDHISLE04</h3>
-        <p class="text-[10px] text-neutralSlate-400 tracking-wider uppercase mt-1 mb-6">Secure Admin Dashboard Terminal</p>
+        <p class="text-[10px] text-neutralSlate-404 tracking-wider uppercase mt-1 mb-6">Secure System Dashboard Terminal</p>
 
-        <!-- PIN Login form block -->
+        <!-- PIN Entry Form Box -->
         <div class="w-full space-y-4">
           <div class="relative">
             <i data-lucide="lock" class="w-4 h-4 absolute left-4 top-3.5 text-neutralSlate-400"></i>
             <input type="password" id="loginPinInput" maxlength="4" placeholder="Enter Login PIN" class="w-full bg-[#1b253b] text-white placeholder-neutralSlate-400 px-12 py-3 rounded-xl border border-neutralSlate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center font-black tracking-normal text-lg">
           </div>
-          <div id="pinErrorMessage" class="hidden text-rose-500 font-bold text-[11px]">Incorrect Security PIN. Please try again.</div>
+          <div id="pinErrorMessage" class="hidden text-rose-500 font-bold text-[11px]">Galat Security PIN hai. Kripya firse koshish karein.</div>
           
           <button onclick="verifySecurityPin()" class="w-full bg-[#0fa968] hover:bg-[#0c8a54] text-white py-3.5 rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/50">
-            <span>Access System</span>
+            <span>System Access Karein</span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
 
         <div class="mt-6 text-[10px] text-neutralSlate-404">
-          Tip: Default PIN code is <span class="text-emerald-400 font-black">0000</span>.
+          Tip: Default Security PIN code <span class="text-emerald-400 font-black">0000</span> hai.
         </div>
 
       </div>
     </div>
   </div>
 
-  <!-- Main Sticky Header Navbar -->
+  <!-- Header Navigation Bar -->
   <header class="no-print sticky top-0 z-40 bg-white/80 dark:bg-neutralSlate-955/80 backdrop-blur-md border-b border-neutralSlate-200 dark:border-neutralSlate-900 transition-all">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       
-      <!-- Brand Logo & Cloud Status -->
+      <!-- Brand Logo, Info & Status -->
       <div class="flex items-center space-x-3">
         <div class="bg-brand-500/10 dark:bg-brand-500/20 p-2 rounded-xl text-brand-600 dark:text-brand-400 flex items-center justify-center">
           <span id="headerLogoContainer" class="text-xl font-bold leading-none">✈️</span>
@@ -189,41 +216,41 @@
         <div>
           <div class="flex items-center gap-2">
             <h1 id="headerBrandName" class="text-sm sm:text-base font-bold tracking-tight text-neutralSlate-900 dark:text-white">
-              WanderBudget
+              TripExpenceTracker
             </h1>
             <div id="syncStatusIndicator" class="flex items-center gap-1 bg-neutralSlate-100 text-neutralSlate-600 dark:bg-neutralSlate-800 dark:text-neutralSlate-404 px-2 py-0.5 rounded-full">
               <i data-lucide="cloud" class="w-3 h-3"></i>
-              <span class="text-[9px] uppercase font-bold tracking-wide">SYNCED</span>
+              <span class="text-[9px] uppercase font-bold tracking-wide">LOCAL ONLY</span>
             </div>
           </div>
           <p class="text-[9px] text-neutralSlate-500 dark:text-neutralSlate-404">Simple Trip Diary & Friends Udhaar Khata</p>
         </div>
       </div>
 
-      <!-- Header Controls -->
+      <!-- Control buttons -->
       <div class="flex items-center space-x-2">
-        <!-- Trip Selector Dropdown -->
+        <!-- Trip Selection Selector Dropdown -->
         <div class="relative">
           <select id="headerTripSelector" onchange="switchTrip(this.value)" class="appearance-none bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-900 dark:hover:bg-neutralSlate-850 text-neutralSlate-800 dark:text-neutralSlate-100 pl-3 pr-8 py-2 rounded-xl text-xs sm:text-sm font-semibold border border-neutralSlate-200 dark:border-neutralSlate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 transition cursor-pointer">
-            <!-- Dynamically Loaded -->
+            <!-- Dynamic entries loaded here -->
           </select>
           <div class="absolute inset-y-0 right-2.5 flex items-center pointer-events-none text-neutralSlate-505">
             <i data-lucide="chevron-down" class="w-4 h-4"></i>
           </div>
         </div>
 
-        <!-- Quick Config Menu Trigger -->
+        <!-- Custom Brand Configuration dropdown trigger -->
         <div class="relative">
           <button id="configBtn" onclick="toggleDropdown('configDropdown')" class="p-2 text-neutralSlate-555 hover:text-neutralSlate-800 dark:hover:text-white hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-900 rounded-xl transition">
             <i data-lucide="settings" class="w-4 sm:w-5 h-4 sm:h-5"></i>
           </button>
           
           <div id="configDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white dark:bg-neutralSlate-900 rounded-2xl shadow-xl border border-neutralSlate-200 dark:border-neutralSlate-800 py-2 z-50 text-xs sm:text-sm max-h-[85vh] overflow-y-auto">
-            <div class="px-4 py-2 font-bold text-[10px] text-neutralSlate-400 tracking-wider uppercase border-b border-neutralSlate-100 dark:border-neutralSlate-800 mb-2 font-black">Configure Brand</div>
+            <div class="px-4 py-2 font-bold text-[10px] text-neutralSlate-404 tracking-wider uppercase border-b border-neutralSlate-100 dark:border-neutralSlate-800 mb-2 font-black">Configure Brand</div>
             <div class="px-3 pb-3 space-y-2">
               <div>
                 <label class="block text-[10px] text-neutralSlate-400 mb-0.5 font-bold">App Name</label>
-                <input type="text" id="customAppNameInput" oninput="updateBrandSettings()" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-2 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs" placeholder="WanderBudget">
+                <input type="text" id="customAppNameInput" oninput="updateBrandSettings()" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-2 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs" placeholder="TripExpenceTracker">
               </div>
               <div>
                 <label class="block text-[10px] text-neutralSlate-400 mb-0.5 font-bold">Logo (Emoji)</label>
@@ -232,7 +259,7 @@
             </div>
 
             <div class="border-t border-neutralSlate-100 dark:border-neutralSlate-800 my-1"></div>
-            <div class="px-4 py-2 font-bold text-[10px] text-neutralSlate-400 tracking-wider uppercase mb-2 font-black">Security System</div>
+            <div class="px-4 py-2 font-bold text-[10px] text-neutralSlate-404 tracking-wider uppercase mb-2 font-black">Security System</div>
             <div class="px-3 pb-3 space-y-2">
               <div>
                 <label class="block text-[10px] text-neutralSlate-400 mb-0.5 font-bold">Terminal PIN</label>
@@ -241,7 +268,7 @@
             </div>
 
             <div class="border-t border-neutralSlate-100 dark:border-neutralSlate-800 my-1"></div>
-            <div class="px-4 py-2 font-bold text-[10px] text-neutralSlate-400 tracking-wider uppercase mb-1 font-black">Set Default Currency</div>
+            <div class="px-4 py-2 font-bold text-[10px] text-neutralSlate-404 tracking-wider uppercase mb-1 font-black">Set Default Currency</div>
             <div class="px-3 pb-2">
               <select id="currencySelector" onchange="changeCurrency(this.value)" class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 text-neutralSlate-900 dark:text-slate-100 px-3 py-1.5 rounded-lg border border-neutralSlate-200 dark:border-neutralSlate-800 focus:ring-2 focus:ring-brand-500 transition text-xs font-bold">
                 <option value="₹">₹ Indian Rupee (INR)</option>
@@ -269,7 +296,7 @@
           </div>
         </div>
 
-        <!-- Light/Dark Mode Switcher -->
+        <!-- System Theme toggle -->
         <button onclick="toggleDarkMode()" class="p-2 text-neutralSlate-555 hover:text-neutralSlate-800 dark:hover:text-white hover:bg-neutralSlate-100 dark:hover:bg-neutralSlate-900 rounded-xl transition">
           <i id="themeIcon" data-lucide="sun" class="w-4 sm:w-5 h-4 sm:h-5"></i>
         </button>
@@ -277,10 +304,10 @@
     </div>
   </header>
 
-  <!-- Main Responsive Layout Wrapper -->
+  <!-- Responsive Layout Framework -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 print-full-width">
     
-    <!-- Print Report Header Details (Visible only in Print mode) -->
+    <!-- Print Report Layout Header Details -->
     <div class="hidden print:block border-b border-neutralSlate-300 dark:border-neutralSlate-800 pb-4 mb-6 text-xs text-neutralSlate-800 dark:text-neutralSlate-100">
       <h3 class="text-base font-extrabold uppercase tracking-tight mb-2">Trip Budget Analysis Summary</h3>
       <div class="grid grid-cols-2 gap-4">
@@ -291,34 +318,34 @@
       </div>
     </div>
 
-    <!-- Onboarding empty state -->
+    <!-- Onboarding empty state panel -->
     <div id="emptyStateOnboarding" class="hidden max-w-xl mx-auto bg-white dark:bg-neutralSlate-900 border border-neutralSlate-200 dark:border-neutralSlate-800 rounded-3xl p-8 text-center shadow-xl my-12">
       <div class="w-20 h-20 bg-brand-500/10 text-brand-500 rounded-full flex items-center justify-center mx-auto mb-6">
         <i data-lucide="plane-takeoff" class="w-10 h-10"></i>
       </div>
-      <h2 class="text-2xl font-black text-neutralSlate-900 dark:text-white mb-2">Welcome to WanderBudget!</h2>
+      <h2 class="text-2xl font-black text-neutralSlate-900 dark:text-white mb-2">Welcome to TripExpenceTracker!</h2>
       <p class="text-sm text-neutralSlate-505 dark:text-neutralSlate-404 mb-8 leading-relaxed">
-        Abhi aapke system me koi active trip register nahi hai. Apni budget logs, spends, aur companion udhaar khata manage karne ke liye ek new trip start karein ya Cloud Sheet se data pull karein!
+        Abhi aapke system me koi active trip register nahi hai. Apni budget logs, spends, aur companion udhaar khata manage karne ke liye ek new trip start karein ya custom Sheets link se data sync karein!
       </p>
       
       <div class="space-y-3">
         <button onclick="openTripModal()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3.5 px-6 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-brand-500/10">
           <i data-lucide="plus" class="w-5 h-5"></i>
-          <span>Create Your First Trip</span>
+          <span>Apni Pehli Trip Banayein</span>
         </button>
         <button onclick="pullStateFromCloud()" class="w-full bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white font-bold py-3 px-6 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-750 transition flex items-center justify-center gap-2">
           <i data-lucide="cloud-download" class="w-4 h-4 text-emerald-500"></i>
-          <span>Pull from Cloud Sheet</span>
+          <span>Cloud Sheet se Pull karein</span>
         </button>
       </div>
     </div>
 
-    <!-- Main Dashboard Container -->
+    <!-- Main Dashboard Framework -->
     <div id="dashboardMainContent" class="block">
-      <!-- Hero Header Travel Section -->
+      <!-- Active Hero Trip details display card -->
       <div class="relative w-full rounded-2xl overflow-hidden mb-6 bg-white dark:bg-neutralSlate-900 border border-neutralSlate-200 dark:border-neutralSlate-900 p-5 sm:p-8 shadow-sm">
         
-        <!-- Subtle top visual layer indicators -->
+        <!-- Cover header theme design -->
         <div id="tripCoverBg" class="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-500"></div>
 
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mt-2">
@@ -340,13 +367,13 @@
               </button>
             </div>
 
-            <!-- Dynamic Budget Warning & Status Panel (Trip Header integration) -->
+            <!-- Dynamic Budget Warning and Limits stats panel -->
             <div id="tripHeaderBudgetContainer" class="mt-3 pt-3 border-t border-neutralSlate-200 dark:border-neutralSlate-800/80 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-neutralSlate-650 dark:text-neutralSlate-300">
-              <!-- Handled in JS -->
+              <!-- Rendered via JS -->
             </div>
           </div>
           
-          <!-- Theme Colors Selection Accordion -->
+          <!-- Theme palette popup container -->
           <div id="coverDropdown" class="hidden absolute top-12 right-6 bg-white dark:bg-neutralSlate-900 p-3 rounded-xl shadow-xl border border-neutralSlate-200 dark:border-neutralSlate-800 z-50 grid grid-cols-3 gap-2">
             <button onclick="updateCover('sunset')" class="w-8 h-8 rounded-lg bg-gradient-to-r from-orange-500 to-rose-600 border border-neutralSlate-200"></button>
             <button onclick="updateCover('indigo')" class="w-8 h-8 rounded-lg bg-gradient-to-r from-brand-600 to-indigo-800 border border-neutralSlate-200"></button>
@@ -370,10 +397,10 @@
         </div>
       </div>
 
-      <!-- Clean Responsive Dashboard KPI Scoreboard -->
+      <!-- Financial Metrics Scoreboard -->
       <section class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
         
-        <!-- KPI: Total Trip Expense -->
+        <!-- KPI: Grand Total Trip Expenses -->
         <div id="kpiTotalExpenseCard" class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col justify-between transition-colors">
           <div class="flex items-center justify-between text-neutralSlate-505 dark:text-neutralSlate-404 mb-1">
             <span class="text-[9px] font-bold uppercase tracking-wider">TOTAL TRIP EXPENSE</span>
@@ -444,7 +471,7 @@
         </div>
       </section>
 
-      <!-- Clean Tab Navigation Row -->
+      <!-- Dashboard Tab Header Buttons -->
       <div class="no-print flex border-b border-neutralSlate-200 dark:border-neutralSlate-800 mb-6 overflow-x-auto whitespace-nowrap scrollbar-none gap-2">
         <button onclick="switchTab('tabSpends')" id="btnTabSpends" class="tab-button px-4 py-2.5 font-bold text-xs sm:text-sm text-brand-500 border-b-2 border-brand-500 transition flex items-center gap-2">
           <i data-lucide="book-open" class="w-4 h-4"></i> Spends & History Diary
@@ -461,23 +488,23 @@
         </button>
       </div>
 
-      <!-- TAB 1: Spends Ledger & Dynamic Stream -->
+      <!-- TAB 1: Spends History Diary -->
       <div id="tabSpends" class="tab-content block">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
-          <!-- Spends controls filter and rows list -->
+          <!-- Spends records container & controls -->
           <div class="lg:col-span-2 space-y-4">
             
-            <!-- Filters Row Panel -->
+            <!-- Dynamic Filters -->
             <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <!-- Search Box -->
+                <!-- Search inputs -->
                 <div class="relative">
                   <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-neutralSlate-404"></i>
                   <input id="searchQuery" oninput="handleSearchInput()" type="text" placeholder="Search description, tags..." class="w-full bg-neutralSlate-100/60 dark:bg-neutralSlate-900/60 pl-9 pr-3 py-2 rounded-xl text-xs sm:text-sm text-neutralSlate-900 dark:text-white placeholder-neutralSlate-550 focus:outline-none focus:ring-1 focus:ring-brand-500 transition">
                 </div>
                 
-                <!-- Category select dropdown -->
+                <!-- Category Select Dropdown -->
                 <div class="relative">
                   <select id="filterCategory" onchange="debouncedRenderApp()" class="w-full bg-neutralSlate-100/60 dark:bg-neutralSlate-900/60 pl-3 pr-8 py-2 rounded-xl text-xs sm:text-sm text-neutralSlate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold">
                     <option value="ALL">All Categories</option>
@@ -487,7 +514,7 @@
                   </div>
                 </div>
 
-                <!-- Sorting dynamic dropdown -->
+                <!-- Sorting Select Dropdown -->
                 <div class="relative">
                   <select id="sortBy" onchange="debouncedRenderApp()" class="w-full bg-neutralSlate-100/60 dark:bg-neutralSlate-900/60 pl-3 pr-8 py-2 rounded-xl text-xs sm:text-sm text-neutralSlate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold">
                     <option value="date-desc">Newest First</option>
@@ -502,7 +529,7 @@
               </div>
             </div>
 
-            <!-- Ledger Table Sheet -->
+            <!-- Ledger Table Layout -->
             <div class="bg-white dark:bg-neutralSlate-900 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm overflow-hidden">
               <div class="px-4 py-3 border-b border-neutralSlate-200 dark:border-neutralSlate-800 flex justify-between items-center bg-neutralSlate-50/50 dark:bg-neutralSlate-955/30">
                 <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 flex items-center gap-1.5">
@@ -518,47 +545,44 @@
                 </div>
               </div>
 
-              <!-- Dynamic transaction lists -->
+              <!-- Transactions mapping -->
               <div id="expensesContainer" class="divide-y divide-neutralSlate-100 dark:divide-neutralSlate-800/85"></div>
             </div>
           </div>
 
-          <!-- Right Side: Action Add and Stream list -->
+          <!-- Chronological Spent Stream Timeline widget -->
           <div class="space-y-4">
-            <!-- FAB/Action Add Trigger Card -->
             <button onclick="openExpenseModal()" class="w-full bg-brand-500 hover:bg-brand-600 text-white p-4 rounded-xl shadow-md shadow-brand-500/10 flex items-center justify-center gap-2 transition font-bold text-xs sm:text-sm">
               <i data-lucide="plus-circle" class="w-4 h-4"></i> Add Spend / Settlement
             </button>
 
-            <!-- Daily Spent Stream chronological -->
             <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
               <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 mb-4 flex items-center gap-1.5">
                 <i data-lucide="trending-up" class="w-4 h-4 text-brand-500"></i> Daily Spend Flow Timeline
               </h3>
               
               <div id="timelineContainer" class="relative border-l border-neutralSlate-200 dark:border-neutralSlate-800 ml-2.5 pl-4 space-y-4 text-xs">
-                <!-- Chronological Timeline Data -->
+                <!-- Data loaded dynamically -->
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- TAB 2: Friends & Splits Ledger -->
+      <!-- TAB 2: Travel companions and Udhaar splits -->
       <div id="tabSplits" class="tab-content hidden space-y-4">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
-          <!-- Left Side: Travel Members Grid & Balance table -->
+          <!-- Companions ledger balance mapping matrices -->
           <div class="lg:col-span-2 space-y-4">
             
-            <!-- Friends companion section lists -->
             <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
               <div class="flex justify-between items-center mb-4">
                 <div>
                   <h3 class="font-bold text-sm text-neutralSlate-955 dark:text-white flex items-center gap-1.5">
                     <i data-lucide="users" class="w-4 h-4 text-brand-500"></i> Travel Companions List
                   </h3>
-                  <p class="text-[10px] text-neutralSlate-500">Add friends and manage personal peer-to-peer udhaar diaries.</p>
+                  <p class="text-[10px] text-neutralSlate-500">Friends add karein aur personal peer-to-peer udhaar diaries manage karein.</p>
                 </div>
                 <button onclick="openFriendModal()" class="bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white border border-neutralSlate-200 dark:border-neutralSlate-800 px-3 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition flex items-center gap-1">
                   <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Add Friend
@@ -566,11 +590,10 @@
               </div>
 
               <div id="friendsListContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <!-- Dynamically populated friend boxes -->
+                <!-- Populated dynamically -->
               </div>
             </div>
 
-            <!-- Split ledger detailed balance mapping table matrix -->
             <div class="bg-white dark:bg-neutralSlate-900 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm overflow-hidden">
               <div class="px-4 py-3.5 border-b border-neutralSlate-200 dark:border-neutralSlate-800 flex justify-between items-center bg-neutralSlate-50/50 dark:bg-neutralSlate-955/30">
                 <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 flex items-center gap-1.5">
@@ -592,14 +615,14 @@
                     </tr>
                   </thead>
                   <tbody id="splitBalanceTableBody" class="divide-y divide-neutralSlate-100 dark:divide-neutralSlate-800 text-xs">
-                    <!-- Dynamic matrix mappings -->
+                    <!-- Loaded dynamically -->
                   </tbody>
                 </table>
               </div>
             </div>
           </div>
 
-          <!-- Right Side: Clean Active Debt Actions -->
+          <!-- Quick Settle up actions -->
           <div class="space-y-4">
             <div class="bg-white dark:bg-neutralSlate-900 border border-neutralSlate-200 dark:border-neutralSlate-900 p-5 rounded-xl shadow-sm">
               <h4 class="font-bold text-xs text-brand-600 dark:text-brand-400 flex items-center gap-1.5 mb-2 uppercase tracking-wide">
@@ -610,18 +633,18 @@
               </p>
               
               <div id="settleSuggestionsContainer" class="space-y-2">
-                <!-- Suggestions generated dynamically -->
+                <!-- Loaded dynamically -->
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- TAB 3: Visual Analytics Statistics & Cost break downs -->
+      <!-- TAB 3: Visual Analytics Statistics & charts -->
       <div id="tabAnalytics" class="tab-content hidden space-y-4">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
           
-          <!-- Pie Category distribution chart panel -->
+          <!-- Pie category cost chart container -->
           <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col">
             <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 mb-4 flex items-center gap-1.5">
               <i data-lucide="pie-chart" class="w-4 h-4 text-brand-500"></i> Spends Category Distribution
@@ -631,7 +654,7 @@
             </div>
           </div>
 
-          <!-- Cost flow timeline dynamic bar chart -->
+          <!-- Cost flow chart canvas container -->
           <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm flex flex-col">
             <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 mb-4 flex items-center gap-1.5">
               <i data-lucide="bar-chart" class="w-4 h-4 text-brand-500"></i> Daily Cost Flow Index
@@ -642,10 +665,9 @@
           </div>
         </div>
 
-        <!-- Financial analytical statistics list cards -->
+        <!-- Analytical details grid cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           
-          <!-- Card: Spends extremes -->
           <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
             <h4 class="font-bold text-xs text-neutralSlate-900 dark:text-white mb-3 flex items-center gap-1.5">
               <i data-lucide="sparkles" class="w-4 h-4 text-brand-500"></i> Spends Extremes
@@ -668,7 +690,6 @@
             </div>
           </div>
 
-          <!-- Card: Channel payments breakdown -->
           <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
             <h4 class="font-bold text-xs text-neutralSlate-900 dark:text-white mb-3 flex items-center gap-1.5">
               <i data-lucide="credit-card" class="w-4 h-4 text-brand-500"></i> Payment Channels Cost
@@ -695,8 +716,7 @@
             </div>
           </div>
 
-          <!-- Card: Frequency metrics insights -->
-          <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-950 shadow-sm">
+          <div class="bg-white dark:bg-neutralSlate-900 p-4 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-955 shadow-sm">
             <h4 class="font-bold text-xs text-neutralSlate-900 dark:text-white mb-3 flex items-center gap-1.5">
               <i data-lucide="flame" class="w-4 h-4 text-brand-500"></i> Most Active Spends Area
             </h4>
@@ -713,25 +733,23 @@
         </div>
       </div>
 
-      <!-- TAB 4: Journal details & Google Sheets Sync configuration -->
+      <!-- TAB 4: Journal Logs and Cloud spreadsheet synchronization -->
       <div id="tabNotes" class="tab-content hidden">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
-          <!-- Left Side: Journal checklists and Sheets Deployment steps -->
           <div class="lg:col-span-2 space-y-4">
-            
-            <!-- Journal notepad check lists -->
+            <!-- Travel Diary Notepad Checklists -->
             <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
               <h3 class="font-bold text-xs sm:text-sm text-neutralSlate-800 dark:text-slate-200 mb-1 flex items-center gap-1.5">
                 <i data-lucide="book-open" class="w-5 h-5 text-brand-500"></i> Travel Diary Journal & Checklists
               </h3>
-              <p class="text-[10px] text-neutralSlate-500 mb-3">Keep hotel details, routes, flight PNR references, checklists and quick memories safe here.</p>
+              <p class="text-[10px] text-neutralSlate-500 mb-3">Hotel ke details, routes, flight PNR references, checklists aur quick memories ko yahan safe rakhein.</p>
               
-              <textarea id="tripJournal" oninput="saveTripJournal()" placeholder="Enter hotel directions, bus seat details, tickets, itinerary and quick travel logs..." class="w-full min-h-[140px] bg-neutralSlate-50 dark:bg-neutralSlate-955 p-3 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-800 dark:text-white placeholder-neutralSlate-500 focus:outline-none focus:ring-1 focus:ring-brand-500 transition font-mono leading-relaxed text-xs"></textarea>
-              <div class="text-right text-[9px] text-neutralSlate-404 italic mt-1 font-semibold">Saves automatically to active trip diary.</div>
+              <textarea id="tripJournal" oninput="saveTripJournal()" placeholder="Hotel directions, bus details, tickets, itinerary aur important travel logs ko yahan enter karein..." class="w-full min-h-[140px] bg-neutralSlate-50 dark:bg-neutralSlate-955 p-3 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-800 dark:text-white placeholder-neutralSlate-500 focus:outline-none focus:ring-1 focus:ring-brand-500 transition font-mono leading-relaxed text-xs"></textarea>
+              <div class="text-right text-[9px] text-neutralSlate-404 italic mt-1 font-semibold">Active trip diary me auto-save hota hai.</div>
             </div>
 
-            <!-- GOOGLE CLOUD DEVICE SYNC -->
+            <!-- GOOGLE CLOUD DEVICE SYNC PANEL -->
             <div class="bg-white dark:bg-neutralSlate-900 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 p-5 relative overflow-hidden shadow-sm">
               
               <div class="flex items-center justify-between border-b border-neutralSlate-100 dark:border-neutralSlate-800 pb-3 mb-4">
@@ -741,7 +759,7 @@
                   </div>
                   <div>
                     <h3 class="font-bold text-xs sm:text-sm tracking-wide text-neutralSlate-900 dark:text-white uppercase font-black">GOOGLE SHEETS DATA SYNC</h3>
-                    <p class="text-[9px] text-neutralSlate-500">Realtime cross-device spreadsheet database backup</p>
+                    <p class="text-[9px] text-neutralSlate-500">Realtime cross-device spreadsheet database backup system</p>
                   </div>
                 </div>
                 <span id="cloudSyncStatusBadge" class="bg-neutralSlate-100 text-neutralSlate-600 dark:bg-neutralSlate-800 dark:text-neutralSlate-404 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-neutralSlate-200 dark:border-neutralSlate-700">
@@ -749,12 +767,12 @@
                 </span>
               </div>
 
-              <!-- Auto Sync switch controller row -->
+              <!-- Auto sync selector controller -->
               <div class="bg-neutralSlate-50 dark:bg-neutralSlate-950 border border-neutralSlate-200 dark:border-neutralSlate-800 p-3.5 rounded-xl mb-4 flex items-center justify-between">
                 <div>
                   <h4 class="font-bold text-xs text-neutralSlate-800 dark:text-slate-200">Cloud Auto-Sync</h4>
-                  <p class="text-[10px] text-neutralSlate-500 mt-0.5">
-                    Automatic background backup when adding/modifying logs.
+                  <p class="text-[10px] text-neutralSlate-505 mt-0.5">
+                    Data modify ya save karne par automatic background backup.
                   </p>
                 </div>
                 <label class="relative inline-flex items-center cursor-pointer">
@@ -763,21 +781,24 @@
                 </label>
               </div>
 
-              <!-- Web App Deploy URL Field and Tools -->
+              <!-- Web App URL config input -->
               <div class="space-y-1.5 mb-4">
                 <div class="flex justify-between items-center">
                   <label class="block text-[9px] font-bold tracking-wider text-brand-500 uppercase font-black">GOOGLE APPS SCRIPT WEB APP URL</label>
-                  <button onclick="restoreDefaultCloudUrl()" class="text-brand-500 hover:text-brand-600 text-[9px] font-bold underline transition">
-                    Reset to Default Script URL
+                  <button onclick="clearCloudUrl()" class="text-rose-500 hover:text-rose-600 text-[9px] font-bold underline transition">
+                    Clear URL / URL Hatayein
                   </button>
                 </div>
                 <div class="relative">
                   <i data-lucide="link-2" class="w-3.5 h-3.5 absolute left-3 top-2.5 text-neutralSlate-404"></i>
-                  <input type="url" id="gasUrlInput" oninput="updateCloudUrl(this.value)" class="w-full bg-neutralSlate-100 dark:bg-neutralSlate-955 pl-8 pr-3 py-1.5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs text-neutralSlate-900 dark:text-white placeholder-neutralSlate-500 focus:outline-none focus:ring-1 focus:ring-brand-500 transition" placeholder="https://script.google.com/macros/s/.../exec">
+                  <input type="url" id="gasUrlInput" oninput="updateCloudUrl(this.value)" class="w-full bg-neutralSlate-100 dark:bg-neutralSlate-955 pl-8 pr-3 py-1.5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs text-neutralSlate-900 dark:text-white placeholder-neutralSlate-500 focus:outline-none focus:ring-1 focus:ring-brand-500 transition" placeholder="Apne phone/system ke liye naya script URL yahan paste karein...">
                 </div>
+                <p class="text-[9px] text-neutralSlate-500 leading-relaxed pt-1">
+                  💡 <strong>Tip:</strong> Sabhi log apne mobile par apna personal Google Apps Script URL yahan dalkar apna data separate Google Sheet ke sath backup aur sync kar sakte hain!
+                </p>
               </div>
 
-              <!-- Sync pull push trigger actions buttons -->
+              <!-- Manual pull/push actions -->
               <div class="grid grid-cols-2 gap-3 mb-4">
                 <button onclick="pushStateToCloud()" class="bg-neutralSlate-100 hover:bg-neutralSlate-200 dark:bg-neutralSlate-800 dark:hover:bg-neutralSlate-750 text-neutralSlate-800 dark:text-white border border-neutralSlate-200 dark:border-neutralSlate-800 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
                   <i data-lucide="cloud-lightning" class="w-4 h-4 text-brand-500"></i> Push to Cloud
@@ -787,7 +808,7 @@
                 </button>
               </div>
 
-              <!-- COLLAPSIBLE PREVENT FAILURE SETUP GUIDE BOX -->
+              <!-- Setup collapsible guidelines -->
               <div class="mt-4 border border-dashed border-neutralSlate-300 dark:border-neutralSlate-800 rounded-xl p-4 bg-amber-50/50 dark:bg-amber-950/10">
                 <button onclick="toggleDropdown('gasCodeCollapsible')" class="w-full flex items-center justify-between text-left text-xs font-bold text-neutralSlate-850 dark:text-slate-200">
                   <span class="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
@@ -797,11 +818,11 @@
                 </button>
                 
                 <div id="gasCodeCollapsible" class="hidden mt-3 space-y-2 text-[11px] text-neutralSlate-600 dark:text-neutralSlate-300 leading-relaxed border-t border-neutralSlate-200 dark:border-neutralSlate-800/80 pt-3">
-                  <p class="font-semibold text-rose-500 dark:text-rose-404">🚨 IMPORTANT RULE FOR CORRECT SETUP (Pull/Push failures stop karne ke liye):</p>
+                  <p class="font-semibold text-rose-500 dark:text-rose-404">🚨 IMPORTANT RULE FOR CORRECT SETUP (Sync failures se bachne ke liye):</p>
                   <p>Jab aap Apps Script deploy karein, toh yeh do options bilkul sahi select hone chahiye:</p>
                   <ul class="list-disc list-inside space-y-1 pl-1 font-semibold text-neutralSlate-805 dark:text-white">
                     <li>Execute as: <span class="text-brand-500">Me (your-email@gmail.com)</span></li>
-                    <li>Who has access: <span class="text-emerald-500">Anyone</span> (Agur aapne "Anyone with Google Account" select kiya, toh browser request fail ho jayegi).</li>
+                    <li>Who has access: <span class="text-emerald-500">Anyone</span> (Agar aapne "Anyone with Google Account" select kiya, toh request browser par fail ho jayegi).</li>
                   </ul>
                   
                   <p class="font-bold mt-2 text-neutralSlate-800 dark:text-white">Code for your Apps Script:</p>
@@ -837,7 +858,7 @@ function doPost(e) {
             </div>
           </div>
 
-          <!-- Right Side: Destination stats overview card -->
+          <!-- Trip Overview Card details -->
           <div class="space-y-4">
             <div class="bg-white dark:bg-neutralSlate-900 p-5 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-900 shadow-sm">
               <h4 class="font-bold text-xs text-neutralSlate-800 dark:text-white mb-3 flex items-center gap-1.5">
@@ -864,15 +885,13 @@ function doPost(e) {
     </div>
   </main>
 
-  <!-- MODAL 1: Add Friend companion Modal -->
+  <!-- MODAL 1: Add Friend Companion Modal -->
   <div id="friendModal" class="hidden fixed inset-0 z-50 overflow-y-auto no-print">
     <div class="flex items-center justify-center min-h-screen p-4 text-center">
-      <!-- Backdrop -->
       <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeFriendModal()">
         <div class="absolute inset-0 bg-neutralSlate-900/60 dark:bg-neutralSlate-955/70 backdrop-blur-sm"></div>
       </div>
       
-      <!-- Modal Content -->
       <div class="relative bg-white dark:bg-neutralSlate-900 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all max-w-md w-full border border-neutralSlate-200 dark:border-neutralSlate-800 z-10">
         <div class="px-5 py-4 border-b border-neutralSlate-100 dark:border-neutralSlate-800 flex items-center justify-between">
           <h3 class="text-sm font-bold text-neutralSlate-955 dark:text-white flex items-center gap-1.5">
@@ -910,15 +929,13 @@ function doPost(e) {
     </div>
   </div>
 
-  <!-- MODAL 2: Edit/Create Trip details layout modal -->
+  <!-- MODAL 2: Edit/Create Destination Trip info modal -->
   <div id="tripModal" class="hidden fixed inset-0 z-50 overflow-y-auto no-print">
     <div class="flex items-center justify-center min-h-screen p-4 text-center">
-      <!-- Backdrop -->
       <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeTripModal()">
         <div class="absolute inset-0 bg-neutralSlate-900/60 dark:bg-neutralSlate-955/70 backdrop-blur-sm"></div>
       </div>
 
-      <!-- Modal Content -->
       <div class="relative bg-white dark:bg-neutralSlate-900 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all max-w-md w-full border border-neutralSlate-200 dark:border-neutralSlate-800 z-10">
         <div class="px-5 py-4 border-b border-neutralSlate-100 dark:border-neutralSlate-800 flex items-center justify-between">
           <h3 id="tripModalTitle" class="text-sm font-bold text-neutralSlate-955 dark:text-white flex items-center gap-1.5">
@@ -964,15 +981,13 @@ function doPost(e) {
     </div>
   </div>
 
-  <!-- MODAL 3: Redesigned Simple Expense Form supporting the 4 Custom Types -->
+  <!-- MODAL 3: Redesigned Simple Expense Entry Form supporting Custom splits -->
   <div id="expenseModal" class="hidden fixed inset-0 z-50 overflow-y-auto no-print">
     <div class="flex items-center justify-center min-h-screen p-4 text-center">
-      <!-- Backdrop -->
       <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeExpenseModal()">
         <div class="absolute inset-0 bg-neutralSlate-900/60 dark:bg-neutralSlate-955/70 backdrop-blur-sm"></div>
       </div>
 
-      <!-- Modal Content -->
       <div class="relative bg-white dark:bg-neutralSlate-900 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all max-w-md w-full border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs text-neutralSlate-900 dark:text-white z-10">
         <div class="px-5 py-4 border-b border-neutralSlate-100 dark:border-neutralSlate-800 flex items-center justify-between">
           <h3 id="expenseModalTitle" class="text-sm sm:text-base font-bold text-neutralSlate-955 dark:text-white flex items-center gap-1.5">
@@ -985,9 +1000,9 @@ function doPost(e) {
 
         <form id="expenseForm" onsubmit="saveExpense(event)" class="p-5 space-y-4">
           <input type="hidden" id="expenseModalId">
-          <input type="hidden" id="expenseModalSettledId"> <!-- Hidden original expense ID link -->
+          <input type="hidden" id="expenseModalSettledId"> <!-- Original expense ID link -->
 
-          <!-- Transaction Type Selector -->
+          <!-- Transaction Type Select dropdown -->
           <div>
             <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Transaction Type</label>
             <div class="relative">
@@ -1003,12 +1018,12 @@ function doPost(e) {
             </div>
           </div>
 
-          <!-- Friend Involved Dropdown (conditionally shown in js) -->
+          <!-- Mapped active companion selection row -->
           <div id="friendInvolvedRow" class="hidden">
             <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Friend Involved</label>
             <div class="relative">
               <select id="expenseModalFriend" class="w-full bg-neutralSlate-100 dark:bg-neutralSlate-905 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold text-xs">
-                <!-- dynamically loaded -->
+                <!-- Dynamically loaded -->
               </select>
               <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
                 <i data-lucide="chevron-down" class="w-4 h-4"></i>
@@ -1016,7 +1031,7 @@ function doPost(e) {
             </div>
           </div>
 
-          <!-- Settlement Direction Row (Shown only for settlement type) -->
+          <!-- Settlement Direction select row -->
           <div id="settlementDirectionRow" class="hidden">
             <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Who paid whom?</label>
             <div class="relative">
@@ -1039,7 +1054,7 @@ function doPost(e) {
               <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Category</label>
               <div class="relative">
                 <select id="expenseModalCategory" required class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold">
-                  <!-- dynamically loaded -->
+                  <!-- Dynamically loaded -->
                 </select>
                 <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
                   <i data-lucide="chevron-down" class="w-4 h-4"></i>
@@ -1103,22 +1118,20 @@ function doPost(e) {
     </div>
   </div>
 
-  <!-- MODAL 4: Global Customized Confirmation Dialog -->
+  <!-- MODAL 4: Global Customized Confirmation Alert Dialog -->
   <div id="alertDialog" class="hidden fixed inset-0 z-[100] overflow-y-auto no-print">
     <div class="flex items-center justify-center min-h-screen p-4 text-center">
-      <!-- Backdrop -->
       <div class="fixed inset-0 transition-opacity" aria-hidden="true" onclick="closeAlertDialog()">
         <div class="absolute inset-0 bg-neutralSlate-900/60 dark:bg-neutralSlate-955/70 backdrop-blur-sm"></div>
       </div>
       
-      <!-- Modal Content -->
       <div class="relative bg-white dark:bg-neutralSlate-900 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all max-w-sm w-full border border-neutralSlate-200 dark:border-neutralSlate-800 text-xs text-neutralSlate-900 dark:text-white z-10">
         <div class="p-5">
           <div class="flex items-center gap-2 text-orange-500 mb-2">
             <i data-lucide="alert-triangle" class="w-5 h-5"></i>
-            <h3 id="alertTitle" class="text-sm font-bold">Are you sure?</h3>
+            <h3 id="alertTitle" class="text-sm font-bold">Kya aap sure hain?</h3>
           </div>
-          <p id="alertMessage" class="text-neutralSlate-505 dark:text-neutralSlate-404 text-xs mt-2 leading-relaxed">This action cannot be reverted.</p>
+          <p id="alertMessage" class="text-neutralSlate-505 dark:text-neutralSlate-404 text-xs mt-2 leading-relaxed">Yeh action undo nahi kiya ja sakta.</p>
           <div class="mt-5 flex justify-end gap-2">
             <button id="alertCancelBtn" onclick="closeAlertDialog()" class="px-4 py-2 bg-neutralSlate-100 dark:bg-neutralSlate-800 text-neutralSlate-700 dark:text-slate-355 border border-neutralSlate-200 dark:border-neutralSlate-700 rounded-xl font-bold hover:bg-neutralSlate-200 transition">Cancel</button>
             <button id="alertConfirmBtn" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold transition">Confirm</button>
@@ -1128,7 +1141,16 @@ function doPost(e) {
     </div>
   </div>
 
-  <!-- Javascript State Logic Core Code -->
+  <!-- PWA Notifications & Live Toasts Floating Container -->
+  <div id="pwaNotificationContainer" class="fixed bottom-4 left-4 right-4 sm:left-auto sm:max-w-sm z-[10001] no-print flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Floating Install App Button (Visually hidden initially, shows up on compatibility match) -->
+  <button id="pwaInstallBtn" class="hidden fixed bottom-4 right-4 z-[9998] bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-750 hover:to-indigo-750 text-white font-bold py-2.5 px-4 rounded-full shadow-2xl flex items-center gap-2 text-xs transition-transform transform active:scale-95 no-print animate-bounce">
+    <i data-lucide="download-cloud" class="w-4 h-4"></i>
+    <span>Install App 📲</span>
+  </button>
+
+  <!-- Javascript Logic Core code block -->
   <script>
     // Standard System Categories
     const CATEGORIES = [
@@ -1148,18 +1170,18 @@ function doPost(e) {
       { id: "Misc", name: "Other 📌", bgClass: "bg-neutralSlate-500/10 text-neutralSlate-600 dark:text-neutralSlate-404 border border-neutralSlate-500/20" }
     ];
 
-    // Master App State (Clean blank state, PIN changed to 0000, lastUpdated set to 0 for cloud override)
+    // Master App State
     let appState = {
       trips: [],
       activeTripId: "",
       currency: "₹",
       theme: "light",
-      appName: "WanderBudget",
+      appName: "TripExpenceTracker", 
       appLogo: "✈️",
-      gasUrl: "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec", // Newly integrated user Script URL
-      autoSync: true,
-      securityPin: "0000", // PIN Defaulted to 0000
-      lastUpdated: 0       // Keep 0 initially so cloud pulling will safely overwrite clean state
+      gasUrl: "",
+      autoSync: false,
+      securityPin: "0000", 
+      lastUpdated: 0       
     };
 
     // Chart JS instances
@@ -1204,10 +1226,14 @@ function doPost(e) {
       
       // 2. Start Automatic Pull Handshake directly on load
       await executeStartupHandshake();
+
+      // 3. Register Service Worker & setup deep-linked app shortcuts
+      registerServiceWorker();
+      handlePwaShortcuts();
     }
 
     function loadDataFromStorage() {
-      const savedData = localStorage.getItem('wanderbudget_master_v16_premium');
+      const savedData = localStorage.getItem('tripexpencetracker_master_v17_premium');
       if (savedData) {
         try {
           appState = JSON.parse(savedData);
@@ -1219,30 +1245,28 @@ function doPost(e) {
         seedInitialSampleData();
       }
 
-      // Safe bounds checks
       if (!appState || !appState.trips) {
         seedInitialSampleData();
       }
 
-      if (!appState.appName) appState.appName = "WanderBudget";
+      if (!appState.appName) appState.appName = "TripExpenceTracker";
       if (!appState.appLogo) appState.appLogo = "✈️";
-      if (!appState.gasUrl) appState.gasUrl = "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec";
-      if (appState.autoSync === undefined) appState.autoSync = true;
+      if (appState.gasUrl === undefined) appState.gasUrl = "";
+      if (appState.autoSync === undefined) appState.autoSync = false;
       if (!appState.securityPin) appState.securityPin = "0000"; 
       if (appState.lastUpdated === undefined) appState.lastUpdated = 0;
     }
 
-    // Seeding completely empty structure to let user start fresh
     function seedInitialSampleData() {
       appState = {
-        trips: [], // Clear out default trips
+        trips: [], 
         activeTripId: "",
         currency: "₹",
         theme: "light",
-        appName: "WanderBudget",
+        appName: "TripExpenceTracker",
         appLogo: "✈️",
-        gasUrl: "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec",
-        autoSync: true,
+        gasUrl: "",
+        autoSync: false,
         securityPin: "0000",
         lastUpdated: 0 
       };
@@ -1250,11 +1274,11 @@ function doPost(e) {
     }
 
     function saveStateToLocalStorageDirectly() {
-      localStorage.setItem('wanderbudget_master_v16_premium', JSON.stringify(appState));
+      localStorage.setItem('tripexpencetracker_master_v17_premium', JSON.stringify(appState));
     }
 
     function saveStateToLocalStorage() {
-      appState.lastUpdated = Date.now(); // Mark as updated locally
+      appState.lastUpdated = Date.now(); 
       saveStateToLocalStorageDirectly();
       if (appState.autoSync && appState.gasUrl) {
         triggerSilentCloudSync();
@@ -1264,6 +1288,12 @@ function doPost(e) {
     async function executeStartupHandshake() {
       const statusText = document.getElementById('handshakeStatusText');
       const skipBtn = document.getElementById('handshakeSkipBtn');
+
+      if (!navigator.onLine) {
+        console.log("Offline mode, bypassing cloud handshake on start.");
+        transitionToPinScreen();
+        return;
+      }
 
       if (!appState.gasUrl) {
         transitionToPinScreen();
@@ -1289,9 +1319,8 @@ function doPost(e) {
           const cloudTime = cloudState.lastUpdated || 0;
           const localTime = appState.lastUpdated || 0;
           
-          // Pull cloud immediately if local timestamp is newer or equal but local has no trips
           if (cloudTime > localTime || localTime === 0 || !appState.trips || appState.trips.length === 0) {
-            const currentGasUrl = appState.gasUrl; // Protect local config
+            const currentGasUrl = appState.gasUrl; 
             appState = cloudState;
             
             if (currentGasUrl) {
@@ -1307,7 +1336,7 @@ function doPost(e) {
           statusText.textContent = "DECRYPTING LOCAL STORE...";
         }
       } catch (err) {
-        console.warn("Handshake fallback to offline local cache", err);
+        console.warn("Handshake offline mode active", err);
       }
 
       setTimeout(() => {
@@ -1316,14 +1345,12 @@ function doPost(e) {
     }
 
     function transitionToPinScreen() {
-      // Close Handshake Splash Screen
       const splash = document.getElementById('cloudHandshakeScreen');
       if (splash) {
         splash.classList.add('opacity-0');
         setTimeout(() => splash.classList.add('hidden'), 500);
       }
 
-      // Open Admin PIN Login screen
       const pinScreen = document.getElementById('adminPinScreen');
       if (pinScreen) {
         pinScreen.classList.remove('hidden');
@@ -1336,7 +1363,6 @@ function doPost(e) {
       transitionToPinScreen();
     }
 
-    // Verify system login PIN (Default 0000)
     function verifySecurityPin() {
       const entered = document.getElementById('loginPinInput').value;
       const targetPin = appState.securityPin || "0000";
@@ -1369,6 +1395,7 @@ function doPost(e) {
 
     let silentSyncDebounceTimer = null;
     function triggerSilentCloudSync() {
+      if (!appState.gasUrl) return;
       updateSyncStatusUI("syncing");
 
       if (silentSyncDebounceTimer) clearTimeout(silentSyncDebounceTimer);
@@ -1393,7 +1420,6 @@ function doPost(e) {
       }, 1200);
     }
 
-    // Automatic polling engine for cross-device updates
     function startBackgroundPolling() {
       if (backgroundPollInterval) clearInterval(backgroundPollInterval);
       if (appState.autoSync && appState.gasUrl) {
@@ -1414,7 +1440,6 @@ function doPost(e) {
       }
     });
 
-    // Background pull task to fetch cross-device modifications
     async function silentBackgroundPull() {
       if (!appState.gasUrl || !appState.autoSync) return;
       try {
@@ -1470,7 +1495,7 @@ function doPost(e) {
               syncHeader.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3 animate-spin text-brand-500"></i> <span class="text-[9px] text-brand-600 dark:text-brand-400 uppercase font-bold tracking-wider">Pulling...</span>`;
               break;
             case 'pulled-new':
-              syncHeader.innerHTML = `<i data-lucide="cloud-lightning" class="w-3 h-3 text-emerald-500 animate-bounce"></i> <span class="text-[9px] text-emerald-600 dark:text-emerald-400 uppercase font-black tracking-wider animate-pulse">Updated from Cloud!</span>`;
+              syncHeader.innerHTML = `<i data-lucide="cloud-lightning" class="w-3 h-3 text-emerald-500 animate-bounce"></i> <span class="text-[9px] text-emerald-600 dark:text-emerald-400 uppercase font-black tracking-wider animate-pulse">Updated!</span>`;
               break;
             case 'error':
               syncHeader.innerHTML = `<i data-lucide="cloud-off" class="w-3 h-3 text-rose-500"></i> <span class="text-[9px] text-rose-500 uppercase font-bold tracking-wider">Failed</span>`;
@@ -1521,7 +1546,7 @@ function doPost(e) {
     function toggleAutoSync(isChecked) {
       appState.autoSync = isChecked;
       saveStateToLocalStorage();
-      updateSyncStatusUI("local");
+      updateSyncStatusUI(appState.gasUrl ? "local" : "local");
       startBackgroundPolling();
     }
 
@@ -1532,14 +1557,17 @@ function doPost(e) {
       startBackgroundPolling();
     }
 
-    function restoreDefaultCloudUrl() {
-      appState.gasUrl = "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec";
+    function clearCloudUrl() {
+      appState.gasUrl = "";
       const gasInp = document.getElementById('gasUrlInput');
-      if (gasInp) gasInp.value = "https://script.google.com/macros/s/AKfycby1TknhZBMS_bKluKJPYoy1yTnAjPpy6aoooIG7qz8R_tixnp9Mxuen9uSrBx9UIuct/exec";
+      if (gasInp) gasInp.value = "";
       saveStateToLocalStorage();
       updateSyncStatusUI("local");
-      startBackgroundPolling();
-      openToastAlert("Default Google Apps Script Web App URL restore ho gaya hai!");
+      if (backgroundPollInterval) {
+        clearInterval(backgroundPollInterval);
+        backgroundPollInterval = null;
+      }
+      openToastAlert("Google Apps Script URL hataya gaya! Ab data local system me hi rahega.");
     }
 
     function copyAppsScriptCode() {
@@ -1550,12 +1578,12 @@ function doPost(e) {
       el.select();
       document.execCommand('copy');
       document.body.removeChild(el);
-      openToastAlert("Google Apps Script code copy ho gaya! Ab isey apne extensions App script window me paste karein.");
+      openToastAlert("Google Apps Script code copy ho gaya! Isey apne Extensions Apps Script window me paste karein.");
     }
 
     function pushStateToCloud() {
       if (!appState.gasUrl) {
-        openToastAlert("Pehle valid Google Apps Script Web App URL paste karein!");
+        openToastAlert("Pehle tab dashboard me valid Google Apps Script URL enter karein!");
         return;
       }
       triggerSilentCloudSync();
@@ -1563,7 +1591,7 @@ function doPost(e) {
 
     function pullStateFromCloud() {
       if (!appState.gasUrl) {
-        openToastAlert("Pehle Google Apps Script Web App URL paste karein!");
+        openToastAlert("Pehle valid Google Apps Script URL enter karein!");
         return;
       }
 
@@ -1589,10 +1617,10 @@ function doPost(e) {
           applyBrandSettings();
           renderApp();
           updateSyncStatusUI("synced");
-          openToastAlert("Google Cloud Sheet se data pull complete ho gaya hai!");
+          openToastAlert("Google Cloud Sheet se data successfully load ho gaya hai!");
         } else {
           updateSyncStatusUI("error");
-          openToastAlert("Spreadsheet database blank hai ya response sahi nahi hai.");
+          openToastAlert("Database sheet khali hai ya URL ka response galat hai.");
         }
       })
       .catch(err => {
@@ -1601,7 +1629,7 @@ function doPost(e) {
         
         showAlertDialog(
           "Pull System Failed 🚨",
-          "Iske 2 main reasons ho sakte hain:\n\n1. Web App deploy karte waqt aapne 'Who has access' ko 'Anyone' set nahi kiya.\n\n2. Aapne sahi Web App executable URL paste nahi kiya (URL ke end me /exec hona chahiye).\n\nDetails check karne ke liye Tab 4 (Journal & Cloud Sync) me di gayi instructions guide ko follow karein.",
+          "Kripya dhyan dein:\n\n1. Web App deploy karte waqt aapne 'Who has access' ko 'Anyone' set kiya ho.\n\n2. Sahi Web App Script URL paste kiya ho (URL ke end me /exec hona chahiye).\n\nSetup parameters check karne ke liye Tab 4 ka manual guide check karein.",
           () => {},
           false
         );
@@ -1612,7 +1640,7 @@ function doPost(e) {
       const name = document.getElementById('customAppNameInput').value.trim();
       const logo = document.getElementById('customAppLogoInput').value.trim();
 
-      appState.appName = name || "WanderBudget";
+      appState.appName = name || "TripExpenceTracker";
       appState.appLogo = logo || "✈️";
 
       saveStateToLocalStorage();
@@ -1661,20 +1689,17 @@ function doPost(e) {
 
         if (type === 'i_paid_friend' && fid && balances[fid] !== undefined) {
           paidForThem[fid] += amount;
-          // Only add to active outstanding balance if this individual transaction is NOT settled
           const isSettled = expenses.some(e => e.type === 'settlement' && e.settledExpenseId === exp.id);
           if (!isSettled) {
             balances[fid] += amount;
           }
         } else if (type === 'friend_paid_me' && fid && balances[fid] !== undefined) {
           paidForMe[fid] += amount;
-          // Only add to active outstanding balance if this individual transaction is NOT settled
           const isSettled = expenses.some(e => e.type === 'settlement' && e.settledExpenseId === exp.id);
           if (!isSettled) {
             balances[fid] -= amount;
           }
         } else if (type === 'settlement' && fid && balances[fid] !== undefined && !exp.settledExpenseId) {
-          // General bulk settlement (backward compatibility)
           const dir = exp.settlementDirection || 'you_to_friend';
           if (dir === 'you_to_friend') {
             balances[fid] += amount;
@@ -1804,7 +1829,6 @@ function doPost(e) {
       });
     }
 
-    // Helper formatting function to output standard negative values without trailing minus-sign placement anomalies
     function formatRemainingBudget(amount) {
       const isNegative = amount < 0;
       const absVal = Math.abs(amount);
@@ -1955,7 +1979,6 @@ function doPost(e) {
       safeSetText('statYouOweFriends', formatCurrency(youOweFriends));
       safeSetText('statSettledAmount', formatCurrency(settledAmount));
 
-      // --- BUDGET WARNING & TRACKING SYSTEM CORE LOGIC ---
       const budgetLimit = parseFloat(activeTrip.budget) || 0;
       const budgetContainer = document.getElementById('tripHeaderBudgetContainer');
       const kpiCard = document.getElementById('kpiTotalExpenseCard');
@@ -1990,7 +2013,7 @@ function doPost(e) {
             const exceededAmt = Math.abs(remainingBudget);
             remainingText = `<span class="text-rose-500 font-bold">Budget Exceeded by ${formatCurrency(exceededAmt)}</span>`;
             warningBadgeHTML = `
-              <span class="inline-flex items-center gap-1 bg-rose-500/10 text-rose-600 dark:text-rose-400 font-black px-2.5 py-1 rounded-lg text-[10px] tracking-wide border border-rose-500/20">
+              <span class="inline-flex items-center gap-1 bg-rose-500/10 text-rose-600 dark:text-rose-404 font-black px-2.5 py-1 rounded-lg text-[10px] tracking-wide border border-rose-500/20">
                 ⚠ Budget Exceeded by ${formatCurrency(exceededAmt)}
               </span>
             `;
@@ -2005,7 +2028,6 @@ function doPost(e) {
             </div>
           `;
           
-          // Toggle Visual border on KPI Total Trip Expense card
           if (kpiCard) {
             if (isExceeded) {
               kpiCard.classList.remove('border-neutralSlate-200', 'dark:border-neutralSlate-900');
@@ -2018,7 +2040,6 @@ function doPost(e) {
         }
       }
 
-      // Populate Print-Report Variables
       const printBudgetLimitEl = document.getElementById('printBudgetLimit');
       const printTotalExpenseEl = document.getElementById('printTotalExpense');
       const printRemainingBudgetEl = document.getElementById('printRemainingBudget');
@@ -2038,7 +2059,6 @@ function doPost(e) {
           printBudgetStatusEl.textContent = remainingBudget >= 0 ? "Under Budget" : `Budget Exceeded by ${formatCurrency(Math.abs(remainingBudget))}`;
         }
       }
-      // --- END BUDGET LOGIC ---
 
       safeSetText('extremeBiggestDesc', biggestDesc);
       safeSetText('extremeBiggestVal', formatCurrency(biggestAmt));
@@ -2104,7 +2124,6 @@ function doPost(e) {
       const sortingValue = document.getElementById('sortBy').value;
 
       let filtered = expenses.filter(exp => {
-        // EXCLUDE settlement rows from the history register list view
         if (exp.type === 'settlement') return false;
 
         const matchesQuery = !query || 
@@ -2177,11 +2196,9 @@ function doPost(e) {
           subBadgeText = `<span class="text-[8px] bg-rose-100 dark:bg-rose-900/30 text-rose-505 px-1.5 py-0.5 rounded font-black tracking-wide">📥 ${companion.name.toUpperCase()} PAID FOR YOU</span>`;
         }
 
-        // Search for a linked settlement transaction in our database
         const settlementTx = allExpenses.find(e => e.type === 'settlement' && e.settledExpenseId === exp.id);
         const isAlreadySettled = !!settlementTx;
 
-        // Custom pink line requested update: Show "Settled on [Date]" if settled
         let notesText = exp.notes || 'No description notes.';
         if (isAlreadySettled && settlementTx) {
           const sDateObj = new Date(settlementTx.date);
@@ -2202,12 +2219,11 @@ function doPost(e) {
                 <span class="px-1.5 py-0.5 rounded text-[8px] font-bold tracking-wider uppercase ${categoryDetails.bgClass}">${categoryDetails.name}</span>
                 ${subBadgeText}
               </div>
-              <p id="descNotesText-${exp.id}" class="text-[10px] text-neutralSlate-400 mt-0.5 truncate">${notesText}</p>
+              <p id="descNotesText-${exp.id}" class="text-[10px] text-neutralSlate-404 mt-0.5 truncate">${notesText}</p>
               ${billBadge}
             </div>
           </div>
 
-          <!-- Quick smart Settle buttons on table rows with instant disable badge once clicked -->
           ${(type === 'i_paid_friend' || type === 'friend_paid_me') ? `
             <div class="hidden sm:block flex-shrink-0 no-print">
               ${isAlreadySettled ? `
@@ -2225,7 +2241,6 @@ function doPost(e) {
           ` : ''}
 
           <div class="flex items-center gap-2 flex-shrink-0 justify-end">
-            <!-- Mobile Compact Settle Action or badge status -->
             ${(type === 'i_paid_friend' || type === 'friend_paid_me') ? `
               ${isAlreadySettled ? `
                 <span class="sm:hidden text-emerald-500 flex items-center justify-center p-1" title="Already Settled">
@@ -2429,7 +2444,7 @@ function doPost(e) {
       const calc = calculateBalances(activeTrip);
       const members = activeTrip.members || [];
 
-      let text = `*${appState.appName} Udhaar Report: ${activeTrip.name}* 🗺️\n\n`;
+      let text = `*${appState.appName} Udhaar Report: ${activeTrip.name}* 🗺\n\n`;
       text += `*Companions Balance Sheets:*\n`;
 
       let activeDues = false;
@@ -2450,7 +2465,7 @@ function doPost(e) {
         text += `\nNo active outstanding debts found!`;
       }
 
-      text += `\nGenerated via WanderBudget Travel Manager.`;
+      text += `\nGenerated via TripExpenceTracker Travel Manager.`;
       const encoded = encodeURIComponent(text);
       window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
     }
@@ -2509,13 +2524,13 @@ function doPost(e) {
       if (!activeTrip) return;
 
       const hasReferences = activeTrip.expenses.some(e => e.friendId === friendId);
-      let warningMsg = "Are you sure you want to remove this companion friend?";
+      let warningMsg = "Kya aap is companion ko remove karna chahte hain?";
       if (hasReferences) {
-        warningMsg += " Removing them will clear their profile card, but historical logged transactions involving them will persist in the registers.";
+        warningMsg += " Companion delete karne se unki profile card chali jayegi, par transaction logs history me persist rahenge.";
       }
 
       showAlertDialog(
-        "Remove Companion Friend?",
+        "Remove Companion?",
         warningMsg,
         () => {
           activeTrip.members = activeTrip.members.filter(m => m.id !== friendId);
@@ -2525,7 +2540,6 @@ function doPost(e) {
       );
     }
 
-    // Quick Settle up redirector containing the targeted original expenseId link
     function triggerQuickSettle(friendId, amount, direction, originalDesc = "", settledExpenseId = "") {
       openExpenseModal();
       document.getElementById('expenseModalType').value = 'settlement';
@@ -2536,7 +2550,6 @@ function doPost(e) {
       document.getElementById('expenseModalAmount').value = amount.toFixed(2);
       document.getElementById('expenseModalDescription').value = originalDesc ? `Settle: ${originalDesc}` : "Settle Balance";
       
-      // Save linking original expense ID so we can dynamically replace the button with Settled Badge!
       document.getElementById('expenseModalSettledId').value = settledExpenseId;
     }
 
@@ -2585,7 +2598,7 @@ function doPost(e) {
       const budget = parseFloat(document.getElementById('tripModalBudget').value) || 0;
 
       if (new Date(endDate) < new Date(startDate)) {
-        openToastAlert("Departure date must precede returning date.");
+        openToastAlert("Departure date return date se pehle honi chahiye.");
         return;
       }
 
@@ -2654,7 +2667,7 @@ function doPost(e) {
 
       showAlertDialog(
         "Confirm Deleting " + activeTrip.name,
-        "Are you sure you want to permanently delete this trip and wipe all its logged diaries?",
+        "Kya aap sach me is trip aur iske sabhi transaction reports ko permanently delete karna chahte hain?",
         () => {
           appState.trips = appState.trips.filter(t => t.id !== appState.activeTripId);
           if (appState.trips.length === 0) {
@@ -2689,7 +2702,7 @@ function doPost(e) {
       closeExpenseModal();
       document.getElementById('expenseModalTitle').innerHTML = '<i data-lucide="plus-circle" class="text-brand-500"></i> Log Spend Transaction';
       document.getElementById('expenseModalId').value = '';
-      document.getElementById('expenseModalSettledId').value = ''; // Clean old keys
+      document.getElementById('expenseModalSettledId').value = ''; 
       
       const activeTrip = appState.trips.find(t => t.id === appState.activeTripId);
       if (activeTrip) {
@@ -2756,7 +2769,7 @@ function doPost(e) {
       if (members.length === 0) {
         const opt = document.createElement('option');
         opt.value = '';
-        opt.textContent = 'No companion friends added yet.';
+        opt.textContent = 'Pehle "Companions" list me friend add karein.';
         select.appendChild(opt);
       } else {
         members.forEach(m => {
@@ -2772,11 +2785,10 @@ function doPost(e) {
       document.getElementById('expenseModal').classList.add('hidden');
       document.getElementById('expenseForm').reset();
       document.getElementById('expenseModalId').value = '';
-      document.getElementById('expenseModalSettledId').value = ''; // Clean old linked keys
+      document.getElementById('expenseModalSettledId').value = ''; 
       document.getElementById('billAttachmentStatus').textContent = "None";
       document.getElementById('expenseModalBillBase64').value = "";
       
-      // Safety release of form submit locking
       const submitBtn = document.getElementById('expenseSubmitBtn');
       if (submitBtn) submitBtn.disabled = false;
     }
@@ -2786,7 +2798,7 @@ function doPost(e) {
       if (!file) return;
 
       if (file.size > 2 * 1024 * 1024) {
-        openToastAlert("Image limit 2MB se kam honi chahiye!");
+        openToastAlert("Image size limit 2MB se kam honi chahiye!");
         return;
       }
 
@@ -2805,7 +2817,6 @@ function doPost(e) {
     function saveExpense(event) {
       event.preventDefault();
 
-      // LOCK SUBMISSION TO PREVENT DUPLICATES: Immediately lock the submit button
       const submitBtn = document.getElementById('expenseSubmitBtn');
       if (submitBtn) submitBtn.disabled = true;
 
@@ -2816,7 +2827,7 @@ function doPost(e) {
       }
 
       const id = document.getElementById('expenseModalId').value;
-      const settledId = document.getElementById('expenseModalSettledId').value; // Get original key link if any
+      const settledId = document.getElementById('expenseModalSettledId').value; 
       const date = document.getElementById('expenseModalDate').value;
       const category = document.getElementById('expenseModalCategory').value;
       const description = document.getElementById('expenseModalDescription').value.trim();
@@ -2830,13 +2841,13 @@ function doPost(e) {
       const settlementDirection = document.getElementById('expenseModalSettleDirection').value;
 
       if (amount <= 0) {
-        openToastAlert("Check amount! Cost must be greater than zero.");
+        openToastAlert("Cost error! Entry cost 0 se badi honi chahiye.");
         if (submitBtn) submitBtn.disabled = false;
         return;
       }
 
       if (type !== 'personal' && !friendId) {
-        openToastAlert("Pehle companion select karein!");
+        openToastAlert("Pehle friend select karein!");
         if (submitBtn) submitBtn.disabled = false;
         return;
       }
@@ -2853,7 +2864,7 @@ function doPost(e) {
         type,
         friendId: type === 'personal' ? '' : friendId,
         settlementDirection: type === 'settlement' ? settlementDirection : '',
-        settledExpenseId: type === 'settlement' ? settledId : '' // Safely store original mapped expense link
+        settledExpenseId: type === 'settlement' ? settledId : '' 
       };
 
       if (id) {
@@ -2878,10 +2889,9 @@ function doPost(e) {
       if (!exp) return;
 
       showAlertDialog(
-        "Delete Transaction Record?",
-        `Kya aap spend diary entry "${exp.description}" ko remove karna chahte hain?`,
+        "Delete Transaction?",
+        `Kya aap log entry "${exp.description}" ko remove karna chahte hain?`,
         () => {
-          // Delete both the original expense AND any linked settlement transactions automatically!
           activeTrip.expenses = activeTrip.expenses.filter(e => e.id !== expenseId && e.settledExpenseId !== expenseId);
           saveStateToLocalStorage();
           renderApp();
@@ -2941,7 +2951,7 @@ function doPost(e) {
           </html>
         `);
       } else {
-        openToastAlert("Popup blocked! Enable popups to preview receipt attachments.");
+        openToastAlert("Popup blocked! Receipt preview dekhne ke liye popups ko allow karein.");
       }
     }
 
@@ -3117,7 +3127,7 @@ function doPost(e) {
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
       link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `WanderBudget_${activeTrip.name.replace(/\s+/g, '_')}.csv`);
+      link.setAttribute("download", `${appState.appName}_${activeTrip.name.replace(/\s+/g, '_')}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -3127,7 +3137,7 @@ function doPost(e) {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
       const link = document.createElement("a");
       link.setAttribute("href", dataStr);
-      link.setAttribute("download", `WanderBudget_UdhaarBackup_${new Date().toISOString().split('T')[0]}.json`);
+      link.setAttribute("download", `${appState.appName}_Backup_${new Date().toISOString().split('T')[0]}.json`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -3170,13 +3180,191 @@ function doPost(e) {
         "Factory Reset Tracker?",
         "Are you absolutely sure you want to restore the default state? Saara custom entries local cache se delete ho jayega.",
         () => {
-          localStorage.removeItem('wanderbudget_master_v16_premium');
+          localStorage.removeItem('tripexpencetracker_master_v17_premium');
           seedInitialSampleData();
           applyBrandSettings();
           renderApp();
         },
         true
       );
+    }
+
+    // ==========================================
+    // PROGRESSIVE WEB APP (PWA) IMPLEMENTATION
+    // ==========================================
+
+    let deferredPrompt;
+    let newWorker;
+
+    // Register Service Worker and watch for updates
+    function registerServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./service-worker.js')
+            .then(registration => {
+              console.log('PWA ServiceWorker registered inside scope: ', registration.scope);
+              
+              // Watch for active background updates
+              registration.addEventListener('updatefound', () => {
+                newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    showUpdateNotificationBanner();
+                  }
+                });
+              });
+            })
+            .catch(error => {
+              console.error('ServiceWorker registration error: ', error);
+            });
+        });
+
+        // Instant refresh on skipped waiting confirmation state change
+        let isRefreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (!isRefreshing) {
+            isRefreshing = true;
+            window.location.reload();
+          }
+        });
+      }
+    }
+
+    // Handles the long press home icon shortcut navigation parameters
+    function handlePwaShortcuts() {
+      const queryParams = new URLSearchParams(window.location.search);
+      const shortcutParam = queryParams.get('shortcut');
+      if (shortcutParam) {
+        // Purge parameter cleanly so page refreshes don't trigger re-action
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+        switch(shortcutParam) {
+          case 'add-expense':
+            switchTab('tabSpends');
+            setTimeout(() => { openExpenseModal(); }, 350);
+            break;
+          case 'friends':
+            switchTab('tabSplits');
+            break;
+          case 'analytics':
+            switchTab('tabAnalytics');
+            break;
+          case 'journal':
+            switchTab('tabNotes');
+            break;
+        }
+      }
+    }
+
+    // Catch install prompts
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const installBtn = document.getElementById('pwaInstallBtn');
+      if (installBtn) installBtn.classList.remove('hidden');
+    });
+
+    window.addEventListener('appinstalled', (evt) => {
+      console.log('PWA was successfully installed.');
+      const installBtn = document.getElementById('pwaInstallBtn');
+      if (installBtn) installBtn.classList.add('hidden');
+      deferredPrompt = null;
+      
+      showAlertDialog(
+        "Application Installed Successfully! 🎉",
+        "TripExpenceTracker behaves natively on your device now! Open it anytime from your home screen with zero browser controls.",
+        () => {},
+        false
+      );
+    });
+
+    // Handle Floating Install trigger action click
+    document.getElementById('pwaInstallBtn')?.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User installation choice outcome: ${outcome}`);
+      deferredPrompt = null;
+      document.getElementById('pwaInstallBtn').classList.add('hidden');
+    });
+
+    // Detect offline and online status events
+    window.addEventListener('online', () => {
+      showNetworkToast(true);
+      if (appState.autoSync && appState.gasUrl) {
+        silentBackgroundPull();
+      }
+    });
+
+    window.addEventListener('offline', () => {
+      showNetworkToast(false);
+    });
+
+    // Render network toast animations
+    function showNetworkToast(isOnline) {
+      const container = document.getElementById('pwaNotificationContainer');
+      if (!container) return;
+      
+      const toast = document.createElement('div');
+      toast.className = `p-3 rounded-xl shadow-lg border pointer-events-auto flex items-center gap-2 text-xs slide-in-toast transition-opacity duration-300 ${
+        isOnline 
+          ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400' 
+          : 'bg-rose-500/10 border-rose-500/20 text-rose-500'
+      }`;
+      
+      toast.innerHTML = isOnline 
+        ? `<i data-lucide="wifi" class="w-4 h-4"></i> <span class="font-bold">🟢 Connected Again</span>`
+        : `<i data-lucide="wifi-off" class="w-4 h-4"></i> <span class="font-bold">🔴 Offline Mode</span>`;
+        
+      container.appendChild(toast);
+      lucide.createIcons();
+      
+      if (isOnline) {
+        setTimeout(() => {
+          toast.classList.add('opacity-0');
+          setTimeout(() => toast.remove(), 300);
+        }, 3500);
+      }
+    }
+
+    // Display a clean, dynamic update banner when static worker updates occur
+    function showUpdateNotificationBanner() {
+      const container = document.getElementById('pwaNotificationContainer');
+      if (!container) return;
+      
+      const banner = document.createElement('div');
+      banner.className = "bg-slate-900 border border-brand-500/30 text-white rounded-2xl p-4 shadow-2xl flex flex-col gap-3 pointer-events-auto slide-in-toast";
+      banner.innerHTML = `
+        <div class="flex items-start gap-3">
+          <div class="p-2 bg-brand-500/20 text-brand-400 rounded-lg">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-sm text-white">New Update Available!</h4>
+            <p class="text-[11px] text-slate-300 mt-0.5">Please update to the latest version for fresh features and performance enhancements.</p>
+          </div>
+        </div>
+        <div class="flex gap-2 justify-end text-xs">
+          <button id="pwaUpdateDismissBtn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-lg transition-colors">Later</button>
+          <button id="pwaUpdateAcceptBtn" class="px-3 py-1.5 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-lg transition-colors shadow-lg shadow-brand-500/10 flex items-center gap-1">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            <span>Update Now</span>
+          </button>
+        </div>
+      `;
+      
+      container.appendChild(banner);
+      lucide.createIcons();
+      
+      document.getElementById('pwaUpdateDismissBtn').addEventListener('click', () => {
+        banner.remove();
+      });
+      
+      document.getElementById('pwaUpdateAcceptBtn').addEventListener('click', () => {
+        if (newWorker) {
+          newWorker.postMessage({ action: 'skipWaiting' });
+        }
+      });
     }
   </script>
 </body>
