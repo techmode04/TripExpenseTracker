@@ -858,19 +858,64 @@
           <input type="hidden" id="expenseModalId">
           <input type="hidden" id="expenseModalSettledId"> <!-- Original expense ID link -->
 
-          <!-- Transaction Type Select dropdown -->
+          <!-- Transaction Type Select dropdown (REDESIGNED) -->
           <div>
-            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-1">Transaction Type</label>
-            <div class="relative">
-              <select id="expenseModalType" onchange="handleTypeChange(this.value)" required class="w-full bg-neutralSlate-50 dark:bg-neutralSlate-955 px-3 py-2 pr-8 rounded-xl border border-neutralSlate-200 dark:border-neutralSlate-800 text-neutralSlate-955 dark:text-white focus:outline-none focus:ring-1 focus:ring-brand-500 appearance-none cursor-pointer font-bold text-xs sm:text-sm">
-                <option value="personal">Personal Expense (Self Spent) 👤</option>
-                <option value="i_paid_friend">I Paid For Friend 📤</option>
-                <option value="friend_paid_me">Friend Paid For Me 📥</option>
-                <option value="settlement">Settlement (Paise wapas diye) 🤝</option>
-              </select>
-              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-neutralSlate-505">
-                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            <label class="block font-bold text-neutralSlate-555 uppercase tracking-wider mb-2">Transaction Type</label>
+
+            <!-- Hidden select to keep existing JS logic completely unharmed -->
+            <select id="expenseModalType" required class="hidden">
+              <option value="personal">Personal</option>
+              <option value="i_paid_friend">I Paid For Friend</option>
+              <option value="friend_paid_me">Friend Paid For Me</option>
+              <option value="settlement">Settlement</option>
+            </select>
+
+            <!-- Native Mobile Segmented Control -->
+            <div class="flex p-1 bg-neutralSlate-100 dark:bg-neutralSlate-905 rounded-2xl shadow-inner border border-neutralSlate-200/50 dark:border-neutralSlate-800/50">
+              <button type="button" id="btnTypePersonal" onclick="handleTypeChange('personal')" class="flex-1 py-3 rounded-xl text-xs sm:text-sm font-bold text-center transition-all duration-200">
+                <span class="flex items-center justify-center gap-1.5"><i data-lucide="user" class="w-4 h-4"></i> Personal</span>
+              </button>
+              <button type="button" id="btnTypeSplit" onclick="handleTypeChange('i_paid_friend')" class="flex-1 py-3 rounded-xl text-xs sm:text-sm font-bold text-center transition-all duration-200">
+                <span class="flex items-center justify-center gap-1.5"><i data-lucide="users" class="w-4 h-4"></i> Split</span>
+              </button>
+            </div>
+
+            <!-- Split Options Card Container -->
+            <div id="splitOptionsContainer" class="hidden overflow-hidden transition-all duration-300 opacity-0 transform -translate-y-2 flex-col gap-2 mt-3">
+
+              <!-- Card: I Paid -->
+              <div onclick="handleTypeChange('i_paid_friend')" id="cardTypeIPaid" class="p-3.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 flex items-center gap-4">
+                <div id="iconIPaid" class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors duration-200">
+                   <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-sm text-neutralSlate-900 dark:text-white">I Paid For Friend</h4>
+                  <p class="text-[10px] text-neutralSlate-505 dark:text-neutralSlate-404 mt-0.5">You paid for your friend</p>
+                </div>
               </div>
+
+              <!-- Card: Friend Paid -->
+              <div onclick="handleTypeChange('friend_paid_me')" id="cardTypeFriendPaid" class="p-3.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 flex items-center gap-4">
+                <div id="iconFriendPaid" class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors duration-200">
+                   <i data-lucide="arrow-down-left" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-sm text-neutralSlate-900 dark:text-white">Friend Paid For Me</h4>
+                  <p class="text-[10px] text-neutralSlate-505 dark:text-neutralSlate-404 mt-0.5">Friend paid on your behalf</p>
+                </div>
+              </div>
+
+              <!-- Card: Settlement -->
+              <div onclick="handleTypeChange('settlement')" id="cardTypeSettlement" class="p-3.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 flex items-center gap-4">
+                <div id="iconSettlement" class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors duration-200">
+                   <i data-lucide="handshake" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-sm text-neutralSlate-900 dark:text-white">Settlement</h4>
+                  <p class="text-[10px] text-neutralSlate-505 dark:text-neutralSlate-404 mt-0.5">Money returned / settled</p>
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -2864,7 +2909,68 @@ function doPost(e) {
       );
     }
 
+    /* REDESIGNED AND EXTENDED: Update custom UI natively keeping original flows intact */
     function handleTypeChange(val) {
+      // Step 1: Ensure hidden select is correctly synchronized (for Edit modes)
+      const hiddenSelect = document.getElementById('expenseModalType');
+      if (hiddenSelect && hiddenSelect.value !== val) {
+        hiddenSelect.value = val;
+      }
+
+      // Step 2: Manage the new Custom Component UI states
+      const btnPersonal = document.getElementById('btnTypePersonal');
+      if (btnPersonal) {
+        const btnSplit = document.getElementById('btnTypeSplit');
+        const splitContainer = document.getElementById('splitOptionsContainer');
+
+        const cardIPaid = document.getElementById('cardTypeIPaid');
+        const cardFriendPaid = document.getElementById('cardTypeFriendPaid');
+        const cardSettlement = document.getElementById('cardTypeSettlement');
+
+        const iconIPaid = document.getElementById('iconIPaid');
+        const iconFriendPaid = document.getElementById('iconFriendPaid');
+        const iconSettlement = document.getElementById('iconSettlement');
+
+        // Styles defined for visual changes
+        const inactiveBtn = "text-neutralSlate-555 hover:text-neutralSlate-800 dark:text-neutralSlate-404 dark:hover:text-white";
+        const activeBtn = "bg-brand-500 text-white shadow-md transform scale-[1.02]";
+
+        const inactiveCard = "border-neutralSlate-200 dark:border-neutralSlate-800 bg-transparent text-neutralSlate-700 dark:text-slate-300";
+        const activeCard = "border-brand-500 bg-brand-50 shadow-[0_0_15px_rgba(139,92,246,0.15)] dark:bg-brand-500/10 text-brand-600 dark:text-brand-400";
+
+        const inactiveIcon = "bg-brand-500/10 text-brand-500";
+        const activeIcon = "bg-brand-500 text-white";
+
+        // Segment Toggle Update
+        btnPersonal.className = `flex-1 py-3 rounded-xl text-xs sm:text-sm font-bold text-center transition-all duration-200 ${val === 'personal' ? activeBtn : inactiveBtn}`;
+        btnSplit.className = `flex-1 py-3 rounded-xl text-xs sm:text-sm font-bold text-center transition-all duration-200 ${val !== 'personal' ? activeBtn : inactiveBtn}`;
+
+        // Sub-options animation toggle
+        if (val === 'personal') {
+          splitContainer.classList.remove('flex', 'opacity-100', 'translate-y-0');
+          splitContainer.classList.add('hidden', 'opacity-0', '-translate-y-2');
+        } else {
+          splitContainer.classList.remove('hidden');
+          splitContainer.classList.add('flex');
+          // Smooth animate in delay ensures flex applies before transitions
+          requestAnimationFrame(() => {
+            splitContainer.classList.remove('opacity-0', '-translate-y-2');
+            splitContainer.classList.add('opacity-100', 'translate-y-0');
+          });
+        }
+
+        // Sub-cards Selection state
+        cardIPaid.className = `p-3.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 flex items-center gap-4 ${val === 'i_paid_friend' ? activeCard : inactiveCard}`;
+        cardFriendPaid.className = `p-3.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 flex items-center gap-4 ${val === 'friend_paid_me' ? activeCard : inactiveCard}`;
+        cardSettlement.className = `p-3.5 rounded-2xl border-2 cursor-pointer transition-all duration-200 flex items-center gap-4 ${val === 'settlement' ? activeCard : inactiveCard}`;
+
+        // Icon updates
+        iconIPaid.className = `w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors duration-200 ${val === 'i_paid_friend' ? activeIcon : inactiveIcon}`;
+        iconFriendPaid.className = `w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors duration-200 ${val === 'friend_paid_me' ? activeIcon : inactiveIcon}`;
+        iconSettlement.className = `w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors duration-200 ${val === 'settlement' ? activeIcon : inactiveIcon}`;
+      }
+
+      // Step 3: Original Logic unchanged (Toggles specific inputs)
       const friendRow = document.getElementById('friendInvolvedRow');
       const settleDirectionRow = document.getElementById('settlementDirectionRow');
 
