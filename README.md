@@ -117,7 +117,7 @@ Just enjoy your trip.
 ## Dashboard
 
 
-<img src="preview.png">
+<img src="preview2.png">
 
 ---
 
