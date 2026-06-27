@@ -6,7 +6,6 @@
 
 Manage your trips, expenses, friends' payments, settlements, travel diary, and complete trip history — all from a single modern web application.
 
-<img src="preview.png" width="900">
 
 ![HTML](https://img.shields.io/badge/HTML-5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
@@ -116,7 +115,7 @@ Just enjoy your trip.
 # 📸 Screenshots
 
 ## Dashboard
-<img src="preview1.png">
+
 
 <img src="preview.png">
 
