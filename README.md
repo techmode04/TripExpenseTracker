@@ -116,6 +116,7 @@ Just enjoy your trip.
 # 📸 Screenshots
 
 ## Dashboard
+<img src="preview1.png">
 
 <img src="preview.png">
 
